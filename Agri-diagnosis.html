@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AI Crop - Diagnosis by Luyando</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7e9 0%, #e8f0e0 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #1a3b2e;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
+            color: white;
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+        }
+
+        .header .by {
+            font-size: 0.85rem;
+            opacity: 0.85;
+            margin-top: 5px;
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            margin-top: 12px;
+            opacity: 0.9;
+        }
+
+        /* Content */
+        .content {
+            padding: 24px 20px;
+        }
+
+        /* Section 1 - Upload */
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d6a4f;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-area {
+            background: #f9faf7;
+            border: 2px dashed #a4c3b2;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            background: #f0f5eb;
+            border-color: #2d6a4f;
+        }
+
+        .upload-icon {
+            margin-bottom: 12px;
+        }
+
+        .upload-area p {
+            color: #4a665c;
+            font-size: 0.85rem;
+            margin: 8px 0;
+        }
+
+        .camera-btn {
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .camera-btn:hover {
+            background: #1b5e3f;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            margin-top: 16px;
+            display: none;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .image-preview img, .image-preview video {
+            width: 100%;
+            border-radius: 16px;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        /* Diagnosis Result */
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-header {
+            font-size: 0.85rem;
+            color: #6c757d;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .disease-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #c92a2a;
+            margin-bottom: 12px;
+        }
+
+        .confidence-bar {
+            background: #e9ecef;
+            border-radius: 12px;
+            height: 8px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .confidence-fill {
+            background: #c92a2a;
+            width: 92%;
+            height: 100%;
+            border-radius: 12px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #6c757d;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .what-means {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #2d6a4f;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Quick Status */
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+        }
+
+        .status-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin: 8px 0 4px;
+        }
+
+        .status-value {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .status-value.good { color: #2b8a3e; }
+        .status-value.risk { color: #c92a2a; }
+
+        .status-sub {
+            font-size: 0.7rem;
+            color: #6c757d;
+        }
+
+        /* Voice Button */
+        .voice-btn {
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e9ecef;
+            border-top-color: #2d6a4f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hidden */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🌿 AI Crop - Diagnosis</h1>
+        <div class="by">by Luyando</div>
+        <div class="tagline">Healthy crops, better yields, stronger future.</div>
+    </div>
+
+    <div class="content">
+        <!-- Section 1: Upload or Capture -->
+        <div class="section">
+            <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="16" rx="2"/>
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M8 2 L12 6 L16 2"/>
+                </svg>
+                1. UPLOAD OR CAPTURE IMAGE
+            </div>
+            <p style="font-size:0.85rem; color:#6c757d; margin-bottom:12px;">Take a clear photo of the plant leaf.</p>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2d6a4f" stroke-width="1.5">
+                        <path d="M12 3v12m0 0-3-3m3 3 3-3M5 21h14"/>
+                        <rect x="3" y="15" width="18" height="6" rx="2"/>
+                    </svg>
+                </div>
+                <p>Tap to upload image</p>
+                <p style="font-size:0.75rem;">or</p>
+                <button class="camera-btn" id="cameraBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="display:inline; margin-right:6px;">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    Use Camera
+                </button>
+            </div>
+            <div class="image-preview" id="imagePreview"></div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your crop...</p>
+        </div>
+
+        <!-- Section 2: Diagnosis Result -->
+        <div class="section" id="resultSection" style="display:none;">
+            <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 12.5A7.5 7.5 0 0 1 8 15M12 2v4M4 4l2 2M20 4l-2 2"/>
+                    <circle cx="12" cy="12" r="10"/>
+                </svg>
+                2. DIAGNOSIS RESULT
+            </div>
+            <div class="result-card">
+                <div class="result-header">DISEASE DETECTED</div>
+                <div class="disease-name" id="prediction">Maize – Northern Leaf Blight</div>
+                <div class="confidence-bar"><div class="confidence-fill" id="confidenceFill" style="width:92%"></div></div>
+                <div class="stats">
+                    <div class="stat"><div class="stat-label">Confidence</div><div class="stat-value" id="confidenceValue">92%</div></div>
+                    <div class="stat"><div class="stat-label">Severity</div><div class="stat-value" id="severity">High</div></div>
+                </div>
+                <div class="what-means" id="whatMeans">What this means? →</div>
+                <div id="whatMeansText" style="display:none; margin-top:12px; font-size:0.85rem; padding:12px; background:#e9ecef; border-radius:12px;">
+                    Northern Leaf Blight causes cigar-shaped lesions. Treat with fungicides and resistant varieties.
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Status -->
+        <div class="section" id="statusSection" style="display:none;">
+            <div class="section-title">QUICK STATUS</div>
+            <div class="status-grid">
+                <div class="status-card">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2b8a3e" stroke-width="1.5">
+                        <path d="M12 2v4M12 18v4M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2M2 12h4M18 12h4"/>
+                        <circle cx="12" cy="12" r="4"/>
+                    </svg>
+                    <div class="status-label">SOIL</div>
+                    <div class="status-value good">Good</div>
+                    <div class="status-sub">Moisture sufficient</div>
+                </div>
+                <div class="status-card">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f4a261" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <div class="status-label">LIGHT</div>
+                    <div class="status-value good">Good</div>
+                    <div class="status-sub">Light sufficient</div>
+                </div>
+                <div class="status-card">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c92a2a" stroke-width="1.5">
+                        <path d="M12 8v4M12 16h.01"/>
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                    <div class="status-label">CROP HEALTH</div>
+                    <div class="status-value risk">At Risk</div>
+                    <div class="status-sub">Monitor regularly</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="voice-btn" id="voiceBtn" style="display:none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+            Listen Result (Voice)
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
+<script>
+    // ============================================
+    // 🔴 REPLACE THIS WITH YOUR MODEL URL 🔴
+    // ============================================
+    const MODEL_URL = "https://teachablemachine.withgoogle.com/models/drdcQS-r_/";
+    // Example: "https://teachablemachine.withgoogle.com/models/abc123xyz/"
+    // ============================================
+
+    let model;
+    let webcamActive = false;
+    let currentPredictions = null;
+
+    // Load model on startup
+    async function loadModel() {
+        const loadingDiv = document.getElementById('loading');
+        loadingDiv.style.display = 'block';
+        try {
+            model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
+            console.log("Model loaded successfully");
+            loadingDiv.style.display = 'none';
+        } catch(e) {
+            loadingDiv.innerHTML = '<p style="color:red;">⚠️ Failed to load model. Check your MODEL_URL</p>';
+            console.error(e);
+        }
+    }
+
+    async function predict(imageElement) {
+        if (!model) return;
+        const predictions = await model.predict(imageElement);
+        currentPredictions = predictions;
+        
+        // Get top prediction
+        let top = predictions[0];
+        for(let p of predictions) {
+            if(p.probability > top.probability) top = p;
+        }
+        
+        let confidence = (top.probability * 100).toFixed(1);
+        let diseaseName = top.className;
+        
+        // Update UI
+        document.getElementById('prediction').innerHTML = diseaseName;
+        document.getElementById('confidenceValue').innerHTML = confidence + "%";
+        document.getElementById('confidenceFill').style.width = confidence + "%";
+        
+        // Severity logic (customize based on your classes)
+        let severity = "Medium";
+        if(confidence > 85) severity = "High";
+        else if(confidence > 60) severity = "Medium";
+        else severity = "Low";
+        document.getElementById('severity').innerHTML = severity;
+        
+        document.getElementById('resultSection').style.display = 'block';
+        document.getElementById('statusSection').style.display = 'block';
+        document.getElementById('voiceBtn').style.display = 'flex';
+    }
+
+    // Camera handling
+    async function startCamera() {
+        const video = document.createElement('video');
+        video.width = 400;
+        video.height = 300;
+        video.autoplay = true;
+        video.style.width = '100%';
+        video.style.borderRadius = '16px';
+        
+        const previewDiv = document.getElementById('imagePreview');
+        previewDiv.innerHTML = '';
+        previewDiv.appendChild(video);
+        previewDiv.style.display = 'block';
+        
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        
+        // Wait for video to be ready
+        await new Promise((resolve) => { video.onloadedmetadata = () => { resolve(); }; });
+        
+        // Capture frame every 2 seconds
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 300;
+        const ctx = canvas.getContext('2d');
+        
+        const interval = setInterval(async () => {
+            if(video.readyState === 4) {
+                ctx.drawImage(video, 0, 0, 400, 300);
+                await predict(canvas);
+            }
+        }, 2000);
+        
+        // Store stream for later cleanup (optional)
+        window.currentStream = stream;
+        window.cameraInterval = interval;
+    }
+
+    // Image upload
+    document.getElementById('uploadArea').onclick = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            img.onload = async () => {
+                const previewDiv = document.getElementById('imagePreview');
+                previewDiv.innerHTML = '';
+                previewDiv.appendChild(img);
+                previewDiv.style.display = 'block';
+                img.style.width = '100%';
+                img.style.borderRadius = '16px';
+                
+                // Resize for model
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 300;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, 400, 300);
+                
+                document.getElementById('loading').style.display = 'block';
+                await predict(canvas);
+                document.getElementById('loading').style.display = 'none';
+                
+                // Stop camera if active
+                if(window.currentStream) {
+                    window.currentStream.getTracks().forEach(t => t.stop());
+                    if(window.cameraInterval) clearInterval(window.cameraInterval);
+                }
+            };
+        };
+        input.click();
+    };
+    
+    document.getElementById('cameraBtn').onclick = async () => {
+        await startCamera();
+    };
+    
+    // Voice feedback
+    document.getElementById('voiceBtn').onclick = () => {
+        if(!currentPredictions) return;
+        let top = currentPredictions[0];
+        for(let p of currentPredictions) {
+            if(p.probability > top.probability) top = p;
+        }
+        let msg = new SpeechSynthesisUtterance();
+        msg.text = `Diagnosis: ${top.className}. Confidence ${(top.probability*100).toFixed(1)} percent. Severity is ${document.getElementById('severity').innerText}.`;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(msg);
+    };
+    
+    // "What this means" toggle
+    document.getElementById('whatMeans').onclick = () => {
+        const textDiv = document.getElementById('whatMeansText');
+        textDiv.style.display = textDiv.style.display === 'none' ? 'block' : 'none';
+    };
+    
+    loadModel();
+</script>
+</body>
+</html>
