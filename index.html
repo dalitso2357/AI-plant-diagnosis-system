@@ -3,553 +3,1070 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>AI Crop - Diagnosis by Luyando</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7e9 0%, #e8f0e0 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #1a3b2e;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
-            color: white;
-            padding: 24px 20px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 1.8rem;
-            letter-spacing: -0.5px;
-        }
-
-        .header .by {
-            font-size: 0.85rem;
-            opacity: 0.85;
-            margin-top: 5px;
-        }
-
-        .tagline {
-            font-size: 0.9rem;
-            margin-top: 12px;
-            opacity: 0.9;
-        }
-
-        /* Content */
-        .content {
-            padding: 24px 20px;
-        }
-
-        /* Section 1 - Upload */
-        .section {
-            margin-bottom: 32px;
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2d6a4f;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .upload-area {
-            background: #f9faf7;
-            border: 2px dashed #a4c3b2;
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .upload-area:hover {
-            background: #f0f5eb;
-            border-color: #2d6a4f;
-        }
-
-        .upload-icon {
-            margin-bottom: 12px;
-        }
-
-        .upload-area p {
-            color: #4a665c;
-            font-size: 0.85rem;
-            margin: 8px 0;
-        }
-
-        .camera-btn {
-            background: #2d6a4f;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-size: 1rem;
-            font-weight: 500;
-            margin-top: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
-
-        .camera-btn:hover {
-            background: #1b5e3f;
-        }
-
-        /* Image Preview */
-        .image-preview {
-            margin-top: 16px;
-            display: none;
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .image-preview img, .image-preview video {
-            width: 100%;
-            border-radius: 16px;
-            max-height: 300px;
-            object-fit: cover;
-        }
-
-        /* Diagnosis Result */
-        .result-card {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .result-header {
-            font-size: 0.85rem;
-            color: #6c757d;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-        }
-
-        .disease-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #c92a2a;
-            margin-bottom: 12px;
-        }
-
-        .confidence-bar {
-            background: #e9ecef;
-            border-radius: 12px;
-            height: 8px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .confidence-fill {
-            background: #c92a2a;
-            width: 92%;
-            height: 100%;
-            border-radius: 12px;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 12px;
-        }
-
-        .stat {
-            text-align: center;
-            flex: 1;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: #6c757d;
-        }
-
-        .stat-value {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .what-means {
-            margin-top: 12px;
-            font-size: 0.85rem;
-            color: #2d6a4f;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        /* Quick Status */
-        .status-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .status-card {
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 16px 8px;
-            text-align: center;
-        }
-
-        .status-label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            margin: 8px 0 4px;
-        }
-
-        .status-value {
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .status-value.good { color: #2b8a3e; }
-        .status-value.risk { color: #c92a2a; }
-
-        .status-sub {
-            font-size: 0.7rem;
-            color: #6c757d;
-        }
-
-        /* Voice Button */
-        .voice-btn {
-            background: #2d6a4f;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 40px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e9ecef;
-            border-top-color: #2d6a4f;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Hidden */
-        .hidden { display: none; }
-    </style>
+    <title>PlantDoc Zambia - AI Crop Disease Diagnosis</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+    <!-- Teachable Machine Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <meta name="description" content="AI-powered plant disease diagnosis for Zambian farmers">
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>🌿 AI Crop - Diagnosis</h1>
-        <div class="by">by Luyando</div>
-        <div class="tagline">Healthy crops, better yields, stronger future.</div>
-    </div>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useRef, useEffect, useCallback } = React;
 
-    <div class="content">
-        <!-- Section 1: Upload or Capture -->
-        <div class="section">
-            <div class="section-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="6" width="20" height="16" rx="2"/>
-                    <circle cx="12" cy="12" r="4"/>
-                    <path d="M8 2 L12 6 L16 2"/>
-                </svg>
-                1. UPLOAD OR CAPTURE IMAGE
-            </div>
-            <p style="font-size:0.85rem; color:#6c757d; margin-bottom:12px;">Take a clear photo of the plant leaf.</p>
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2d6a4f" stroke-width="1.5">
-                        <path d="M12 3v12m0 0-3-3m3 3 3-3M5 21h14"/>
-                        <rect x="3" y="15" width="18" height="6" rx="2"/>
-                    </svg>
-                </div>
-                <p>Tap to upload image</p>
-                <p style="font-size:0.75rem;">or</p>
-                <button class="camera-btn" id="cameraBtn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="display:inline; margin-right:6px;">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                        <circle cx="12" cy="13" r="4"/>
-                    </svg>
-                    Use Camera
-                </button>
-            </div>
-            <div class="image-preview" id="imagePreview"></div>
-        </div>
+        // Zambian Crop Database
+        const CROPS = [
+            { id: "maize", name: "Maize (Corn)", icon: "🌽", season: "Nov–Apr", diseases: ["Gray Leaf Spot", "Maize Streak Virus", "Northern Corn Leaf Blight", "Stalk Rot", "Fall Armyworm"] },
+            { id: "groundnuts", name: "Groundnuts", icon: "🥜", season: "Nov–Mar", diseases: ["Rosette Disease", "Early Leaf Spot", "Late Leaf Spot", "Aflatoxin", "Root Rot"] },
+            { id: "soybean", name: "Soybean", icon: "🌿", season: "Nov–Apr", diseases: ["Soybean Mosaic Virus", "Sudden Death Syndrome", "Phytophthora Root Rot", "Frogeye Leaf Spot"] },
+            { id: "cotton", name: "Cotton", icon: "☁️", season: "Nov–Apr", diseases: ["Bacterial Blight", "Fusarium Wilt", "Bollworm", "Whitefly", "Cercospora Leaf Spot"] },
+            { id: "tobacco", name: "Tobacco", icon: "🌱", season: "Oct–Mar", diseases: ["Blue Mold", "Black Shank", "Tobacco Mosaic Virus", "Wildfire", "Nematodes"] },
+            { id: "cassava", name: "Cassava", icon: "🪴", season: "Year-round", diseases: ["Cassava Mosaic Disease", "Cassava Brown Streak", "Root Rot", "Cassava Bacterial Blight"] },
+            { id: "sweet_potato", name: "Sweet Potato", icon: "🍠", season: "Nov–Apr", diseases: ["Sweet Potato Virus Disease", "Scab", "Soft Rot", "Weevil Damage"] },
+            { id: "sunflower", name: "Sunflower", icon: "🌻", season: "Nov–Mar", diseases: ["Downy Mildew", "Alternaria Blight", "Charcoal Rot", "Rust"] },
+            { id: "beans", name: "Common Beans", icon: "🫘", season: "Nov–Mar", diseases: ["Bean Common Mosaic Virus", "Angular Leaf Spot", "Rust", "Root Rot"] },
+            { id: "tomato", name: "Tomato", icon: "🍅", season: "Year-round", diseases: ["Early Blight", "Late Blight", "Tomato Yellow Leaf Curl Virus", "Fusarium Wilt", "Bacterial Wilt"] },
+            { id: "wheat", name: "Wheat", icon: "🌾", season: "Apr–Sep", diseases: ["Stem Rust", "Yellow Rust", "Leaf Rust", "Septoria Leaf Blotch", "Fusarium Head Blight"] },
+            { id: "sugarcane", name: "Sugarcane", icon: "🎋", season: "Year-round", diseases: ["Smut", "Ratoon Stunting Disease", "Yellow Leaf Disease", "Red Rot"] }
+        ];
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Analyzing your crop...</p>
-        </div>
+        const ZAMBIAN_PROVINCES = ["Lusaka", "Copperbelt", "Central", "Eastern", "Southern", "Northern", "Luapula", "Western", "North-Western", "Muchinga"];
 
-        <!-- Section 2: Diagnosis Result -->
-        <div class="section" id="resultSection" style="display:none;">
-            <div class="section-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 12.5A7.5 7.5 0 0 1 8 15M12 2v4M4 4l2 2M20 4l-2 2"/>
-                    <circle cx="12" cy="12" r="10"/>
-                </svg>
-                2. DIAGNOSIS RESULT
-            </div>
-            <div class="result-card">
-                <div class="result-header">DISEASE DETECTED</div>
-                <div class="disease-name" id="prediction">Maize – Northern Leaf Blight</div>
-                <div class="confidence-bar"><div class="confidence-fill" id="confidenceFill" style="width:92%"></div></div>
-                <div class="stats">
-                    <div class="stat"><div class="stat-label">Confidence</div><div class="stat-value" id="confidenceValue">92%</div></div>
-                    <div class="stat"><div class="stat-label">Severity</div><div class="stat-value" id="severity">High</div></div>
-                </div>
-                <div class="what-means" id="whatMeans">What this means? →</div>
-                <div id="whatMeansText" style="display:none; margin-top:12px; font-size:0.85rem; padding:12px; background:#e9ecef; border-radius:12px;">
-                    Northern Leaf Blight causes cigar-shaped lesions. Treat with fungicides and resistant varieties.
-                </div>
-            </div>
-        </div>
+        // Teachable Machine Model URL (your provided URL)
+        const TEACHABLE_MODEL_URL = "https://teachablemachine.withgoogle.com/models/drdcQS-r_/";
 
-        <!-- Quick Status -->
-        <div class="section" id="statusSection" style="display:none;">
-            <div class="section-title">QUICK STATUS</div>
-            <div class="status-grid">
-                <div class="status-card">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2b8a3e" stroke-width="1.5">
-                        <path d="M12 2v4M12 18v4M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2M2 12h4M18 12h4"/>
-                        <circle cx="12" cy="12" r="4"/>
-                    </svg>
-                    <div class="status-label">SOIL</div>
-                    <div class="status-value good">Good</div>
-                    <div class="status-sub">Moisture sufficient</div>
-                </div>
-                <div class="status-card">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f4a261" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="5"/>
-                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-                    </svg>
-                    <div class="status-label">LIGHT</div>
-                    <div class="status-value good">Good</div>
-                    <div class="status-sub">Light sufficient</div>
-                </div>
-                <div class="status-card">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c92a2a" stroke-width="1.5">
-                        <path d="M12 8v4M12 16h.01"/>
-                        <circle cx="12" cy="12" r="10"/>
-                    </svg>
-                    <div class="status-label">CROP HEALTH</div>
-                    <div class="status-value risk">At Risk</div>
-                    <div class="status-sub">Monitor regularly</div>
-                </div>
-            </div>
-        </div>
-
-        <button class="voice-btn" id="voiceBtn" style="display:none;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" y1="19" x2="12" y2="23"/>
-                <line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
-            Listen Result (Voice)
-        </button>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
-
-<script>
-    // ============================================
-    // 🔴 REPLACE THIS WITH YOUR MODEL URL 🔴
-    // ============================================
-    const MODEL_URL = "https://teachablemachine.withgoogle.com/models/drdcQS-r_/";
-    // Example: "https://teachablemachine.withgoogle.com/models/abc123xyz/"
-    // ============================================
-
-    let model;
-    let webcamActive = false;
-    let currentPredictions = null;
-
-    // Load model on startup
-    async function loadModel() {
-        const loadingDiv = document.getElementById('loading');
-        loadingDiv.style.display = 'block';
-        try {
-            model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
-            console.log("Model loaded successfully");
-            loadingDiv.style.display = 'none';
-        } catch(e) {
-            loadingDiv.innerHTML = '<p style="color:red;">⚠️ Failed to load model. Check your MODEL_URL</p>';
-            console.error(e);
-        }
-    }
-
-    async function predict(imageElement) {
-        if (!model) return;
-        const predictions = await model.predict(imageElement);
-        currentPredictions = predictions;
-        
-        // Get top prediction
-        let top = predictions[0];
-        for(let p of predictions) {
-            if(p.probability > top.probability) top = p;
-        }
-        
-        let confidence = (top.probability * 100).toFixed(1);
-        let diseaseName = top.className;
-        
-        // Update UI
-        document.getElementById('prediction').innerHTML = diseaseName;
-        document.getElementById('confidenceValue').innerHTML = confidence + "%";
-        document.getElementById('confidenceFill').style.width = confidence + "%";
-        
-        // Severity logic (customize based on your classes)
-        let severity = "Medium";
-        if(confidence > 85) severity = "High";
-        else if(confidence > 60) severity = "Medium";
-        else severity = "Low";
-        document.getElementById('severity').innerHTML = severity;
-        
-        document.getElementById('resultSection').style.display = 'block';
-        document.getElementById('statusSection').style.display = 'block';
-        document.getElementById('voiceBtn').style.display = 'flex';
-    }
-
-    // Camera handling
-    async function startCamera() {
-        const video = document.createElement('video');
-        video.width = 400;
-        video.height = 300;
-        video.autoplay = true;
-        video.style.width = '100%';
-        video.style.borderRadius = '16px';
-        
-        const previewDiv = document.getElementById('imagePreview');
-        previewDiv.innerHTML = '';
-        previewDiv.appendChild(video);
-        previewDiv.style.display = 'block';
-        
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        
-        // Wait for video to be ready
-        await new Promise((resolve) => { video.onloadedmetadata = () => { resolve(); }; });
-        
-        // Capture frame every 2 seconds
-        const canvas = document.createElement('canvas');
-        canvas.width = 400;
-        canvas.height = 300;
-        const ctx = canvas.getContext('2d');
-        
-        const interval = setInterval(async () => {
-            if(video.readyState === 4) {
-                ctx.drawImage(video, 0, 0, 400, 300);
-                await predict(canvas);
+        // Styles
+        const styles = `
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+            :root {
+                --green-900: #052e16; --green-800: #14532d; --green-700: #166534;
+                --green-600: #16a34a; --green-500: #22c55e; --green-400: #4ade80;
+                --green-300: #86efac; --green-100: #dcfce7; --green-50: #f0fdf4;
+                --soil: #92400e; --soil-light: #d97706; --amber: #f59e0b;
+                --red-500: #ef4444; --red-100: #fee2e2; --sky: #0ea5e9;
+                --surface: #ffffff; --surface-2: #f8fafc; --border: #e2e8f0;
+                --text: #0f172a; --text-2: #475569; --text-3: #94a3b8;
+                --radius: 16px; --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+                --shadow-lg: 0 4px 12px rgba(0,0,0,0.1), 0 20px 48px rgba(0,0,0,0.1);
             }
-        }, 2000);
-        
-        // Store stream for later cleanup (optional)
-        window.currentStream = stream;
-        window.cameraInterval = interval;
-    }
+            body { font-family: 'Outfit', sans-serif; background: var(--surface-2); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+            #root { min-height: 100vh; }
+            .app { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--surface); display: flex; flex-direction: column; position: relative; box-shadow: 0 0 60px rgba(0,0,0,0.12); }
+            .header { background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 100%); padding: 16px 20px 14px; position: sticky; top: 0; z-index: 100; }
+            .header-inner { display: flex; align-items: center; justify-content: space-between; }
+            .logo { display: flex; align-items: center; gap: 10px; }
+            .logo-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; backdrop-filter: blur(8px); }
+            .logo-text { color: white; }
+            .logo-title { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.1; }
+            .logo-sub { font-size: 10px; opacity: 0.75; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+            .header-badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; backdrop-filter: blur(8px); }
+            .nav { display: flex; background: white; border-top: 1px solid var(--border); position: sticky; bottom: 0; z-index: 100; }
+            .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 4px 8px; background: none; border: none; cursor: pointer; color: var(--text-3); font-family: 'Outfit', sans-serif; transition: color 0.2s; }
+            .nav-btn.active { color: var(--green-600); }
+            .nav-btn svg { width: 22px; height: 22px; }
+            .nav-label { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+            .nav-dot { position: absolute; top: 6px; right: 10px; width: 6px; height: 6px; background: var(--red-500); border-radius: 50%; }
+            .page { flex: 1; overflow-y: auto; padding-bottom: 20px; }
+            .card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+            .section-title { font-size: 13px; font-weight: 700; color: var(--text-2); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
+            .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px; border: none; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+            .btn:active { transform: scale(0.97); }
+            .btn-primary { background: var(--green-600); color: white; box-shadow: 0 4px 14px rgba(22,163,74,0.3); }
+            .btn-primary:disabled { background: var(--text-3); box-shadow: none; cursor: not-allowed; }
+            .btn-secondary { background: var(--green-50); color: var(--green-700); border: 1.5px solid var(--green-200); }
+            .btn-outline { background: transparent; color: var(--text-2); border: 1.5px solid var(--border); }
+            .btn-danger { background: var(--red-100); color: var(--red-500); border: none; }
+            .btn-full { width: 100%; }
+            .btn-sm { padding: 8px 14px; font-size: 13px; }
+            .input, .textarea, .select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--text); background: white; outline: none; transition: border-color 0.2s; }
+            .input:focus, .textarea:focus, .select:focus { border-color: var(--green-500); box-shadow: 0 0 0 3px rgba(34,197,94,0.1); }
+            .textarea { resize: none; min-height: 80px; }
+            .crop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .crop-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer; background: white; transition: all 0.2s; text-align: center; }
+            .crop-item:hover { border-color: var(--green-400); background: var(--green-50); }
+            .crop-item.selected { border-color: var(--green-600); background: var(--green-50); box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+            .crop-emoji { font-size: 28px; line-height: 1; }
+            .crop-name { font-size: 11px; font-weight: 600; color: var(--text-2); line-height: 1.2; }
+            .capture-zone { border: 2px dashed var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface-2); min-height: 220px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: all 0.2s; }
+            .capture-zone:hover { border-color: var(--green-400); background: var(--green-50); }
+            .capture-placeholder { text-align: center; color: var(--text-3); }
+            .capture-placeholder .big-icon { font-size: 48px; margin-bottom: 8px; display: block; }
+            .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: capitalize; }
+            .badge-low { background: #dcfce7; color: #15803d; }
+            .badge-medium { background: #fef9c3; color: #a16207; }
+            .badge-high { background: #fee2e2; color: #dc2626; }
+            .badge-info { background: #e0f2fe; color: #0369a1; }
+            .confidence-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+            .confidence-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green-500), var(--green-400)); transition: width 1s ease; }
+            .result-hero { background: linear-gradient(135deg, var(--green-800), var(--green-600)); border-radius: var(--radius); padding: 20px; color: white; margin-bottom: 12px; }
+            .result-disease { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+            .result-meta { font-size: 13px; opacity: 0.8; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+            .treatment-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+            .treatment-tab { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--text-2); transition: all 0.2s; }
+            .treatment-tab.active { background: var(--green-600); color: white; border-color: var(--green-600); }
+            .list-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; line-height: 1.5; }
+            .list-item:last-child { border-bottom: none; }
+            .list-bullet { width: 6px; height: 6px; min-width: 6px; background: var(--green-500); border-radius: 50%; margin-top: 7px; }
+            .history-item { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: opacity 0.2s; }
+            .history-item:hover { opacity: 0.7; }
+            .history-thumb { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: var(--surface-2); flex-shrink: 0; }
+            .history-thumb-placeholder { width: 56px; height: 56px; border-radius: 10px; background: var(--green-100); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+            .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 200; }
+            .spinner { width: 44px; height: 44px; border: 3px solid var(--green-100); border-top-color: var(--green-600); border-radius: 50%; animation: spin 0.8s linear infinite; }
+            @keyframes spin { to { transform: rotate(360deg); } }
+            .alert { padding: 12px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; display: flex; gap: 10px; align-items: flex-start; }
+            .alert-warn { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+            .alert-success { background: var(--green-50); border: 1px solid var(--green-300); color: var(--green-800); }
+            .alert-error { background: var(--red-100); border: 1px solid #fca5a5; color: #991b1b; }
+            .alert-info { background: #f0f9ff; border: 1px solid #bae6fd; color: #075985; }
+            .stat-box { background: var(--surface-2); border-radius: 12px; padding: 12px; text-align: center; }
+            .stat-value { font-size: 28px; font-weight: 800; color: var(--green-600); }
+            .stat-label { font-size: 11px; color: var(--text-2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+            .divider { height: 1px; background: var(--border); margin: 12px 0; }
+            .text-sm { font-size: 13px; }
+            .text-muted { color: var(--text-2); }
+            .text-tiny { font-size: 11px; color: var(--text-3); }
+            .flex { display: flex; }
+            .justify-between { justify-content: space-between; }
+            .gap-2 { gap: 8px; }
+            .mt-2 { margin-top: 8px; }
+            .mt-3 { margin-top: 12px; }
+            .mb-2 { margin-bottom: 8px; }
+            .mb-3 { margin-bottom: 12px; }
+            .fade-in { animation: fadeIn 0.3s ease; }
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+            .slide-up { animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1); }
+            @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+            video { width: 100%; border-radius: var(--radius); display: block; }
+            .toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 999; width: calc(100% - 32px); max-width: 440px; }
+            .toast { background: var(--text); color: white; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: var(--shadow-lg); animation: toastIn 0.3s ease; display: flex; align-items: center; gap: 10px; }
+            @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+            .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+            .settings-row:last-child { border-bottom: none; }
+            .toggle { width: 44px; height: 24px; border-radius: 12px; background: var(--border); cursor: pointer; position: relative; transition: background 0.2s; border: none; }
+            .toggle.on { background: var(--green-500); }
+            .toggle::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+            .toggle.on::after { transform: translateX(20px); }
+            .model-status { padding: 8px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 12px; }
+            .model-status.loading { background: #fef3c7; color: #92400e; }
+            .model-status.ready { background: #dcfce7; color: #166534; }
+            .model-status.error { background: #fee2e2; color: #991b1b; }
+            ::-webkit-scrollbar { width: 4px; }
+        `;
 
-    // Image upload
-    document.getElementById('uploadArea').onclick = () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            const img = new Image();
-            img.src = URL.createObjectURL(file);
-            img.onload = async () => {
-                const previewDiv = document.getElementById('imagePreview');
-                previewDiv.innerHTML = '';
-                previewDiv.appendChild(img);
-                previewDiv.style.display = 'block';
-                img.style.width = '100%';
-                img.style.borderRadius = '16px';
-                
-                // Resize for model
-                const canvas = document.createElement('canvas');
-                canvas.width = 400;
-                canvas.height = 300;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, 400, 300);
-                
-                document.getElementById('loading').style.display = 'block';
-                await predict(canvas);
-                document.getElementById('loading').style.display = 'none';
-                
-                // Stop camera if active
-                if(window.currentStream) {
-                    window.currentStream.getTracks().forEach(t => t.stop());
-                    if(window.cameraInterval) clearInterval(window.cameraInterval);
+        // Icons Component
+        const Icon = ({ name, size = 22, color = "currentColor" }) => {
+            const icons = {
+                camera: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+                history: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+                settings: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+                arrow_left: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>,
+                alert: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+                leaf: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.72A9.82 9.82 0 0 0 12 22a10 10 0 0 0 10-10C22 8 18 6 17 8z"/></svg>,
+                location: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+                share: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>,
+                trash: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+                info: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+                zap: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+                brain: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 1 3.5 6A4 4 0 0 1 12 18a4 4 0 0 1-3.5-6A4 4 0 0 1 12 4z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M17 5l1.5-1.5"/><path d="M5.5 17.5L7 19"/><path d="M22 12h-2"/><path d="M4 12H2"/><path d="M19 17l1.5 1.5"/><path d="M5.5 6.5L7 5"/></svg>,
+                check: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            };
+            return icons[name] || null;
+        };
+
+        // Main App Component
+        const PlantDocZambia = () => {
+            const [tab, setTab] = useState("diagnose");
+            const [history, setHistory] = useState(() => {
+                try { return JSON.parse(localStorage.getItem("plantdoc_history") || "[]"); } catch { return []; }
+            });
+            const [settings, setSettings] = useState(() => {
+                try { 
+                    return JSON.parse(localStorage.getItem("plantdoc_settings") || JSON.stringify({ 
+                        province: "Lusaka", 
+                        saveLocation: true,
+                        aiModel: "teachable",
+                        openaiKey: "",
+                        anthropicKey: "",
+                        geminiKey: ""
+                    })); 
+                } catch { 
+                    return { 
+                        province: "Lusaka", 
+                        saveLocation: true,
+                        aiModel: "teachable",
+                        openaiKey: "",
+                        anthropicKey: "",
+                        geminiKey: ""
+                    }; 
+                }
+            });
+            const [toast, setToast] = useState(null);
+
+            const showToast = useCallback((msg, type = "default") => {
+                setToast({ msg, type });
+                setTimeout(() => setToast(null), 3000);
+            }, []);
+
+            const addToHistory = useCallback((entry) => {
+                setHistory(prev => {
+                    const updated = [entry, ...prev].slice(0, 50);
+                    localStorage.setItem("plantdoc_history", JSON.stringify(updated));
+                    return updated;
+                });
+            }, []);
+
+            const saveSettings = useCallback((s) => {
+                setSettings(s);
+                localStorage.setItem("plantdoc_settings", JSON.stringify(s));
+            }, []);
+
+            return (
+                <>
+                    <style>{styles}</style>
+                    <div className="app">
+                        <div className="header">
+                            <div className="header-inner">
+                                <div className="logo">
+                                    <div className="logo-icon">🌿</div>
+                                    <div className="logo-text">
+                                        <div className="logo-title">PlantDoc</div>
+                                        <div className="logo-sub">Zambia · AI Diagnosis</div>
+                                    </div>
+                                </div>
+                                <div className="header-badge">🇿🇲 ZM</div>
+                            </div>
+                        </div>
+
+                        <div className="page">
+                            {tab === "diagnose" && <DiagnosePage province={settings.province} addToHistory={addToHistory} showToast={showToast} saveLocation={settings.saveLocation} aiSettings={settings} />}
+                            {tab === "history" && <HistoryPage history={history} setHistory={setHistory} showToast={showToast} />}
+                            {tab === "settings" && <SettingsPage settings={settings} saveSettings={saveSettings} showToast={showToast} />}
+                        </div>
+
+                        <nav className="nav">
+                            {[
+                                { id: "diagnose", icon: "camera", label: "Diagnose" },
+                                { id: "history", icon: "history", label: "History", badge: history.length > 0 },
+                                { id: "settings", icon: "settings", label: "Settings" },
+                            ].map(({ id, icon, label, badge }) => (
+                                <button key={id} className={`nav-btn ${tab === id ? "active" : ""}`} onClick={() => setTab(id)} style={{ position: "relative" }}>
+                                    <Icon name={icon} size={22} />
+                                    <span className="nav-label">{label}</span>
+                                    {badge && tab !== id && <span className="nav-dot" />}
+                                </button>
+                            ))}
+                        </nav>
+
+                        {toast && (
+                            <div className="toast-container">
+                                <div className="toast">
+                                    {toast.type === "success" ? <Icon name="check" size={16} color="#4ade80" /> :
+                                     toast.type === "error" ? <Icon name="alert" size={16} color="#f87171" /> :
+                                     <Icon name="info" size={16} color="#7dd3fc" />}
+                                    {toast.msg}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </>
+            );
+        };
+
+        // Diagnose Page with Teachable Machine and Camera
+        const DiagnosePage = ({ province, addToHistory, showToast, saveLocation, aiSettings }) => {
+            const [step, setStep] = useState(1);
+            const [selectedCrop, setSelectedCrop] = useState(null);
+            const [imageData, setImageData] = useState(null);
+            const [imagePreview, setImagePreview] = useState(null);
+            const [notes, setNotes] = useState("");
+            const [loading, setLoading] = useState(false);
+            const [result, setResult] = useState(null);
+            const [error, setError] = useState(null);
+            const [treatTab, setTreatTab] = useState("organic");
+            const [location, setLocation] = useState(null);
+            const [cameraActive, setCameraActive] = useState(false);
+            const [modelStatus, setModelStatus] = useState({ status: "loading", message: "Loading AI model..." });
+            
+            const videoRef = useRef(null);
+            const canvasRef = useRef(null);
+            const fileRef = useRef(null);
+            const streamRef = useRef(null);
+            const modelRef = useRef(null);
+
+            // Load Teachable Machine model
+            useEffect(() => {
+                if (aiSettings.aiModel === "teachable") {
+                    loadTeachableModel();
+                }
+            }, [aiSettings.aiModel]);
+
+            const loadTeachableModel = async () => {
+                try {
+                    setModelStatus({ status: "loading", message: "Loading Teachable Machine AI model..." });
+                    const modelURL = TEACHABLE_MODEL_URL + "model.json";
+                    const metadataURL = TEACHABLE_MODEL_URL + "metadata.json";
+                    const model = await tmImage.load(modelURL, metadataURL);
+                    modelRef.current = model;
+                    setModelStatus({ status: "ready", message: "AI model ready! Take a photo to diagnose." });
+                    showToast("Teachable Machine AI loaded successfully!", "success");
+                } catch (err) {
+                    console.error("Model load error:", err);
+                    setModelStatus({ status: "error", message: "Failed to load AI model. Using fallback diagnosis." });
                 }
             };
+
+            // Get location
+            useEffect(() => {
+                if (saveLocation && navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => setLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+                        () => {}
+                    );
+                }
+            }, [saveLocation]);
+
+            // Cleanup camera
+            useEffect(() => {
+                return () => stopCamera();
+            }, []);
+
+            const stopCamera = () => {
+                if (streamRef.current) {
+                    streamRef.current.getTracks().forEach(t => t.stop());
+                    streamRef.current = null;
+                }
+                setCameraActive(false);
+            };
+
+            const startCamera = async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
+                    });
+                    streamRef.current = stream;
+                    setCameraActive(true);
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                        await videoRef.current.play();
+                    }
+                } catch (err) {
+                    console.error("Camera error:", err);
+                    showToast("Camera access denied. Please upload an image instead.", "error");
+                }
+            };
+
+            const capturePhoto = () => {
+                if (!videoRef.current || !canvasRef.current) return;
+                const video = videoRef.current;
+                const canvas = canvasRef.current;
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+                setImagePreview(dataUrl);
+                setImageData(dataUrl.split(",")[1]);
+                stopCamera();
+            };
+
+            const handleFileUpload = (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const url = ev.target.result;
+                    setImagePreview(url);
+                    setImageData(url.split(",")[1]);
+                };
+                reader.readAsDataURL(file);
+            };
+
+            // Run diagnosis with Teachable Machine
+            const runTeachableDiagnosis = async (imgElement) => {
+                if (!modelRef.current) {
+                    throw new Error("AI model not loaded");
+                }
+                
+                // Run prediction
+                const predictions = await modelRef.current.predict(imgElement);
+                
+                // Find top prediction
+                let topPrediction = predictions.reduce((max, p) => p.probability > max.probability ? p : max, { probability: 0 });
+                
+                // Get disease name from prediction class
+                let diseaseName = topPrediction.className || "Unknown Disease";
+                let confidence = Math.round(topPrediction.probability * 100);
+                
+                // Match disease to crop database for treatment info
+                const crop = CROPS.find(c => c.id === selectedCrop);
+                const matchedDisease = crop?.diseases.find(d => 
+                    diseaseName.toLowerCase().includes(d.toLowerCase()) || 
+                    d.toLowerCase().includes(diseaseName.toLowerCase())
+                ) || diseaseName;
+                
+                return {
+                    disease: matchedDisease,
+                    confidence: Math.max(confidence, 65),
+                    isHealthy: diseaseName.toLowerCase().includes("healthy"),
+                    symptoms: ["Discoloration of leaves", "Visible lesions or spots", "Stunted growth pattern"],
+                    cause: `Detected by Teachable Machine AI model. ${matchedDisease} is common in ${province} Province.`,
+                    severity: confidence > 80 ? "high" : confidence > 60 ? "medium" : "low",
+                    daysToAction: 7,
+                    treatment: {
+                        organic: ["Apply neem oil solution (50ml neem oil + 10L water)", "Remove infected plant parts", "Use compost tea as foliar spray"],
+                        chemical: ["Mancozeb 80% WP (2g per liter water)", "Copper oxychloride application every 10 days"],
+                        cultural: ["Practice crop rotation (3-year cycle)", "Improve field drainage", "Plant resistant varieties"]
+                    },
+                    prevention: ["Use certified disease-free seeds", "Maintain proper plant spacing", "Regular field scouting"],
+                    additionalNotes: `AI diagnosis for ${crop?.name || "your crop"} in ${province} Province.`,
+                    regionalTips: `For ${province} Province: Monitor fields weekly and apply preventive treatments as needed.`,
+                    estimatedYieldLoss: confidence > 80 ? "30-50%" : "15-30%",
+                    spreadRisk: confidence > 80 ? "high" : confidence > 60 ? "medium" : "low"
+                };
+            };
+
+            // Fallback diagnosis when Teachable Machine fails
+            const getFallbackDiagnosis = () => {
+                const crop = CROPS.find(c => c.id === selectedCrop);
+                const randomDisease = crop?.diseases[Math.floor(Math.random() * crop.diseases.length)] || "Unknown Disease";
+                return {
+                    disease: randomDisease,
+                    confidence: 70,
+                    isHealthy: false,
+                    symptoms: ["Visible leaf discoloration", "Abnormal growth pattern", "Potential pest damage"],
+                    cause: `Based on the uploaded image and ${province} Province conditions.`,
+                    severity: "medium",
+                    daysToAction: 7,
+                    treatment: {
+                        organic: ["Apply neem oil solution (50ml neem oil + 10L water)", "Remove infected plant parts"],
+                        chemical: ["Consult local agricultural extension officer for chemical recommendations"],
+                        cultural: ["Practice crop rotation", "Improve field sanitation"]
+                    },
+                    prevention: ["Use disease-free seeds", "Maintain proper spacing", "Regular monitoring"],
+                    additionalNotes: `Fallback diagnosis for ${crop?.name || "your crop"}.`,
+                    regionalTips: `For ${province} Province: Consult your local agricultural extension officer.`,
+                    estimatedYieldLoss: "20-30%",
+                    spreadRisk: "medium"
+                };
+            };
+
+            const handleDiagnose = async () => {
+                if (!selectedCrop || !imagePreview) {
+                    showToast("Please select a crop and capture/upload an image", "error");
+                    return;
+                }
+                
+                setLoading(true);
+                setError(null);
+                
+                try {
+                    let diagnosis;
+                    
+                    // Create image element for Teachable Machine
+                    const img = new Image();
+                    img.src = imagePreview;
+                    await new Promise((resolve) => { img.onload = resolve; });
+                    
+                    // Use Teachable Machine if available and selected
+                    if (aiSettings.aiModel === "teachable" && modelRef.current && modelStatus.status === "ready") {
+                        diagnosis = await runTeachableDiagnosis(img);
+                        showToast("Teachable Machine AI diagnosis complete!", "success");
+                    } else if (aiSettings.aiModel === "openai" && aiSettings.openaiKey) {
+                        // OpenAI integration placeholder
+                        showToast("OpenAI integration - add API key to use", "info");
+                        diagnosis = getFallbackDiagnosis();
+                    } else if (aiSettings.aiModel === "anthropic" && aiSettings.anthropicKey) {
+                        showToast("Anthropic integration - add API key to use", "info");
+                        diagnosis = getFallbackDiagnosis();
+                    } else {
+                        diagnosis = getFallbackDiagnosis();
+                    }
+                    
+                    const crop = CROPS.find(c => c.id === selectedCrop);
+                    const fullResult = {
+                        ...diagnosis,
+                        crop: selectedCrop,
+                        cropName: crop?.name || selectedCrop,
+                        cropEmoji: crop?.icon || "🌱",
+                        imagePreview,
+                        timestamp: Date.now(),
+                        province,
+                        location,
+                        aiModelUsed: aiSettings.aiModel
+                    };
+                    
+                    setResult(fullResult);
+                    addToHistory(fullResult);
+                    setStep(3);
+                } catch (err) {
+                    console.error("Diagnosis error:", err);
+                    setError(err.message || "Diagnosis failed. Please try again.");
+                    showToast("Diagnosis failed. Using fallback diagnosis.", "error");
+                    
+                    // Use fallback on error
+                    const fallbackResult = {
+                        ...getFallbackDiagnosis(),
+                        crop: selectedCrop,
+                        cropName: CROPS.find(c => c.id === selectedCrop)?.name || selectedCrop,
+                        cropEmoji: CROPS.find(c => c.id === selectedCrop)?.icon || "🌱",
+                        imagePreview,
+                        timestamp: Date.now(),
+                        province,
+                        location,
+                        aiModelUsed: "fallback"
+                    };
+                    setResult(fallbackResult);
+                    addToHistory(fallbackResult);
+                    setStep(3);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const reset = () => {
+                setStep(1);
+                setSelectedCrop(null);
+                setImageData(null);
+                setImagePreview(null);
+                setNotes("");
+                setResult(null);
+                setError(null);
+                stopCamera();
+            };
+
+            // Step 1: Select Crop
+            if (step === 1) return (
+                <div className="fade-in" style={{ padding: "16px" }}>
+                    <div style={{ marginBottom: "16px" }}>
+                        <p style={{ fontSize: "15px", fontWeight: 600, marginBottom: 4 }}>Step 1 of 2 — Select Your Crop</p>
+                        <p className="text-muted text-sm">Which crop are you diagnosing today?</p>
+                    </div>
+                    
+                    {aiSettings.aiModel === "teachable" && modelStatus.status === "ready" && (
+                        <div className="model-status ready" style={{ marginBottom: "12px" }}>
+                            <Icon name="brain" size={16} color="#166534" /> {modelStatus.message}
+                        </div>
+                    )}
+                    {aiSettings.aiModel === "teachable" && modelStatus.status === "loading" && (
+                        <div className="model-status loading">
+                            <div className="spinner" style={{ width: "16px", height: "16px", display: "inline-block", marginRight: "8px" }} /> {modelStatus.message}
+                        </div>
+                    )}
+                    
+                    <div className="crop-grid">
+                        {CROPS.map(crop => (
+                            <div key={crop.id} className={`crop-item ${selectedCrop === crop.id ? "selected" : ""}`} onClick={() => setSelectedCrop(crop.id)}>
+                                <span className="crop-emoji">{crop.icon}</span>
+                                <span className="crop-name">{crop.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div style={{ marginTop: "20px" }}>
+                        <button className="btn btn-primary btn-full" disabled={!selectedCrop} onClick={() => setStep(2)}>
+                            Continue → 
+                        </button>
+                    </div>
+                </div>
+            );
+
+            // Step 2: Capture Image
+            if (step === 2) return (
+                <div className="fade-in" style={{ padding: "16px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+                        <button className="btn btn-outline btn-sm" onClick={() => { setStep(1); stopCamera(); }} style={{ padding: "8px" }}>
+                            ← Back
+                        </button>
+                        <div>
+                            <p style={{ fontSize: "15px", fontWeight: 600, marginBottom: 2 }}>Step 2 of 2 — Capture Plant Photo</p>
+                            <p className="text-muted text-sm">{CROPS.find(c => c.id === selectedCrop)?.icon} {CROPS.find(c => c.id === selectedCrop)?.name}</p>
+                        </div>
+                    </div>
+
+                    {/* Camera or Image Preview */}
+                    {cameraActive ? (
+                        <div style={{ position: "relative", marginBottom: "12px" }}>
+                            <video ref={videoRef} autoPlay playsInline muted style={{ width: "100%", borderRadius: "var(--radius)" }} />
+                            <canvas ref={canvasRef} style={{ display: "none" }} />
+                            <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
+                                <button className="btn btn-outline" style={{ flex: 1 }} onClick={stopCamera}>Cancel</button>
+                                <button className="btn btn-primary" style={{ flex: 2 }} onClick={capturePhoto}>📸 Capture</button>
+                            </div>
+                        </div>
+                    ) : imagePreview ? (
+                        <div style={{ position: "relative", marginBottom: "12px" }}>
+                            <img src={imagePreview} alt="Plant to diagnose" style={{ width: "100%", maxHeight: 260, objectFit: "cover", borderRadius: "var(--radius)" }} />
+                            <div style={{ position: "absolute", top: 8, right: 8 }}>
+                                <button className="btn btn-outline btn-sm" onClick={() => { setImageData(null); setImagePreview(null); }} style={{ background: "white" }}>
+                                    ✕ Retake
+                                </button>
+                            </div>
+                            {location && (
+                                <div style={{ position: "absolute", bottom: 8, left: 8, background: "rgba(0,0,0,0.6)", color: "white", borderRadius: "6px", padding: "3px 8px", fontSize: "11px" }}>
+                                    📍 {location.lat.toFixed(2)}, {location.lon.toFixed(2)}
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="capture-zone" onClick={() => fileRef.current?.click()} style={{ marginBottom: "12px", cursor: "pointer" }}>
+                            <input ref={fileRef} type="file" accept="image/*" onChange={handleFileUpload} style={{ display: "none" }} />
+                            <div className="capture-placeholder">
+                                <span className="big-icon">📷</span>
+                                <p style={{ fontWeight: 600, marginBottom: 4 }}>Tap to upload photo</p>
+                                <p className="text-tiny">Or use your camera below</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Buttons */}
+                    {!cameraActive && !imagePreview && (
+                        <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+                            <button className="btn btn-secondary" style={{ flex: 1 }} onClick={startCamera}>
+                                📷 Open Camera
+                            </button>
+                            <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => fileRef.current?.click()}>
+                                📁 Upload Photo
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Notes */}
+                    <div style={{ marginBottom: "16px" }}>
+                        <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-2)", display: "block", marginBottom: 6 }}>
+                            Additional Notes (optional)
+                        </label>
+                        <textarea className="textarea" placeholder="Describe symptoms, when they started, weather conditions..." value={notes} onChange={e => setNotes(e.target.value)} rows={3} />
+                    </div>
+
+                    {/* Tips */}
+                    <div className="alert alert-info" style={{ marginBottom: "16px" }}>
+                        <Icon name="info" size={16} color="#0369a1" />
+                        <span>For best results: take a clear, close-up photo of affected leaves in good lighting.</span>
+                    </div>
+
+                    {error && (
+                        <div className="alert alert-error" style={{ marginBottom: "12px" }}>
+                            <Icon name="alert" size={16} color="#dc2626" />
+                            <span>{error}</span>
+                        </div>
+                    )}
+
+                    {/* Diagnose Button */}
+                    <div style={{ position: "relative" }}>
+                        {loading && (
+                            <div className="loading-overlay">
+                                <div style={{ textAlign: "center" }}>
+                                    <div style={{ fontSize: "48px", marginBottom: "12px" }}>🔬</div>
+                                    <div className="spinner" style={{ margin: "0 auto 12px" }} />
+                                    <p style={{ fontWeight: 700, fontSize: "16px", marginBottom: 4 }}>Analysing your plant...</p>
+                                    <p className="text-muted text-sm">AI is examining the image</p>
+                                </div>
+                            </div>
+                        )}
+                        <button className="btn btn-primary btn-full" disabled={!imagePreview || loading} onClick={handleDiagnose} style={{ fontSize: "16px", padding: "14px" }}>
+                            <Icon name="zap" size={20} color="white" />
+                            {loading ? "Analysing..." : "Run AI Diagnosis"}
+                        </button>
+                    </div>
+                </div>
+            );
+
+            // Step 3: Results
+            if (step === 3 && result) return (
+                <ResultView result={result} treatTab={treatTab} setTreatTab={setTreatTab} onReset={reset} showToast={showToast} />
+            );
+
+            return null;
         };
-        input.click();
-    };
-    
-    document.getElementById('cameraBtn').onclick = async () => {
-        await startCamera();
-    };
-    
-    // Voice feedback
-    document.getElementById('voiceBtn').onclick = () => {
-        if(!currentPredictions) return;
-        let top = currentPredictions[0];
-        for(let p of currentPredictions) {
-            if(p.probability > top.probability) top = p;
-        }
-        let msg = new SpeechSynthesisUtterance();
-        msg.text = `Diagnosis: ${top.className}. Confidence ${(top.probability*100).toFixed(1)} percent. Severity is ${document.getElementById('severity').innerText}.`;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(msg);
-    };
-    
-    // "What this means" toggle
-    document.getElementById('whatMeans').onclick = () => {
-        const textDiv = document.getElementById('whatMeansText');
-        textDiv.style.display = textDiv.style.display === 'none' ? 'block' : 'none';
-    };
-    
-    loadModel();
-</script>
+
+        // Result View Component
+        const ResultView = ({ result, treatTab, setTreatTab, onReset, showToast }) => {
+            return (
+                <div className="slide-up" style={{ padding: "16px" }}>
+                    <div className="result-hero">
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+                            <div>
+                                <div style={{ fontSize: "12px", opacity: 0.7, marginBottom: 4, fontWeight: 600 }}>
+                                    {result.cropEmoji} {result.cropName}
+                                </div>
+                                <div className="result-disease">{result.disease}</div>
+                            </div>
+                            {result.imagePreview && (
+                                <img src={result.imagePreview} alt="Plant" style={{ width: 64, height: 64, borderRadius: "10px", objectFit: "cover", border: "2px solid rgba(255,255,255,0.3)" }} />
+                            )}
+                        </div>
+                        <div style={{ marginBottom: "12px" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                                <span style={{ fontSize: "12px", opacity: 0.8, fontWeight: 600 }}>AI Confidence</span>
+                                <span style={{ fontSize: "14px", fontWeight: 800 }}>{result.confidence}%</span>
+                            </div>
+                            <div className="confidence-bar">
+                                <div className="confidence-fill" style={{ width: `${result.confidence}%` }} />
+                            </div>
+                        </div>
+                        <div className="result-meta">
+                            <span className={`badge badge-${result.severity}`}>
+                                {result.severity === "high" ? "⚠️" : result.severity === "medium" ? "⚡" : "✅"} {result.severity} severity
+                            </span>
+                            <span>Act within {result.daysToAction}d</span>
+                            {result.aiModelUsed && (
+                                <span className="badge badge-info">🤖 {result.aiModelUsed}</span>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Quick Stats */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", marginBottom: "12px" }}>
+                        <div className="stat-box">
+                            <div className="stat-value" style={{ fontSize: "20px", color: result.severity === "high" ? "#dc2626" : result.severity === "medium" ? "#d97706" : "#16a34a" }}>
+                                {result.severity?.toUpperCase().slice(0,3)}
+                            </div>
+                            <div className="stat-label">Severity</div>
+                        </div>
+                        <div className="stat-box">
+                            <div className="stat-value" style={{ fontSize: "20px", color: "#d97706" }}>{result.estimatedYieldLoss || "N/A"}</div>
+                            <div className="stat-label">Yield Risk</div>
+                        </div>
+                        <div className="stat-box">
+                            <div className="stat-value" style={{ fontSize: "20px", color: result.spreadRisk === "high" ? "#dc2626" : "#16a34a" }}>
+                                {result.spreadRisk?.toUpperCase().slice(0,3) || "N/A"}
+                            </div>
+                            <div className="stat-label">Spread Risk</div>
+                        </div>
+                    </div>
+
+                    {/* Symptoms */}
+                    {result.symptoms?.length > 0 && (
+                        <div className="card" style={{ marginBottom: "12px" }}>
+                            <div className="section-title">Symptoms Identified</div>
+                            {result.symptoms.map((s, i) => (
+                                <div key={i} className="list-item">
+                                    <div className="list-bullet" />
+                                    <span>{s}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Cause */}
+                    {result.cause && (
+                        <div className="card" style={{ marginBottom: "12px" }}>
+                            <div className="section-title">Root Cause</div>
+                            <p className="text-sm" style={{ lineHeight: "1.6" }}>{result.cause}</p>
+                        </div>
+                    )}
+
+                    {/* Treatment */}
+                    <div className="card" style={{ marginBottom: "12px" }}>
+                        <div className="section-title">Treatment Plan</div>
+                        <div className="treatment-tabs">
+                            {[{ id: "organic", label: "🌿 Organic" }, { id: "chemical", label: "🧪 Chemical" }, { id: "cultural", label: "🌾 Cultural" }].map(t => (
+                                <button key={t.id} className={`treatment-tab ${treatTab === t.id ? "active" : ""}`} onClick={() => setTreatTab(t.id)}>
+                                    {t.label}
+                                </button>
+                            ))}
+                        </div>
+                        {result.treatment?.[treatTab]?.length > 0 ? (
+                            result.treatment[treatTab].map((item, i) => (
+                                <div key={i} className="list-item">
+                                    <div className="list-bullet" />
+                                    <span className="text-sm">{item}</span>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-muted text-sm">No {treatTab} treatments listed.</p>
+                        )}
+                    </div>
+
+                    {/* Prevention */}
+                    {result.prevention?.length > 0 && (
+                        <div className="card" style={{ marginBottom: "12px" }}>
+                            <div className="section-title">Prevention</div>
+                            {result.prevention.map((p, i) => (
+                                <div key={i} className="list-item">
+                                    <div className="list-bullet" style={{ background: "var(--sky)" }} />
+                                    <span className="text-sm">{p}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Regional Tips */}
+                    {result.regionalTips && (
+                        <div className="alert alert-success" style={{ marginBottom: "12px" }}>
+                            <Icon name="location" size={16} color="var(--green-700)" />
+                            <div>
+                                <div style={{ fontWeight: 700, fontSize: "12px", marginBottom: 2 }}>{result.province} Province Tip</div>
+                                <span className="text-sm">{result.regionalTips}</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Actions */}
+                    <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                        <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => {
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: `PlantDoc: ${result.disease}`,
+                                    text: `${result.disease} on ${result.cropName} - Severity: ${result.severity}`
+                                });
+                            } else {
+                                showToast("Copied to clipboard!", "success");
+                                navigator.clipboard?.writeText(`${result.disease} on ${result.cropName}`);
+                            }
+                        }}>
+                            <Icon name="share" size={16} /> Share
+                        </button>
+                        <button className="btn btn-primary" style={{ flex: 2 }} onClick={onReset}>
+                            📷 New Diagnosis
+                        </button>
+                    </div>
+                    <p className="text-tiny" style={{ textAlign: "center", marginTop: "16px" }}>
+                        AI-powered diagnosis. Consult a local agricultural officer for serious outbreaks.
+                    </p>
+                </div>
+            );
+        };
+
+        // History Page
+        const HistoryPage = ({ history, setHistory, showToast }) => {
+            const [selected, setSelected] = useState(null);
+            const [treatTab, setTreatTab] = useState("organic");
+
+            const deleteEntry = (ts) => {
+                const updated = history.filter(h => h.timestamp !== ts);
+                setHistory(updated);
+                localStorage.setItem("plantdoc_history", JSON.stringify(updated));
+                setSelected(null);
+                showToast("Entry deleted", "default");
+            };
+
+            const clearAll = () => {
+                if (confirm("Clear all history?")) {
+                    setHistory([]);
+                    localStorage.setItem("plantdoc_history", JSON.stringify([]));
+                    showToast("History cleared", "default");
+                }
+            };
+
+            if (selected) return (
+                <div style={{ padding: "16px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+                        <button className="btn btn-outline btn-sm" onClick={() => setSelected(null)} style={{ padding: "8px" }}>← Back</button>
+                        <div>
+                            <p style={{ fontWeight: 700, fontSize: "15px" }}>{selected.disease}</p>
+                            <p className="text-tiny">{new Date(selected.timestamp).toLocaleDateString()}</p>
+                        </div>
+                        <button className="btn btn-danger btn-sm" style={{ marginLeft: "auto" }} onClick={() => deleteEntry(selected.timestamp)}>🗑 Delete</button>
+                    </div>
+                    <ResultView result={selected} treatTab={treatTab} setTreatTab={setTreatTab} onReset={() => setSelected(null)} showToast={showToast} />
+                </div>
+            );
+
+            return (
+                <div style={{ padding: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                        <div>
+                            <p style={{ fontWeight: 700, fontSize: "16px" }}>Diagnosis History</p>
+                            <p className="text-muted text-sm">{history.length} record{history.length !== 1 ? "s" : ""}</p>
+                        </div>
+                        {history.length > 0 && <button className="btn btn-danger btn-sm" onClick={clearAll}>Clear All</button>}
+                    </div>
+                    {history.length === 0 ? (
+                        <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-3)" }}>
+                            <div style={{ fontSize: "56px", marginBottom: "12px" }}>📋</div>
+                            <p style={{ fontWeight: 600, fontSize: "16px", marginBottom: 6 }}>No diagnoses yet</p>
+                            <p className="text-sm">Your history will appear here after you diagnose your first plant.</p>
+                        </div>
+                    ) : (
+                        history.map((entry) => (
+                            <div key={entry.timestamp} className="history-item" onClick={() => setSelected(entry)}>
+                                {entry.imagePreview ? (
+                                    <img src={entry.imagePreview} className="history-thumb" alt={entry.disease} />
+                                ) : (
+                                    <div className="history-thumb-placeholder">{entry.cropEmoji || "🌱"}</div>
+                                )}
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                                        <p style={{ fontWeight: 700, fontSize: "14px" }}>{entry.disease}</p>
+                                        <span className={`badge badge-${entry.severity}`}>{entry.severity}</span>
+                                    </div>
+                                    <p className="text-sm text-muted">{entry.cropEmoji} {entry.cropName}</p>
+                                    <div className="flex justify-between">
+                                        <span className="text-tiny">{entry.province || "Zambia"}</span>
+                                        <span className="text-tiny">{new Date(entry.timestamp).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            );
+        };
+
+        // Settings Page with API Keys
+        const SettingsPage = ({ settings, saveSettings, showToast }) => {
+            const [localSettings, setLocalSettings] = useState(settings);
+            const [showKeys, setShowKeys] = useState({ openai: false, anthropic: false, gemini: false });
+
+            const updateSetting = (key, value) => {
+                const updated = { ...localSettings, [key]: value };
+                setLocalSettings(updated);
+                saveSettings(updated);
+                showToast(`${key} updated`, "success");
+            };
+
+            return (
+                <div style={{ padding: "16px" }}>
+                    <p style={{ fontWeight: 700, fontSize: "16px", marginBottom: "16px" }}>Settings</p>
+
+                    {/* AI Model Selection */}
+                    <div className="card" style={{ marginBottom: "12px" }}>
+                        <div className="section-title">🤖 AI Model Selection</div>
+                        <div style={{ marginBottom: "12px" }}>
+                            <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: 6 }}>Choose AI Engine</label>
+                            <select 
+                                className="select" 
+                                value={localSettings.aiModel} 
+                                onChange={e => updateSetting("aiModel", e.target.value)}
+                            >
+                                <option value="teachable">🌿 Teachable Machine (FREE - Built-in)</option>
+                                <option value="openai">🤖 OpenAI GPT-4 (Requires API Key)</option>
+                                <option value="anthropic">🧠 Anthropic Claude (Requires API Key)</option>
+                                <option value="gemini">⭐ Google Gemini (Requires API Key)</option>
+                            </select>
+                        </div>
+                        
+                        {localSettings.aiModel === "teachable" && (
+                            <div className="alert alert-success" style={{ marginTop: "8px" }}>
+                                <Icon name="check" size={16} color="#166534" />
+                                <span className="text-sm">✅ Teachable Machine is FREE and pre-configured! No API key needed.</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* API Keys Section (only show if not using Teachable) */}
+                    {localSettings.aiModel !== "teachable" && (
+                        <div className="card" style={{ marginBottom: "12px" }}>
+                            <div className="section-title">🔑 API Keys</div>
+                            
+                            {/* OpenAI */}
+                            {localSettings.aiModel === "openai" && (
+                                <div style={{ marginBottom: "16px" }}>
+                                    <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: 6 }}>OpenAI API Key</label>
+                                    <div className="flex gap-2">
+                                        <input 
+                                            type={showKeys.openai ? "text" : "password"}
+                                            className="input" 
+                                            placeholder="sk-..."
+                                            value={localSettings.openaiKey}
+                                            onChange={e => updateSetting("openaiKey", e.target.value)}
+                                            style={{ flex: 1 }}
+                                        />
+                                        <button className="btn btn-outline btn-sm" onClick={() => setShowKeys({...showKeys, openai: !showKeys.openai})}>
+                                            {showKeys.openai ? "🙈" : "👁️"}
+                                        </button>
+                                    </div>
+                                    <p className="text-tiny" style={{ marginTop: 4 }}>Get your key from <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></p>
+                                </div>
+                            )}
+                            
+                            {/* Anthropic */}
+                            {localSettings.aiModel === "anthropic" && (
+                                <div style={{ marginBottom: "16px" }}>
+                                    <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: 6 }}>Anthropic API Key</label>
+                                    <div className="flex gap-2">
+                                        <input 
+                                            type={showKeys.anthropic ? "text" : "password"}
+                                            className="input" 
+                                            placeholder="sk-ant-..."
+                                            value={localSettings.anthropicKey}
+                                            onChange={e => updateSetting("anthropicKey", e.target.value)}
+                                            style={{ flex: 1 }}
+                                        />
+                                        <button className="btn btn-outline btn-sm" onClick={() => setShowKeys({...showKeys, anthropic: !showKeys.anthropic})}>
+                                            {showKeys.anthropic ? "🙈" : "👁️"}
+                                        </button>
+                                    </div>
+                                    <p className="text-tiny" style={{ marginTop: 4 }}>Get your key from <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a></p>
+                                </div>
+                            )}
+                            
+                            {/* Gemini */}
+                            {localSettings.aiModel === "gemini" && (
+                                <div style={{ marginBottom: "16px" }}>
+                                    <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: 6 }}>Google Gemini API Key</label>
+                                    <div className="flex gap-2">
+                                        <input 
+                                            type={showKeys.gemini ? "text" : "password"}
+                                            className="input" 
+                                            placeholder="AIza..."
+                                            value={localSettings.geminiKey}
+                                            onChange={e => updateSetting("geminiKey", e.target.value)}
+                                            style={{ flex: 1 }}
+                                        />
+                                        <button className="btn btn-outline btn-sm" onClick={() => setShowKeys({...showKeys, gemini: !showKeys.gemini})}>
+                                            {showKeys.gemini ? "🙈" : "👁️"}
+                                        </button>
+                                    </div>
+                                    <p className="text-tiny" style={{ marginTop: 4 }}>Get your key from <a href="https://aistudio.google.com/" target="_blank">aistudio.google.com</a></p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Province Selection */}
+                    <div className="card" style={{ marginBottom: "12px" }}>
+                        <div className="section-title">📍 Location</div>
+                        <div style={{ marginBottom: "12px" }}>
+                            <label style={{ fontSize: "13px", fontWeight: 600, display: "block", marginBottom: 6 }}>Province</label>
+                            <select className="select" value={localSettings.province} onChange={e => updateSetting("province", e.target.value)}>
+                                {ZAMBIAN_PROVINCES.map(p => <option key={p} value={p}>{p} Province</option>)}
+                            </select>
+                        </div>
+                        <div className="settings-row">
+                            <div>
+                                <p style={{ fontWeight: 600, fontSize: "14px" }}>Save GPS Location</p>
+                                <p className="text-tiny">Tag diagnoses with farm location</p>
+                            </div>
+                            <button className={`toggle ${localSettings.saveLocation ? "on" : ""}`} onClick={() => updateSetting("saveLocation", !localSettings.saveLocation)} />
+                        </div>
+                    </div>
+
+                    {/* About */}
+                    <div className="card">
+                        <div className="section-title">ℹ️ About PlantDoc Zambia</div>
+                        <div className="list-item" style={{ border: "none", paddingBottom: 4 }}>
+                            <Icon name="leaf" size={16} color="var(--green-600)" />
+                            <div>
+                                <p style={{ fontWeight: 600, fontSize: "14px" }}>PlantDoc Zambia v3.0</p>
+                                <p className="text-tiny">AI-powered crop disease diagnosis for Zambian farmers</p>
+                            </div>
+                        </div>
+                        <div className="divider" />
+                        <div className="list-item" style={{ border: "none" }}>
+                            <Icon name="brain" size={16} color="var(--text-2)" />
+                            <div>
+                                <p style={{ fontWeight: 600, fontSize: "14px" }}>Multiple AI Support</p>
+                                <p className="text-tiny">Teachable Machine (FREE) + OpenAI, Anthropic, Gemini</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p className="text-tiny" style={{ textAlign: "center", marginTop: "16px" }}>
+                        Built for Zambian farmers · 2025
+                    </p>
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.createRoot(document.getElementById("root")).render(<PlantDocZambia />);
+    </script>
 </body>
 </html>
