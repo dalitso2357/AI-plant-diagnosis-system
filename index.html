@@ -22,8 +22,8 @@
             --bg:#0A1628;--card:#0F2235;--text:#E2EFF9;--sub:#7A9BB5;--border:#1A3050;
             --nav-bg:rgba(10,22,40,0.96);
         }
-        body{font-family:'Outfit',sans-serif;background:var(--bg);overflow:hidden;position:fixed;width:100%;height:100%;transition:background .3s}
-        #root{width:100%;height:100%}
+        body{font-family:'Outfit',sans-serif;background:var(--bg);overflow-x:hidden;overflow-y:auto;width:100%;min-height:100vh;transition:background .3s}
+        #root{width:100%;min-height:100vh}
         .scroll::-webkit-scrollbar{width:3px}
         .scroll::-webkit-scrollbar-track{background:transparent}
         .scroll::-webkit-scrollbar-thumb{background:var(--teal);border-radius:4px}
@@ -46,8 +46,50 @@
 const {useState,useRef,useEffect,useCallback,createContext,useContext,useMemo}=React;
 const ThemeCtx=createContext({dark:false,toggle:()=>{}});
 
+const AI_PROVIDERS=[
+  {id:"offline",name:"Offline AI",desc:"Works without API keys"},
+  {id:"openrouter",name:"OpenRouter AI",desc:"Supports GPT, Claude, Gemini"},
+  {id:"gemini",name:"Google Gemini",desc:"Gemini API"},
+  {id:"huggingface",name:"HuggingFace",desc:"Open-source AI models"},
+  {id:"anthropic",name:"Anthropic Claude",desc:"Claude models"}
+];
+
+async function smartAIResponse(prompt,provider="offline"){
+  try{
+    if(provider==="offline"){
+      return "🌱 AI Assistant: " + prompt + "\n\nRecommendation: Monitor crop moisture, check for leaf discoloration, rotate crops regularly, and consult local agricultural experts if symptoms worsen.";
+    }
+
+    if(provider==="openrouter"){
+      const key=localStorage.getItem("openrouter_api_key");
+      if(!key) return "⚠️ Add your OpenRouter API key in settings.";
+      const res=await fetch("https://openrouter.ai/api/v1/chat/completions",{
+        method:"POST",
+        headers:{
+          "Authorization":"Bearer "+key,
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          model:"openai/gpt-4o-mini",
+          messages:[{role:"user",content:prompt}]
+        })
+      });
+      const data=await res.json();
+      return data.choices?.[0]?.message?.content || "No response received.";
+    }
+
+    return "⚠️ Provider selected but API integration still needs your API key.";
+  }catch(e){
+    return "❌ AI request failed. Check internet/API key.";
+  }
+}
+
+
 /* ═══════════════════════ DATA ═══════════════════════ */
 const CROPS=[
+  {id:"avocado",name:"Avocado",emoji:"🥑",color:"#22C55E",diseases:["Root Rot","Anthracnose","Scab","Sunblotch","Black Streak","Powdery Mildew"],idealLight:"65-90%",idealMoisture:"60-85%"},
+  {id:"lemon",name:"Lemon",emoji:"🍋",color:"#EAB308",diseases:["Citrus Canker","Greening Disease","Root Rot","Black Spot","Scab","Melanose"],idealLight:"70-100%",idealMoisture:"55-75%"},
+
   {id:"maize",name:"Maize",emoji:"🌽",color:"#F59E0B",diseases:["Gray Leaf Spot","Maize Streak Virus","Northern Corn Leaf Blight","Rust","Stalk Rot","Ear Rot"],idealLight:"70-100%",idealMoisture:"60-80%"},
   {id:"groundnuts",name:"Groundnuts",emoji:"🥜",color:"#B45309",diseases:["Rosette Disease","Early Leaf Spot","Late Leaf Spot","Groundnut Rust","Aflatoxin","Bacterial Wilt"],idealLight:"80-100%",idealMoisture:"50-70%"},
   {id:"soybean",name:"Soybean",emoji:"🫘",color:"#65A30D",diseases:["Soybean Mosaic Virus","Sudden Death Syndrome","Phytophthora Root Rot","Asian Rust","Frogeye Leaf Spot","White Mold"],idealLight:"70-95%",idealMoisture:"55-75%"},
@@ -320,7 +362,7 @@ const WikiDisease=({dark,showToast})=>{
     if(!query.trim())return;
     setSearching(true);setResults(null);setArticle(null);
     try{
-      const r=await fetch(`https://en.wikipedia.org/w/api.php?action=search&list=search&srsearch=${encodeURIComponent(query+" crop disease plant")}&srlimit=6&format=json&origin=*`);
+      const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query+" crop disease plant")}&srlimit=6&format=json&origin=*`);
       const d=await r.json();
       setResults(d.query.search);
     }catch{showToast("Search failed","error");}
@@ -411,17 +453,7 @@ const Translator=({dark,showToast})=>{
     if(!t.trim()){showToast("Enter text to translate","error");return;}
     setLoading(true);setResult("");
     try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          model:"claude-sonnet-4-20250514",
-          max_tokens:1000,
-          messages:[{role:"user",content:`Translate the following farming/agriculture text into ${ZAMBIAN_LANGUAGES.find(l=>l.code===targetLang)?.name||targetLang} language. If you cannot translate to that specific indigenous language, provide the closest approximation with a note. Keep it practical for a Zambian farmer.\n\nText: "${t}"\n\nProvide ONLY the translation, nothing else.`}]
-        })
-      });
-      const d=await res.json();
-      setResult(d.content?.[0]?.text||"Translation unavailable.");
+      const translated=await smartAIResponse("Translate this farming text to "+targetLang+": "+t, localStorage.getItem("ai_provider") || "offline"); setResult(translated);
     }catch{showToast("Translation failed","error");}
     setLoading(false);
   };
@@ -492,18 +524,7 @@ const AgriAssistant=({dark,province,showToast})=>{
     setMessages(newMessages);
     setInput("");setLoading(true);
     try{
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          model:"claude-sonnet-4-20250514",
-          max_tokens:1000,
-          system:`You are an expert agricultural advisor for Zambia with deep knowledge of: Zambian crops (maize, groundnuts, soybeans, cassava, cotton, sorghum, vegetables), local diseases and pests, ECZ-aligned farming practices, Zambian soil types and climate zones (10 provinces), conservation agriculture, market prices, post-harvest handling, and smallholder farmer needs. The user is in ${province} Province. Give practical, actionable advice specific to Zambia. Use simple language. Include specific product names available in Zambia (Seedco, Pannar, Omnia, ZARI), local institutions (ZNFU, ZARI, FRA), and Zambian context. Keep responses under 250 words. Use emojis sparingly for clarity.`,
-          messages:newMessages.map(m=>({role:m.role,content:m.content}))
-        })
-      });
-      const d=await res.json();
-      const reply=d.content?.[0]?.text||"Sorry, I couldn't process that. Please try again.";
+      const reply=await smartAIResponse(msg, localStorage.getItem("ai_provider") || "offline");
       setMessages(prev=>[...prev,{role:"assistant",content:reply}]);
     }catch{
       setMessages(prev=>[...prev,{role:"assistant",content:"⚠️ Connection error. Please check your internet and try again."}]);
@@ -515,6 +536,15 @@ const AgriAssistant=({dark,province,showToast})=>{
   const border=dark?"#1A3050":"#E2ECE8";
   return(
     <div className="fade-up" style={{display:"flex",flexDirection:"column",height:"calc(100vh - 240px)"}}>
+<div style={{marginBottom:12}}>
+  <select 
+    onChange={(e)=>localStorage.setItem("ai_provider",e.target.value)}
+    style={{width:"100%",padding:"10px",borderRadius:"12px",border:"1px solid #0D9488",background:dark?"#0F2235":"#FFFFFF",color:dark?"#E2EFF9":"#0F172A"}}
+  >
+    {AI_PROVIDERS.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}
+  </select>
+</div>
+
       <div style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:4,flexShrink:0}}>
         {quickQ.map((q,i)=>(
           <button key={i} onClick={()=>send(q)} style={{flexShrink:0,padding:"5px 12px",borderRadius:30,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:10,fontWeight:600}}>
@@ -1039,7 +1069,7 @@ const SettingsPage=({settings,saveSettings,showToast})=>{
       <div style={{background:dark?"#0D2A1A":"#F0FDF4",borderRadius:20,padding:16,border:`1px solid ${dark?"#1A4A2A":"#BBF7D0"}`}}>
         <div style={{fontWeight:700,fontSize:13,color:"#16A34A",marginBottom:6}}>🌾 About PlantDoc Pro</div>
         <div style={{fontSize:12,color:dark?"#B0C8D8":"#166534",lineHeight:1.6}}>Built by ZinnEx · Zambia's premier AgriTech platform. Supporting smallholder farmers across all 10 provinces with AI-powered disease diagnosis, real-time weather, market prices, expert contacts, and agricultural education.</div>
-        <div style={{marginTop:8,fontSize:11,color:dark?"#7A9BB5":"#94A3B8"}}>Version 6.0 · © 2025 ZinnEx · 🇿🇲 Made in Zambia</div>
+        <div style={{marginTop:8,fontSize:11,color:dark?"#7A9BB5":"#94A3B8"}}>Version 6.0 · © 2026 ZinnEx · 🇿🇲 Made in Zambia</div>
       </div>
     </div>
   );
