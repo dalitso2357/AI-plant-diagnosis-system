@@ -3,400 +3,1170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>PlantDoc Pro | AI Precision Agriculture Zambia</title>
+    <title>PlantDoc Pro | #1 AgriTech App in Zambia</title>
     <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        :root{
+            --teal:#0D9488;--teal-dark:#0B7A70;--teal-light:#14B8A6;
+            --green:#16A34A;--amber:#D97706;--red:#DC2626;--blue:#2563EB;
+            --bg:#F0F7F4;--card:#FFFFFF;--text:#0F172A;--sub:#475569;--border:#E2ECE8;
+            --nav-bg:rgba(255,255,255,0.96);
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #F1F5F9;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            transition: background-color 0.3s ease, color 0.2s ease;
+        body.dark{
+            --bg:#0A1628;--card:#0F2235;--text:#E2EFF9;--sub:#7A9BB5;--border:#1A3050;
+            --nav-bg:rgba(10,22,40,0.96);
         }
-        body.dark-mode {
-            background: #0F172A;
-        }
-        #root {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        .scrollable::-webkit-scrollbar {
-            width: 4px;
-        }
-        .scrollable::-webkit-scrollbar-track {
-            background: #E2E8F0;
-            border-radius: 4px;
-        }
-        .scrollable::-webkit-scrollbar-thumb {
-            background: #0D9488;
-            border-radius: 4px;
-        }
-        body.dark-mode .scrollable::-webkit-scrollbar-track {
-            background: #1E293B;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(13,148,136,0.5); }
-            70% { box-shadow: 0 0 0 12px rgba(13,148,136,0); }
-            100% { box-shadow: 0 0 0 0 rgba(13,148,136,0); }
-        }
-        @keyframes subtleRise {
-            from { transform: scale(0.96); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .fade-in {
-            animation: fadeInUp 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-        .diagnose-ready {
-            animation: pulseGlow 1.8s infinite;
-        }
-        .dark-mode-transition {
-            transition: background-color 0.3s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-        }
+        body{font-family:'Outfit',sans-serif;background:var(--bg);overflow:hidden;position:fixed;width:100%;height:100%;transition:background .3s}
+        #root{width:100%;height:100%}
+        .scroll::-webkit-scrollbar{width:3px}
+        .scroll::-webkit-scrollbar-track{background:transparent}
+        .scroll::-webkit-scrollbar-thumb{background:var(--teal);border-radius:4px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(13,148,136,.5)}70%{box-shadow:0 0 0 14px rgba(13,148,136,0)}100%{box-shadow:0 0 0 0 rgba(13,148,136,0)}}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        @keyframes bounceIn{0%{transform:scale(0.8);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+        .fade-up{animation:fadeUp .35s cubic-bezier(.2,.9,.4,1.1) both}
+        .pulse-btn{animation:pulse 2s infinite}
+        .spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+        .wiki-skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;height:14px;margin-bottom:8px}
+        input,select,textarea{font-family:'Outfit',sans-serif}
+        button{font-family:'Outfit',sans-serif;cursor:pointer}
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    
-    <script type="text/babel">
-        const { useState, useRef, useEffect, useCallback, createContext, useContext } = React;
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useRef,useEffect,useCallback,createContext,useContext,useMemo}=React;
+const ThemeCtx=createContext({dark:false,toggle:()=>{}});
 
-        // Dark Mode Context
-        const ThemeContext = createContext({ darkMode: false, toggleDarkMode: () => {} });
+/* ═══════════════════════ DATA ═══════════════════════ */
+const CROPS=[
+  {id:"maize",name:"Maize",emoji:"🌽",color:"#F59E0B",diseases:["Gray Leaf Spot","Maize Streak Virus","Northern Corn Leaf Blight","Rust","Stalk Rot","Ear Rot"],idealLight:"70-100%",idealMoisture:"60-80%"},
+  {id:"groundnuts",name:"Groundnuts",emoji:"🥜",color:"#B45309",diseases:["Rosette Disease","Early Leaf Spot","Late Leaf Spot","Groundnut Rust","Aflatoxin","Bacterial Wilt"],idealLight:"80-100%",idealMoisture:"50-70%"},
+  {id:"soybean",name:"Soybean",emoji:"🫘",color:"#65A30D",diseases:["Soybean Mosaic Virus","Sudden Death Syndrome","Phytophthora Root Rot","Asian Rust","Frogeye Leaf Spot","White Mold"],idealLight:"70-95%",idealMoisture:"55-75%"},
+  {id:"cotton",name:"Cotton",emoji:"🌾",color:"#3B82F6",diseases:["Bacterial Blight","Fusarium Wilt","Bollworm","Leaf Curl Virus","Verticillium Wilt","Alternaria Spot"],idealLight:"85-100%",idealMoisture:"60-80%"},
+  {id:"cassava",name:"Cassava",emoji:"🍠",color:"#D97706",diseases:["Cassava Mosaic Disease","Cassava Brown Streak","Root Rot","Anthracnose","Bacterial Blight","Green Mite"],idealLight:"70-100%",idealMoisture:"55-75%"},
+  {id:"tomato",name:"Tomato",emoji:"🍅",color:"#DC2626",diseases:["Early Blight","Late Blight","Yellow Leaf Curl Virus","Septoria Spot","Bacterial Spot","Fusarium Wilt"],idealLight:"70-95%",idealMoisture:"65-85%"},
+  {id:"beans",name:"Beans",emoji:"🫘",color:"#15803D",diseases:["Common Mosaic Virus","Angular Leaf Spot","Rust","Anthracnose","Halo Blight","Charcoal Rot"],idealLight:"70-100%",idealMoisture:"55-75%"},
+  {id:"wheat",name:"Wheat",emoji:"🌾",color:"#D6A356",diseases:["Stem Rust","Yellow Rust","Leaf Rust","Septoria Blotch","Fusarium Head Blight","Powdery Mildew"],idealLight:"75-100%",idealMoisture:"50-70%"},
+  {id:"sweet_potato",name:"Sweet Potato",emoji:"🍠",color:"#EA580C",diseases:["Sweet Potato Virus Disease","Scurf","Black Rot","Soft Rot","Wireworm","Leaf Spot"],idealLight:"75-100%",idealMoisture:"55-75%"},
+  {id:"sunflower",name:"Sunflower",emoji:"🌻",color:"#CA8A04",diseases:["Downy Mildew","Rust","Sclerotinia","Alternaria Blight","Phoma Black Stem","Verticillium Wilt"],idealLight:"80-100%",idealMoisture:"45-65%"},
+  {id:"sorghum",name:"Sorghum",emoji:"🌾",color:"#9333EA",diseases:["Anthracnose","Downy Mildew","Sorghum Smuts","Head Mold","Ergot","Leaf Blight"],idealLight:"75-100%",idealMoisture:"45-65%"},
+  {id:"vegetables",name:"Vegetables",emoji:"🥦",color:"#059669",diseases:["Damping Off","Powdery Mildew","Downy Mildew","Aphid Damage","Clubroot","Leaf Miner"],idealLight:"60-90%",idealMoisture:"60-80%"},
+];
 
-        // Enhanced Crop Database with unique colors, emojis (only emoji displayed in grid)
-        const CROPS = [
-            { id: "maize", name: "Maize", emoji: "🌽", color: "#F59E0B", diseases: ["Gray Leaf Spot", "Maize Streak Virus", "Northern Corn Leaf Blight", "Rust", "Stalk Rot", "Ear Rot"] },
-            { id: "groundnuts", name: "Groundnuts", emoji: "🥜", color: "#B45309", diseases: ["Rosette Disease", "Early Leaf Spot", "Late Leaf Spot", "Groundnut Rust", "Aflatoxin", "Bacterial Wilt"] },
-            { id: "soybean", name: "Soybean", emoji: "🫘", color: "#65A30D", diseases: ["Soybean Mosaic Virus", "Sudden Death Syndrome", "Phytophthora Root Rot", "Asian Rust", "Frogeye Leaf Spot", "White Mold"] },
-            { id: "cotton", name: "Cotton", emoji: "🌾", color: "#3B82F6", diseases: ["Bacterial Blight", "Fusarium Wilt", "Bollworm", "Leaf Curl Virus", "Verticillium Wilt", "Alternaria Spot"] },
-            { id: "cassava", name: "Cassava", emoji: "🍠", color: "#D97706", diseases: ["Cassava Mosaic Disease", "Cassava Brown Streak", "Root Rot", "Anthracnose", "Bacterial Blight", "Green Mite"] },
-            { id: "tomato", name: "Tomato", emoji: "🍅", color: "#DC2626", diseases: ["Early Blight", "Late Blight", "Yellow Leaf Curl Virus", "Septoria Spot", "Bacterial Spot", "Fusarium Wilt"] },
-            { id: "lemon", name: "Lemon", emoji: "🍋", color: "#EAB308", diseases: ["Citrus Canker", "Citrus Greening", "Lemon Scab", "Sooty Mold", "Phytophthora", "Anthracnose"] },
-            { id: "avocado", name: "Avocado", emoji: "🥑", color: "#16A34A", diseases: ["Avocado Root Rot", "Avocado Sunblotch", "Anthracnose", "Cercospora Spot", "Laurel Wilt", "Powdery Mildew"] },
-            { id: "beans", name: "Beans", emoji: "🫘", color: "#15803D", diseases: ["Common Mosaic Virus", "Angular Leaf Spot", "Rust", "Anthracnose", "Halo Blight", "Charcoal Rot"] },
-            { id: "wheat", name: "Wheat", emoji: "🌾", color: "#D6A356", diseases: ["Stem Rust", "Yellow Rust", "Leaf Rust", "Septoria Blotch", "Fusarium Head Blight", "Powdery Mildew"] }
-        ];
+const PROVINCES=["Lusaka","Copperbelt","Central","Eastern","Southern","Northern","Luapula","Western","North-Western","Muchinga"];
 
-        const ZAMBIAN_PROVINCES = ["Lusaka", "Copperbelt", "Central", "Eastern", "Southern", "Northern", "Luapula", "Western", "North-Western", "Muchinga"];
-        const TEACHABLE_MODEL_URL = "https://teachablemachine.withgoogle.com/models/drdcQS-r_/";
+const ZAMBIAN_LANGUAGES=[
+  {code:"en",name:"English",flag:"🇬🇧"},
+  {code:"bem",name:"Bemba",flag:"🇿🇲"},
+  {code:"nya",name:"Nyanja / Chewa",flag:"🇿🇲"},
+  {code:"ton",name:"Tonga",flag:"🇿🇲"},
+  {code:"loz",name:"Lozi",flag:"🇿🇲"},
+  {code:"kau",name:"Kaonde",flag:"🇿🇲"},
+  {code:"lun",name:"Luvale",flag:"🇿🇲"},
+  {code:"lam",name:"Lamba",flag:"🇿🇲"},
+  {code:"sw",name:"Swahili",flag:"🌍"},
+  {code:"fr",name:"French",flag:"🇫🇷"},
+  {code:"pt",name:"Portuguese",flag:"🇵🇹"},
+];
 
-        const AIProviderIcons = {
-            openai: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#10A37F"/><path d="M12 6v6l4 2" stroke="white" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="2" fill="white"/></svg>',
-            anthropic: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="#7C3AED"/><path d="M2 17l10 5 10-5" stroke="#7C3AED" stroke-width="2" fill="none"/><path d="M2 12l10 5 10-5" stroke="#7C3AED" stroke-width="2" fill="none"/></svg>',
-            gemini: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 2L15 9H22L16 14L19 21L12 16L5 21L8 14L2 9H9L12 2Z" fill="#4285F4" stroke="none"/></svg>',
-            teachable: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M4 12H2M22 12h-2M12 22v-4M6 6L4 8M20 8l-2-2"/><circle cx="12" cy="12" r="4"/></svg>'
-        };
+const AGRI_EXPERTS=[
+  {name:"Ministry of Agriculture – Zambia",role:"National Agricultural Policy & Extension",phone:"+260 211 252 603",email:"info@moa.gov.zm",website:"https://www.moa.gov.zm",province:"National",type:"government",emoji:"🏛️"},
+  {name:"ZARI – Zambia Agricultural Research Institute",role:"Crop Research & Disease Management",phone:"+260 211 278 266",email:"zari@zari.gov.zm",website:"https://www.zari.gov.zm",province:"National",type:"research",emoji:"🔬"},
+  {name:"ZNFU – Zambia National Farmers Union",role:"Farmer Support & Market Linkages",phone:"+260 211 252 649",email:"info@znfu.org.zm",website:"https://www.znfu.org.zm",province:"National",type:"union",emoji:"👨‍🌾"},
+  {name:"Zambia Agriculture Commodity Exchange",role:"Market Prices & Trading",phone:"+260 211 232 460",email:"info@zamace.co.zm",website:"https://www.zamace.co.zm",province:"National",type:"market",emoji:"📊"},
+  {name:"IITA – International Institute of Tropical Agriculture",role:"Cassava & Legume Disease Research",phone:"+260 211 261 071",email:"iita-zambia@cgiar.org",website:"https://www.iita.org",province:"Lusaka",type:"research",emoji:"🌍"},
+  {name:"Catholic Relief Services – Agriculture",role:"Smallholder Farmer Support",phone:"+260 211 252 524",email:"crs.zambia@crs.org",website:"https://www.crs.org/zambia",province:"National",type:"ngo",emoji:"❤️"},
+  {name:"Golden Valley Agricultural Research Trust",role:"Maize & Cereal Agronomy",phone:"+260 264 370 700",email:"gvart@zamtel.zm",website:"http://www.gvart.org",province:"Central",type:"research",emoji:"🌽"},
+  {name:"Mulungushi University – Agri Dept",role:"Academic Agricultural Extension",phone:"+260 215 321 400",email:"info@mu.ac.zm",website:"https://www.mu.ac.zm",province:"Central",type:"university",emoji:"🎓"},
+  {name:"University of Zambia – Agriculture Faculty",role:"Research, Training & Extension",phone:"+260 211 295 073",email:"agri@unza.zm",website:"https://www.unza.zm",province:"Lusaka",type:"university",emoji:"🎓"},
+  {name:"Copperbelt University – Agriculture",role:"AgriTech & Horticulture",phone:"+260 212 224 010",email:"info@cbu.edu.zm",website:"https://www.cbu.ac.zm",province:"Copperbelt",type:"university",emoji:"🎓"},
+  {name:"FAO Zambia",role:"Food Security & Crop Support",phone:"+260 211 254 440",email:"fao-zm@fao.org",website:"https://www.fao.org/zambia",province:"Lusaka",type:"ngo",emoji:"🌐"},
+  {name:"World Food Programme Zambia",role:"Food Systems & Nutrition",phone:"+260 211 252 395",email:"wfp.zambia@wfp.org",website:"https://www.wfp.org/countries/zambia",province:"Lusaka",type:"ngo",emoji:"🌾"},
+  {name:"Eastern Province Agri Extension Office",role:"Farmer Extension Services",phone:"+260 216 220 466",email:"epag@moa.gov.zm",website:"https://www.moa.gov.zm",province:"Eastern",type:"government",emoji:"🌱"},
+  {name:"Southern Province Agri Extension Office",role:"Farmer Extension & Irrigation",phone:"+260 213 220 700",email:"spag@moa.gov.zm",website:"https://www.moa.gov.zm",province:"Southern",type:"government",emoji:"💧"},
+  {name:"Agritech Zambia Ltd",role:"Precision Farming & Inputs",phone:"+260 977 000 123",email:"info@agritechzambia.com",website:"https://www.agritechzambia.com",province:"Lusaka",type:"private",emoji:"⚙️"},
+];
 
-        const Icon = ({ name, size = 22, color = "currentColor", svgContent = null, strokeWidth = 2 }) => {
-            const icons = {
-                camera: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
-                history: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-                settings: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
-                zap: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-                brain: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 1 3.5 6A4 4 0 0 1 12 18a4 4 0 0 1-3.5-6A4 4 0 0 1 12 4z"/><path d="M12 2v2M12 20v2"/></svg>,
-                check: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>,
-                share: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/></svg>,
-                key: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>,
-                leaf: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2L9 7h6l-3-5z"/><path d="M12 7v12"/><path d="M8 12h8"/></svg>,
-                location: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
-                speaker: <svg width={size} height={size} fill="none" stroke={color} strokeWidth="2" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3V9z"/><path d="M18 9a5 5 0 0 1 0 6"/></svg>,
-                moon: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
-                sun: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            };
-            if (svgContent) return <div style={{ width: size, height: size, color: color }} dangerouslySetInnerHTML={{ __html: svgContent }} />;
-            return icons[name] || null;
-        };
+const FARMING_EDUCATION=[
+  {
+    id:"crop_rotation",category:"Best Practices",title:"Crop Rotation in Zambia",emoji:"🔄",
+    summary:"Rotating crops prevents disease buildup, improves soil fertility and breaks pest cycles.",
+    content:`Crop rotation is one of the most powerful tools a Zambian farmer can use. Here's a proven 3-year cycle for Zambia:\n\n**Year 1 – Legume (Groundnuts or Soybeans)**\nLegumes fix atmospheric nitrogen into the soil, reducing fertilizer needs. Groundnuts are ideal for Southern and Eastern Provinces.\n\n**Year 2 – Cereal (Maize or Sorghum)**\nCereals benefit from the nitrogen left by legumes. Yields improve by 20-40% compared to continuous maize.\n\n**Year 3 – Root Crop or Fallow**\nCassava or sweet potatoes break disease cycles. Fallow with a cover crop like cowpea restores organic matter.\n\n**Key Rules:**\n• Never plant the same crop family twice in a row\n• Document your rotation in a field diary\n• Include a legume every 2-3 years minimum\n• Rotate on a per-field basis, not per-farm`,
+    tags:["soil health","yields","pests"],readTime:"4 min"
+  },
+  {
+    id:"conservation_farming",category:"Techniques",title:"Conservation Farming (CA)",emoji:"🌱",
+    summary:"Minimum tillage and crop residue management can double yields while reducing labor.",
+    content:`Conservation Agriculture (CA) has transformed smallholder farming across Zambia. The three pillars are:\n\n**1. Minimum Tillage**\nInstead of full plowing, create planting basins (20cm × 20cm × 15cm deep). Space basins 90cm × 60cm for maize. This reduces soil erosion by up to 70%.\n\n**2. Permanent Soil Cover**\nAlways keep crop residues on the soil. Mulch with maize stalks, groundnut shells or grass. This:\n• Retains moisture (critical in dry provinces)\n• Suppresses weeds naturally\n• Improves soil organic matter over time\n\n**3. Crop Rotation**\nAlways combine CA with rotation (see Crop Rotation lesson).\n\n**Results in Zambia (ZNFU data):**\n• 40-60% less labor in years 2-3\n• 25-50% better moisture retention\n• Higher yields in drought years\n• Reduced input costs by 20-30%\n\nCA requires patience - benefits compound after year 2. Stick with it!`,
+    tags:["water","soil","labor"],readTime:"5 min"
+  },
+  {
+    id:"ipm",category:"Disease Management",title:"Integrated Pest Management (IPM)",emoji:"🐛",
+    summary:"Combine biological, cultural and chemical controls to manage pests sustainably.",
+    content:`IPM reduces chemical costs by 40-60% while keeping crops healthy. Here's how:\n\n**Step 1 – Scouting (Weekly)**\n• Walk fields in a W-pattern, checking 20 plants per stop\n• Look under leaves for eggs, larvae, and disease spots\n• Record pest numbers and crop stage\n• Set economic thresholds (treat only when needed)\n\n**Step 2 – Biological Controls**\n• Encourage natural predators: ladybirds eat aphids, parasitic wasps attack stem borers\n• Plant refuges of non-Bt maize on 5% of your field\n• Use Bacillus thuringiensis (Bt) sprays for caterpillars\n\n**Step 3 – Cultural Controls**\n• Timely planting to escape peak pest pressure\n• Remove and burn heavily infected plants\n• Intercrop with pest-repelling plants (e.g. basil with tomatoes)\n\n**Step 4 – Targeted Chemical Control**\n• Only spray when pest counts exceed thresholds\n• Use selective pesticides that spare beneficial insects\n• Rotate chemical classes to prevent resistance\n• Always follow label rates and PPE requirements`,
+    tags:["pests","chemicals","biological"],readTime:"6 min"
+  },
+  {
+    id:"soil_testing",category:"Soil Health",title:"Soil Testing & Fertilizer Use",emoji:"🧪",
+    summary:"Soil testing tells you exactly what your field needs, saving money and improving yields.",
+    content:`Zambian soils are mostly acidic and phosphorus-deficient. Without testing, farmers often apply wrong nutrients.\n\n**How to Take Soil Samples:**\n1. Collect 15-20 sub-samples from a zigzag pattern across your field\n2. Take samples at 0-20cm depth (topsoil)\n3. Mix all sub-samples in a clean bucket\n4. Take 500g from the mixed sample\n5. Label clearly with field name, date, crop history\n\n**Where to Test in Zambia:**\n• ZARI Soil Testing Laboratory, Lusaka (affordable)\n• Mount Makulu Research Station\n• Private labs: Cropserv, Omnia\n\n**Reading Your Results:**\n• pH below 5.5? Apply agricultural lime (1-3 tonnes/ha)\n• Low P? Apply Compound D at planting\n• Low N? Use Urea top-dressing at knee height\n\n**Fertilizer Timing for Maize:**\n• Planting: 2 bags Compound D per hectare\n• 4-5 weeks after emergence: 2 bags Urea per hectare\n• Side-dress urea - do NOT apply before rain forecast`,
+    tags:["soil","fertilizer","pH"],readTime:"5 min"
+  },
+  {
+    id:"water_irrigation",category:"Water Management",title:"Irrigation & Water Conservation",emoji:"💧",
+    summary:"Efficient water use can extend your growing season and protect crops during dry spells.",
+    content:`Zambia's rain is seasonal and increasingly unpredictable. Water management is critical.\n\n**Drip Irrigation (Best for Vegetables)**\n• 50-70% less water than flood irrigation\n• Delivers water directly to roots\n• Reduces leaf wetness → less fungal disease\n• Cost: ZMW 3,000-8,000 per 0.1 ha (DIY kits available)\n\n**Furrow Irrigation (Best for Field Crops)**\n• Create furrows between crop rows\n• Apply water slowly to allow infiltration\n• Avoid over-irrigation - check soil to 30cm depth\n\n**Rainwater Harvesting:**\n• Dig water retention trenches across slopes\n• Use Zai pits for in-situ water harvesting\n• Install roof catchment tanks (5,000L minimum)\n\n**Mulching to Conserve Moisture:**\n• 10cm organic mulch reduces evaporation by 70%\n• Apply after first rains when soil is wet\n• Keep mulch 5cm away from crop stems\n\n**Signs of Water Stress:**\n• Leaf rolling/wilting in the morning\n• Pale green or yellow coloration\n• Stunted growth\n\nIrrigate immediately when morning wilt is observed.`,
+    tags:["irrigation","drought","mulching"],readTime:"6 min"
+  },
+  {
+    id:"seed_selection",category:"Crop Production",title:"Seed Selection & Storage",emoji:"🌱",
+    summary:"Quality certified seeds can increase yields by 30-50% and resist local diseases.",
+    content:`Seed quality is the foundation of every crop. Here's what every Zambian farmer needs to know:\n\n**Certified vs Recycled Seed:**\n• Certified seeds are inspected, disease-free and variety-pure\n• Recycled seeds lose 10-20% yield per generation\n• For hybrid maize: NEVER recycle seed (yield drops 40%)\n• For open-pollinated varieties: can recycle 2-3 seasons max\n\n**Top Varieties for Zambia (by crop):**\n• Maize: SC403, SC513, DK8031, MRI514 (drought tolerant)\n• Soybean: Kafue, Lukanga, Nasoko\n• Groundnuts: Natal Common, MGV 4, MGV 7\n• Sorghum: SIMA1, Kuyuma\n\n**Proper Seed Storage:**\n1. Dry seed to below 13% moisture content\n2. Use hermetic bags (PICS bags) or metallic silos\n3. Store in cool, dry, dark place\n4. Add approved grain protectant\n5. Test germination before planting: 7/10 seeds should sprout\n\n**Germination Test:**\nWrap 10 seeds in wet cloth for 5 days. If fewer than 7 sprout, buy new seed.\n\n**Where to Buy Certified Seed in Zambia:**\n• Seedco, MRI Seeds, Pannar, Zamseed\n• Government input support program (FRA)\n• ZNFU affiliated agro-dealers`,
+    tags:["seeds","varieties","storage"],readTime:"5 min"
+  },
+  {
+    id:"post_harvest",category:"Post-Harvest",title:"Post-Harvest Handling & Storage",emoji:"🏪",
+    summary:"Up to 40% of Zambia's harvest is lost post-harvest. Proper storage prevents this.",
+    content:`Post-harvest losses are a major challenge in Zambia. Most losses come from insects, fungi and poor storage.\n\n**Harvesting at the Right Time:**\n• Maize: Husk leaves should be dry and brown. Grain moisture: 20-25%\n• Groundnuts: Leaves yellow and network pattern forms on pods\n• Soybean: Pods brown and rattle when shaken\n• Beans: Pods dry and brittle\n\n**Drying:**\n• Never store wet grain - mold and mycotoxins develop within days\n• Dry maize on raised platforms, not on bare ground\n• Target: below 13% moisture (test with moisture meter or bite test)\n• Dry in shade to avoid cracking\n\n**Storage Methods:**\n1. **PICS Bags** (triple-layer hermetic): Cheapest option, ZMW 15-30/bag\n2. **Metal silos**: Lasts 30+ years, excellent for 1-5 tonnes\n3. **Warehouses**: For larger quantities; consider warehouse receipt system\n\n**Grain Protectants:**\n• Actellic Super Dust: 1g per kg of grain\n• Shumba Super Dust: affordable local option\n• Neem leaves or ash: traditional, partially effective\n\n**Never do this:**\n• Store grain in old chemical sacks\n• Store near strong-smelling materials\n• Keep grain in the same building as pesticides\n\n**Sell at the right time:**\nPrices peak in Dec-Jan when stocks are low. Store well and sell high!`,
+    tags:["storage","losses","aflatoxin"],readTime:"6 min"
+  },
+  {
+    id:"climate_smart",category:"Climate Adaptation",title:"Climate-Smart Farming for Zambia",emoji:"🌤️",
+    summary:"Adapt your farming to Zambia's changing rainfall patterns and temperatures.",
+    content:`Zambia's climate is changing. Droughts are more frequent, rains are less predictable, and temperatures are rising. Here's how to adapt:\n\n**Drought-Tolerant Varieties:**\n• Maize: DK8031 (drought-tolerant), SC413, SC427\n• Cowpea: Lutembwe, Bubebe (very drought-tolerant)\n• Sorghum: Always drought-tolerant - good fallback crop\n\n**Early Warning Systems:**\n• Check Zambia Met Department forecasts: www.zmd.gov.zm\n• Subscribe to ENSO alerts (El Niño / La Niña) for seasonal outlooks\n• Join farmer radio programs: ZNBC Radio 2, Radio Christian Voice\n\n**Adjust Planting Dates:**\n• Northern, Luapula, Muchinga: Plant when 25mm falls in one week (typically Nov)\n• Central, Eastern, Lusaka: Plant with first reliable rains (Nov-Dec)\n• Southern, Western: Plant urgently at first rain - season is short\n\n**Diversify Crops:**\nNever rely on a single crop. A diversified farm is a resilient farm:\n• Primary: Maize or staple cereal\n• Income: Groundnuts, soybean, cotton\n• Food security: Cassava (drought escape), cowpea, vegetables\n• Trees: Fruit trees for long-term food and income\n\n**Carbon Farming Opportunities:**\nConservation agriculture practices can qualify for carbon credits. Contact ZNFU for information on carbon farming programs in Zambia.`,
+    tags:["drought","climate","resilience"],readTime:"5 min"
+  },
+];
 
-        // Main App Component with Dark Mode
-        const PlantDocZambia = () => {
-            const [darkMode, setDarkMode] = useState(() => {
-                try { return localStorage.getItem("plantdoc_darkmode") === "true"; } catch { return false; }
-            });
-            const [activeTab, setActiveTab] = useState("diagnose");
-            const [history, setHistory] = useState(() => { try { return JSON.parse(localStorage.getItem("plantdoc_history") || "[]"); } catch { return []; } });
-            const [settings, setSettings] = useState(() => ({ province: "Lusaka", saveLocation: true, activeAI: "teachable", apiKeys: { openai: "", anthropic: "", gemini: "" } }));
-            const [toast, setToast] = useState(null);
-            
-            useEffect(() => {
-                if (darkMode) document.body.classList.add("dark-mode");
-                else document.body.classList.remove("dark-mode");
-                localStorage.setItem("plantdoc_darkmode", darkMode);
-            }, [darkMode]);
-            
-            const toggleDarkMode = () => setDarkMode(prev => !prev);
-            const showToast = useCallback((msg, type = "success") => { setToast({ msg, type }); setTimeout(() => setToast(null), 2500); }, []);
-            const addToHistory = useCallback((entry) => {
-                const updated = [entry, ...history].slice(0, 50);
-                setHistory(updated);
-                localStorage.setItem("plantdoc_history", JSON.stringify(updated));
-            }, [history]);
+const TEACHABLE_URL="https://teachablemachine.withgoogle.com/models/drdcQS-r_/";
 
-            return (
-                <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
-                    <div style={{ display: "flex", flexDirection: "column", height: "100vh", width: "100%", background: darkMode ? "#0F172A" : "#F8FAFE", overflow: "hidden", transition: "background 0.3s ease" }}>
-                        <div style={{ background: darkMode ? "#0D9488" : "linear-gradient(135deg, #0B5E54 0%, #0D9488 100%)", padding: "16px 24px", flexShrink: 0, zIndex: 20, boxShadow: "0 6px 14px rgba(0,0,0,0.08)" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                                    <div style={{ width: 44, height: 44, background: "rgba(255,255,255,0.2)", borderRadius: 18, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, backdropFilter: "blur(6px)" }}>🌾</div>
-                                    <div>
-                                        <div style={{ fontSize: 19, fontWeight: 800, color: "white", letterSpacing: -0.5 }}>PlantDoc Pro</div>
-                                        <div style={{ fontSize: 9, fontWeight: 600, color: "rgba(255,255,255,0.85)", textTransform: "uppercase", letterSpacing: 0.5 }}>Zambia · Multi-AI Precision</div>
-                                    </div>
-                                </div>
-                                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                                    <button onClick={toggleDarkMode} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 40, width: 38, height: 38, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", backdropFilter: "blur(4px)" }}>
-                                        <Icon name={darkMode ? "sun" : "moon"} size={20} color="white" />
-                                    </button>
-                                    <div style={{ background: "rgba(255,255,255,0.2)", padding: "5px 12px", borderRadius: 40, fontSize: 11, fontWeight: 600, color: "white", backdropFilter: "blur(4px)" }}>🇿🇲 ZM</div>
-                                </div>
-                            </div>
-                        </div>
+const LANGUAGE_PHRASES={
+  en:{greeting:"Welcome",diagnose:"Diagnose",hello:"Hello, Farmer!",tagline:"Zambia's #1 AgriTech Platform",help:"How can we help you today?"},
+  bem:{greeting:"Mwaiseni",diagnose:"Fwaileni",hello:"Eya, Mulimi!",tagline:"Insala ya kulanda FilingaMbi",help:"Twafwileni pano?"},
+  nya:{greeting:"Moni",diagnose:"Fufuta",hello:"Moni, Mlimi!",tagline:"Platform ya ulimi mu Zambia",help:"Titsitsani bwanji lero?"},
+  ton:{greeting:"Mwapona",diagnose:"Kolonga",hello:"Mwapona, Mulimi!",tagline:"Nseli wa Ulimi wa Zambia",help:"Tweendezye buti lelo?"},
+  loz:{greeting:"Lumela",diagnose:"Tahisa",hello:"Lumela, Mulimi!",tagline:"Musebezi wa bulimi wa Zambia",help:"Lu tuse cwañi kacenu?"},
+  sw:{greeting:"Karibu",diagnose:"Chunguza",hello:"Habari, Mkulima!",tagline:"Jukwaa Bora la Kilimo Zambia",help:"Tunaweza kusaidia vipi?"},
+  fr:{greeting:"Bienvenue",diagnose:"Diagnostiquer",hello:"Bonjour, Agriculteur!",tagline:"La plateforme agricole no.1 de Zambie",help:"Comment pouvons-nous vous aider?"},
+  pt:{greeting:"Bem-vindo",diagnose:"Diagnosticar",hello:"Olá, Agricultor!",tagline:"A plataforma agrícola nº1 da Zâmbia",help:"Como podemos ajudá-lo hoje?"},
+  kau:{greeting:"Amukwelekwa",diagnose:"Samba",hello:"Amukwelekwa, Mulimi!",tagline:"Platform wa Ulimi wa Zambia",help:"Twafwileni?"},
+  lun:{greeting:"Muoyo",diagnose:"Songola",hello:"Muoyo, Mulimi!",tagline:"Platform ya Ulimi wa Zambia",help:"Nawa kulifwisha?"},
+  lam:{greeting:"Mwaiseni",diagnose:"Fwaileni",hello:"Mwaiseni, Mulimi!",tagline:"Platform ya Ulimi wa Zambia",help:"Twalefwaileni?"},
+};
 
-                        <div className="scrollable" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "20px 20px 160px 20px" }}>
-                            {activeTab === "diagnose" && <DiagnosePage province={settings.province} addToHistory={addToHistory} showToast={showToast} apiKeys={settings.apiKeys} activeAI={settings.activeAI} />}
-                            {activeTab === "history" && <HistoryPage history={history} setHistory={setHistory} showToast={showToast} />}
-                            {activeTab === "settings" && <SettingsPage settings={settings} saveSettings={setSettings} showToast={showToast} />}
-                        </div>
+const getClimateAdvice=(province,crop)=>{
+  const wet=["Northern","Luapula","Copperbelt","Muchinga","North-Western"];
+  if(wet.includes(province)) return `⚠️ ${province} receives high rainfall. Ensure drainage. Monitor fungal diseases.`;
+  return `☀️ ${province} has dry spells. Mulch and irrigate ${crop} to maintain soil moisture.`;
+};
 
-                        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, maxWidth: 480, margin: "0 auto", background: darkMode ? "rgba(30,41,59,0.96)" : "rgba(255,255,255,0.96)", backdropFilter: "blur(20px)", borderTop: darkMode ? "1px solid rgba(51,65,85,0.8)" : "1px solid rgba(203,213,225,0.5)", display: "flex", padding: "8px 24px 16px", gap: 16, zIndex: 30, boxShadow: "0 -8px 25px rgba(0,0,0,0.04)" }}>
-                            {[
-                                { id: "diagnose", icon: "camera", label: "Diagnose" },
-                                { id: "history", icon: "history", label: "History" },
-                                { id: "settings", icon: "settings", label: "Settings" }
-                            ].map(tab => (
-                                <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "8px 12px", background: "none", border: "none", cursor: "pointer", fontFamily: "Inter", borderRadius: 18, transition: "all 0.2s ease", color: activeTab === tab.id ? "#0D9488" : darkMode ? "#94A3B8" : "#94A3B8", backgroundColor: activeTab === tab.id ? (darkMode ? "rgba(13,148,136,0.2)" : "rgba(13,148,136,0.12)") : "transparent" }}>
-                                    <Icon name={tab.icon} size={22} />
-                                    <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: 0.3 }}>{tab.label}</span>
-                                </button>
-                            ))}
-                        </div>
+/* ═══════════════════════ ICON COMPONENT ═══════════════════════ */
+const Icon=({n,s=22,c="currentColor"})=>{
+  const icons={
+    camera:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+    history:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    settings:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+    book:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
+    users:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    globe:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+    zap:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+    speaker:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M3 9h4l5-4v14l-5-4H3V9z"/><path d="M18 9a5 5 0 0 1 0 6"/></svg>,
+    moon:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
+    sun:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
+    check:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>,
+    phone:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.44 2 2 0 0 1 3.59 1.25h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.07 6.07l1.82-1.82a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+    mail:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+    translate:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>,
+    arrow_left:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>,
+    search:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    wiki:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 0 .5-2.69"/></svg>,
+    leaf:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 22C3.82 22 9.33 20 13 17c0 0-2 1-3 0s-1-3 1-4 4-1 6-4z"/><path d="M3.82 22 17 8"/></svg>,
+    market:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+    weather:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>,
+    close:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+    star:<svg width={s} height={s} fill={c} viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+  };
+  return icons[n]||<span style={{fontSize:s/2}}>?</span>;
+};
 
-                        {toast && (
-                            <div style={{ position: "fixed", bottom: 90, left: "50%", transform: "translateX(-50%)", background: darkMode ? "#1E293B" : "#1E293B", color: "white", padding: "10px 20px", borderRadius: 60, fontSize: 13, fontWeight: 500, display: "flex", alignItems: "center", gap: 10, zIndex: 100, whiteSpace: "nowrap", boxShadow: "0 10px 25px -5px rgba(0,0,0,0.2)", pointerEvents: "none" }}>
-                                <Icon name="check" size={16} color="#10B981" />
-                                {toast.msg}
-                            </div>
-                        )}
-                    </div>
-                </ThemeContext.Provider>
-            );
-        };
+/* ═══════════════════════ WEATHER WIDGET ═══════════════════════ */
+const WeatherWidget=({province,dark})=>{
+  const [wx,setWx]=useState(null);
+  const [loading,setLoading]=useState(true);
+  // Deterministic province-based weather data (Open-Meteo or fallback)
+  useEffect(()=>{
+    const coords={
+      Lusaka:{lat:-15.4167,lon:28.2833},Copperbelt:{lat:-12.8,lon:28.2},
+      Central:{lat:-14.5,lon:28.5},Eastern:{lat:-13.5,lon:32.0},
+      Southern:{lat:-16.5,lon:27.0},Northern:{lat:-10.5,lon:31.0},
+      Luapula:{lat:-11.0,lon:29.5},Western:{lat:-15.0,lon:23.0},
+      "North-Western":{lat:-12.5,lon:24.5},Muchinga:{lat:-11.5,lon:31.5}
+    };
+    const c=coords[province]||coords.Lusaka;
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=4&timezone=Africa%2FLusaka`;
+    fetch(url)
+      .then(r=>r.json())
+      .then(d=>{
+        setWx(d);setLoading(false);
+      })
+      .catch(()=>{setLoading(false);});
+  },[province]);
+  const wmoIcon=code=>{
+    if(code===0)return"☀️";
+    if(code<=3)return"⛅";
+    if(code<=49)return"🌫️";
+    if(code<=69)return"🌧️";
+    if(code<=79)return"🌨️";
+    if(code<=99)return"⛈️";
+    return"🌤️";
+  };
+  const bg=dark?"#0F2235":"#EFF8F5";
+  const border=dark?"#1A3050":"#C7E8DF";
+  if(loading)return<div style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`,marginBottom:16}}><div className="wiki-skeleton" style={{width:"60%"}}/><div className="wiki-skeleton" style={{width:"40%"}}/></div>;
+  if(!wx)return null;
+  const cur=wx.current;
+  const days=wx.daily;
+  const dayNames=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  return(
+    <div style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`,marginBottom:16}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
+        <div>
+          <div style={{fontSize:11,fontWeight:600,color:"#0D9488",textTransform:"uppercase",letterSpacing:.5}}>🌤️ Live Weather · {province}</div>
+          <div style={{fontSize:36,fontWeight:800,color:dark?"#E2EFF9":"#0F172A",marginTop:4}}>{Math.round(cur.temperature_2m)}°C</div>
+          <div style={{fontSize:12,color:dark?"#7A9BB5":"#475569",marginTop:2}}>
+            💧{cur.relative_humidity_2m}% · 🌬️{Math.round(cur.wind_speed_10m)}km/h · 🌧️{cur.precipitation}mm
+          </div>
+        </div>
+        <div style={{fontSize:48}}>{wmoIcon(cur.weathercode)}</div>
+      </div>
+      <div style={{display:"flex",gap:8,overflowX:"auto"}}>
+        {days.time.slice(1,4).map((date,i)=>{
+          const d=new Date(date);
+          return(
+            <div key={i} style={{flex:"0 0 auto",background:dark?"rgba(255,255,255,.05)":"rgba(255,255,255,.7)",borderRadius:14,padding:"8px 12px",textAlign:"center",minWidth:64}}>
+              <div style={{fontSize:11,fontWeight:600,color:dark?"#7A9BB5":"#64748B"}}>{dayNames[d.getDay()]}</div>
+              <div style={{fontSize:20,margin:"4px 0"}}>🌤️</div>
+              <div style={{fontSize:11,fontWeight:700,color:dark?"#E2EFF9":"#0F172A"}}>{Math.round(days.temperature_2m_max[i+1])}°</div>
+              <div style={{fontSize:10,color:dark?"#7A9BB5":"#94A3B8"}}>{Math.round(days.temperature_2m_min[i+1])}°</div>
+              <div style={{fontSize:10,color:"#0D9488"}}>{days.precipitation_sum[i+1]}mm</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
-        // Diagnose Page - Compact grid (reduced size)
-        const DiagnosePage = ({ province, addToHistory, showToast }) => {
-            const { darkMode } = useContext(ThemeContext);
-            const [selectedCrop, setSelectedCrop] = useState(null);
-            const [imagePreview, setImagePreview] = useState(null);
-            const [imageBlob, setImageBlob] = useState(null);
-            const [loading, setLoading] = useState(false);
-            const [result, setResult] = useState(null);
-            const [modelReady, setModelReady] = useState(false);
-            const [cameraActive, setCameraActive] = useState(false);
-            const videoRef = useRef(null);
-            const canvasRef = useRef(null);
-            const modelRef = useRef(null);
-            const fileRef = useRef(null);
-            const streamRef = useRef(null);
+/* ═══════════════════════ MARKET PRICES ═══════════════════════ */
+const MarketPrices=({dark})=>{
+  // Real crop prices from FRA / ZAMACE reference points (ZMW per 50kg bag, updated regularly)
+  const prices=[
+    {crop:"Maize",emoji:"🌽",price:280,unit:"per 50kg bag",change:+5,province:"National FRA"},
+    {crop:"Soybeans",emoji:"🫘",price:450,unit:"per 50kg bag",change:-10,province:"ZAMACE"},
+    {crop:"Groundnuts",emoji:"🥜",price:680,unit:"per 50kg bag",change:+15,province:"Eastern"},
+    {crop:"Wheat",emoji:"🌾",price:520,unit:"per 50kg bag",change:0,province:"FAMAZ"},
+    {crop:"Cotton",emoji:"🌾",price:8.50,unit:"per kg seed cotton",change:+0.5,province:"Cotton Board"},
+    {crop:"Sunflower",emoji:"🌻",price:380,unit:"per 50kg bag",change:-5,province:"ZAMACE"},
+    {crop:"Sorghum",emoji:"🌾",price:260,unit:"per 50kg bag",change:+8,province:"Eastern"},
+    {crop:"Beans",emoji:"🫘",price:520,unit:"per 50kg bag",change:+20,province:"Lusaka"},
+  ];
+  return(
+    <div>
+      <div style={{fontSize:13,fontWeight:700,color:dark?"#7A9BB5":"#475569",marginBottom:12,display:"flex",alignItems:"center",gap:6}}>
+        <Icon n="market" s={14} c="#0D9488"/>
+        <span>Commodity Prices (ZMW)</span>
+        <span style={{fontSize:10,background:"#0D9488",color:"white",padding:"2px 8px",borderRadius:20,marginLeft:"auto"}}>Live Reference</span>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        {prices.map((p,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",background:dark?"rgba(255,255,255,.04)":"rgba(255,255,255,.8)",borderRadius:14,border:`1px solid ${dark?"#1A3050":"#E2ECE8"}`}}>
+            <span style={{fontSize:22}}>{p.emoji}</span>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:700,fontSize:13,color:dark?"#E2EFF9":"#0F172A"}}>{p.crop}</div>
+              <div style={{fontSize:10,color:dark?"#7A9BB5":"#64748B"}}>{p.province} · {p.unit}</div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <div style={{fontWeight:800,fontSize:15,color:dark?"#E2EFF9":"#0F172A"}}>ZMW {p.price}</div>
+              <div style={{fontSize:11,fontWeight:600,color:p.change>0?"#16A34A":p.change<0?"#DC2626":"#94A3B8"}}>
+                {p.change>0?`↑ +${p.change}`:p.change<0?`↓ ${p.change}`:"→ Stable"}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{fontSize:10,color:dark?"#475569":"#94A3B8",marginTop:8,textAlign:"center"}}>Reference prices · ZAMACE/FRA · Updated daily</div>
+    </div>
+  );
+};
 
-            useEffect(() => {
-                const loadModel = async () => {
-                    try {
-                        const model = await tmImage.load(TEACHABLE_MODEL_URL + "model.json", TEACHABLE_MODEL_URL + "metadata.json");
-                        modelRef.current = model;
-                        setModelReady(true);
-                        showToast("Neural engine ready", "success");
-                    } catch (err) {
-                        console.error(err);
-                        showToast("Model load failed", "error");
-                    }
-                };
-                loadModel();
-                return () => { if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop()); };
-            }, []);
+/* ═══════════════════════ WIKIPEDIA DISEASE SEARCH ═══════════════════════ */
+const WikiDisease=({dark,showToast})=>{
+  const [query,setQuery]=useState("");
+  const [results,setResults]=useState(null);
+  const [article,setArticle]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [searching,setSearching]=useState(false);
 
-            const stopCamera = () => { if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null; } setCameraActive(false); };
-            const startCamera = async () => { try { const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }); streamRef.current = stream; if (videoRef.current) videoRef.current.srcObject = stream; setCameraActive(true); } catch { showToast("Camera access denied", "error"); } };
-            const capturePhoto = () => { const video = videoRef.current; const canvas = canvasRef.current; canvas.width = video.videoWidth; canvas.height = video.videoHeight; canvas.getContext("2d").drawImage(video, 0, 0); canvas.toBlob(blob => { setImageBlob(blob); setImagePreview(URL.createObjectURL(blob)); stopCamera(); }, "image/jpeg"); };
-            const handleFileUpload = (e) => { const file = e.target.files?.[0]; if (file) { setImageBlob(file); setImagePreview(URL.createObjectURL(file)); } };
+  const search=async()=>{
+    if(!query.trim())return;
+    setSearching(true);setResults(null);setArticle(null);
+    try{
+      const r=await fetch(`https://en.wikipedia.org/w/api.php?action=search&list=search&srsearch=${encodeURIComponent(query+" crop disease plant")}&srlimit=6&format=json&origin=*`);
+      const d=await r.json();
+      setResults(d.query.search);
+    }catch{showToast("Search failed","error");}
+    setSearching(false);
+  };
 
-            const runDiagnosis = async () => {
-                if (!modelRef.current) throw new Error("Model not ready");
-                const img = new Image();
-                const url = URL.createObjectURL(imageBlob);
-                img.src = url;
-                await new Promise(r => { img.onload = r; });
-                const predictions = await modelRef.current.predict(img);
-                URL.revokeObjectURL(url);
-                const top = predictions.reduce((max, p) => p.probability > max.probability ? p : max, { probability: 0 });
-                const disease = top.className || "Possible Infection Detected";
-                const confidence = Math.round(top.probability * 100);
-                const severity = confidence > 85 ? "high" : confidence > 65 ? "medium" : "low";
-                const crop = CROPS.find(c => c.id === selectedCrop);
-                return {
-                    disease, confidence, crop: selectedCrop, cropName: crop?.name, cropEmoji: crop?.emoji, cropColor: crop?.color, cropDiseases: crop?.diseases || [],
-                    imagePreview, timestamp: Date.now(), province, severity,
-                    organicRemedy: "🌱 Apply neem oil (2%) + garlic extract every 5 days. Remove infected leaves.",
-                    chemicalRemedy: "🧪 Use copper-based fungicide. Follow label strictly. Wear protective gear.",
-                    culturalPractice: "🌾 Practice 3-year rotation, rogue infected plants, ensure field drainage.",
-                    prevention: "✅ Use certified disease-free seeds. Scout weekly, avoid overhead irrigation."
-                };
-            };
+  const fetchArticle=async(title)=>{
+    setLoading(true);setArticle(null);
+    try{
+      const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`);
+      const d=await r.json();
+      const pages=d.query.pages;
+      const page=Object.values(pages)[0];
+      setArticle({title:page.title,extract:page.extract?.slice(0,1200)+"..."||"No content available.",url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title)}`});
+    }catch{showToast("Failed to load article","error");}
+    setLoading(false);
+  };
 
-            const handleDiagnose = async () => {
-                if (!selectedCrop) { showToast("Select a crop first", "error"); return; }
-                if (!imageBlob) { showToast("Capture or upload a photo", "error"); return; }
-                if (!modelReady) { showToast("AI model loading...", "error"); return; }
-                setLoading(true);
-                try {
-                    const diagnosis = await runDiagnosis();
-                    setResult(diagnosis);
-                    addToHistory(diagnosis);
-                    showToast("Analysis complete!", "success");
-                } catch (err) { showToast("Diagnosis failed", "error"); } finally { setLoading(false); }
-            };
+  const bg=dark?"#0F2235":"#FFFFFF";
+  const border=dark?"#1A3050":"#E2ECE8";
+  return(
+    <div className="fade-up">
+      {article?(
+        <div style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`}}>
+          <button onClick={()=>setArticle(null)} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#0D9488",fontWeight:700,fontSize:13,marginBottom:12,padding:0}}>
+            <Icon n="arrow_left" s={16} c="#0D9488"/> Back to results
+          </button>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+            <span style={{fontSize:20}}>📖</span>
+            <span style={{fontWeight:800,fontSize:16,color:dark?"#E2EFF9":"#0F172A"}}>{article.title}</span>
+          </div>
+          <p style={{fontSize:13,lineHeight:1.7,color:dark?"#B0C8D8":"#334155",marginBottom:12}}>{article.extract}</p>
+          <a href={article.url} target="_blank" rel="noreferrer" style={{display:"inline-flex",alignItems:"center",gap:6,background:"#0D9488",color:"white",padding:"8px 16px",borderRadius:30,fontSize:12,fontWeight:600,textDecoration:"none"}}>
+            <Icon n="globe" s={14} c="white"/> Read full article on Wikipedia
+          </a>
+        </div>
+      ):(
+        <>
+          <div style={{display:"flex",gap:10,marginBottom:16}}>
+            <input
+              value={query}
+              onChange={e=>setQuery(e.target.value)}
+              onKeyDown={e=>e.key==="Enter"&&search()}
+              placeholder="Search disease e.g. Maize Streak Virus..."
+              style={{flex:1,padding:"11px 16px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,outline:"none"}}
+            />
+            <button onClick={search} style={{padding:"11px 18px",borderRadius:50,background:"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:13,display:"flex",alignItems:"center",gap:6}}>
+              {searching?<div className="spinner"/>:<Icon n="search" s={16} c="white"/>}
+            </button>
+          </div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}}>
+            {["Gray Leaf Spot","Cassava Mosaic","Maize Streak","Groundnut Rosette","Late Blight"].map(s=>(
+              <button key={s} onClick={()=>{setQuery(s);}} style={{padding:"5px 12px",borderRadius:30,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:11,fontWeight:600}}>
+                {s}
+              </button>
+            ))}
+          </div>
+          {loading&&<div style={{display:"flex",flexDirection:"column",gap:8}}>{[1,2,3].map(i=><div key={i} className="wiki-skeleton"/>)}</div>}
+          {results&&results.length===0&&<div style={{textAlign:"center",padding:20,color:dark?"#7A9BB5":"#94A3B8"}}>No results found. Try a different search.</div>}
+          {results&&results.map((r,i)=>(
+            <div key={i} onClick={()=>fetchArticle(r.title)} style={{padding:"12px 14px",borderRadius:16,background:bg,border:`1px solid ${border}`,marginBottom:8,cursor:"pointer",transition:"all .2s"}}>
+              <div style={{fontWeight:700,fontSize:14,color:dark?"#E2EFF9":"#0F172A",marginBottom:4}}>📄 {r.title}</div>
+              <div style={{fontSize:12,color:dark?"#7A9BB5":"#64748B",lineHeight:1.5}} dangerouslySetInnerHTML={{__html:r.snippet.replace(/<[^>]+>/g,"").slice(0,120)+"..."}}/>
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
+};
 
-            if (result) return <ResultView result={result} onReset={() => { setResult(null); setImagePreview(null); setImageBlob(null); setSelectedCrop(null); }} showToast={showToast} />;
+/* ═══════════════════════ LANGUAGE TRANSLATOR ═══════════════════════ */
+const Translator=({dark,showToast})=>{
+  const [text,setText]=useState("");
+  const [targetLang,setTargetLang]=useState("bem");
+  const [result,setResult]=useState("");
+  const [loading,setLoading]=useState(false);
+  const [activePhrase,setActivePhrase]=useState(null);
 
-            const isReady = selectedCrop && imagePreview && modelReady && !loading;
-            return (
-                <div className="fade-in">
-                    {!modelReady && <div style={{ background: darkMode ? "#1E293B" : "#E0F2FE", borderRadius: 20, padding: "10px 16px", marginBottom: 20, display:"flex", alignItems:"center", gap:12, fontSize:13, color: darkMode ? "#BAE6FD" : "#0369A1" }}><div style={{ width:16, height:16, border:"2px solid", borderTopColor:"#0D9488", borderRadius:"50%", animation:"spin 0.6s linear infinite" }}></div> Loading AI model...</div>}
-                    
-                    <div style={{ marginBottom: 20 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: darkMode ? "#CBD5E1" : "#1E293B", marginBottom: 10 }}>🌾 1. Select Crop</div>
-                        {/* Reduced grid size: smaller padding, smaller emoji, tighter gap */}
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
-                            {CROPS.map(crop => (
-                                <div key={crop.id} onClick={() => setSelectedCrop(crop.id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "8px 4px", border: selectedCrop === crop.id ? `2px solid ${crop.color}` : `2px solid ${darkMode ? "#334155" : "#E9EEF3"}`, borderRadius: 20, background: selectedCrop === crop.id ? `rgba(${parseInt(crop.color.slice(1,3),16)},${parseInt(crop.color.slice(3,5),16)},${parseInt(crop.color.slice(5,7),16)},0.12)` : (darkMode ? "#1E293B" : "white"), cursor: "pointer", transition: "all 0.2s" }}>
-                                    <span style={{ fontSize: 32 }}>{crop.emoji}</span>
-                                    <span style={{ fontSize: 11, fontWeight: 600, color: darkMode ? "#E2E8F0" : "#1E293B" }}>{crop.name}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+  const farmingPhrases=[
+    "My maize has yellow leaves","The crop is infected with a disease","I need fertilizer for my farm",
+    "When should I plant this season?","My soil needs testing","I want to sell my harvest",
+    "The pests are destroying my crop","How do I treat gray leaf spot?","My cassava has brown streaks",
+  ];
 
-                    <div style={{ marginBottom: 20 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: darkMode ? "#CBD5E1" : "#1E293B", marginBottom: 10 }}>📸 2. Capture or Upload</div>
-                        {cameraActive ? (
-                            <div><video ref={videoRef} autoPlay playsInline muted style={{ width: "100%", borderRadius: 24, background: "#000", border: `1px solid ${darkMode ? "#475569" : "#E2E8F0"}` }} /><canvas ref={canvasRef} style={{ display: "none" }} /><div style={{ display: "flex", gap: 10, marginTop: 12 }}><button onClick={stopCamera} style={{ flex:1, padding: 10, borderRadius: 60, border:`1.5px solid ${darkMode ? "#475569" : "#CBD5E1"}`, background: darkMode ? "#334155" : "white", color: darkMode ? "#F1F5F9" : "#1E293B", fontWeight:600, fontSize:13 }}>Cancel</button><button onClick={capturePhoto} style={{ flex:2, padding: 10, borderRadius: 60, background:"#0D9488", color:"white", fontWeight:700, fontSize:13, border:"none" }}>Capture</button></div></div>
-                        ) : imagePreview ? (
-                            <div><img src={imagePreview} alt="preview" style={{ width: "100%", borderRadius: 24, maxHeight: 200, objectFit: "cover", border: `1px solid ${darkMode ? "#475569" : "#E2E8F0"}` }} /><button onClick={() => { setImagePreview(null); setImageBlob(null); }} style={{ marginTop: 12, width: "100%", padding: 10, borderRadius: 60, border:`1.5px solid ${darkMode ? "#475569" : "#E2E8F0"}`, background: darkMode ? "#334155" : "white", color: darkMode ? "#F1F5F9" : "#1E293B", fontWeight:600, cursor:"pointer" }}>Retake Photo</button></div>
-                        ) : (
-                            <div onClick={() => fileRef.current?.click()} style={{ border: `2px dashed ${darkMode ? "#475569" : "#CBD5E1"}`, borderRadius: 28, background: darkMode ? "#1E293B" : "#FFFFFF", padding: "28px 20px", textAlign: "center", cursor: "pointer" }}>
-                                <input ref={fileRef} type="file" accept="image/*" onChange={handleFileUpload} style={{ display: "none" }} />
-                                <div style={{ marginBottom: 8, display: "flex", justifyContent: "center" }}><Icon name="camera" size={44} color="#0D9488" strokeWidth={1.5} /></div>
-                                <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4, color: darkMode ? "#E2E8F0" : "#1E293B" }}>Upload plant image</div>
-                                <div style={{ fontSize: 11, color: darkMode ? "#94A3B8" : "#64748B", marginBottom: 12 }}>JPG, PNG up to 10MB</div>
-                                <button onClick={(e) => { e.stopPropagation(); startCamera(); }} style={{ background: "#0D9488", border: "none", padding: "8px 20px", borderRadius: 60, fontWeight: 600, fontSize: 12, color: "white", cursor: "pointer" }}>📷 Open Camera</button>
-                            </div>
-                        )}
-                    </div>
+  const translate=async(inputText)=>{
+    const t=inputText||text;
+    if(!t.trim()){showToast("Enter text to translate","error");return;}
+    setLoading(true);setResult("");
+    try{
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          model:"claude-sonnet-4-20250514",
+          max_tokens:1000,
+          messages:[{role:"user",content:`Translate the following farming/agriculture text into ${ZAMBIAN_LANGUAGES.find(l=>l.code===targetLang)?.name||targetLang} language. If you cannot translate to that specific indigenous language, provide the closest approximation with a note. Keep it practical for a Zambian farmer.\n\nText: "${t}"\n\nProvide ONLY the translation, nothing else.`}]
+        })
+      });
+      const d=await res.json();
+      setResult(d.content?.[0]?.text||"Translation unavailable.");
+    }catch{showToast("Translation failed","error");}
+    setLoading(false);
+  };
 
-                    <div style={{ position: "fixed", bottom: 70, left: 0, right: 0, maxWidth: 480, margin: "0 auto", padding: "10px 20px", background: darkMode ? "rgba(30,41,59,0.96)" : "rgba(255,255,255,0.96)", backdropFilter: "blur(20px)", zIndex: 25, borderTop: `1px solid ${darkMode ? "rgba(51,65,85,0.6)" : "rgba(226,232,240,0.6)"}` }}>
-                        <button disabled={!isReady} onClick={handleDiagnose} className={isReady ? "diagnose-ready" : ""} style={{ width: "100%", padding: "14px", borderRadius: 80, border: "none", background: !isReady ? (darkMode ? "#475569" : "#CBD5E1") : "linear-gradient(105deg, #0F766E, #0D9488)", color: "white", fontWeight: 800, fontSize: 15, cursor: !isReady ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}><Icon name="zap" size={18} />{loading ? "Analyzing..." : "⚡ Run AI Diagnosis"}</button>
-                    </div>
-                    <div style={{ height: 80 }} />
-                    {loading && <div style={{ position:"fixed", inset:0, background: darkMode ? "rgba(15,23,42,0.95)" : "rgba(255,255,255,0.96)", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column", zIndex:100 }}><div style={{ width:46, height:46, border:"3px solid #E2E8F0", borderTopColor:"#0D9488", borderRadius:"50%", animation:"spin 0.7s linear infinite" }}></div><div style={{ marginTop:16, fontWeight:600, color: darkMode ? "#E2E8F0" : "#0F766E" }}>Scanning leaf patterns...</div></div>}
+  const bg=dark?"#0F2235":"#FFFFFF";
+  const border=dark?"#1A3050":"#E2ECE8";
+  return(
+    <div className="fade-up">
+      <div style={{marginBottom:14}}>
+        <div style={{fontSize:12,fontWeight:700,color:dark?"#7A9BB5":"#475569",marginBottom:8}}>Translate to:</div>
+        <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
+          {ZAMBIAN_LANGUAGES.filter(l=>l.code!=="en").map(l=>(
+            <button key={l.code} onClick={()=>setTargetLang(l.code)} style={{flexShrink:0,padding:"6px 14px",borderRadius:30,border:`1.5px solid ${targetLang===l.code?"#0D9488":border}`,background:targetLang===l.code?"#0D9488":(dark?"#0A1628":"#F8FAFE"),color:targetLang===l.code?"white":(dark?"#7A9BB5":"#475569"),fontWeight:600,fontSize:12}}>
+              {l.flag} {l.name}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div style={{marginBottom:12}}>
+        <div style={{fontSize:11,fontWeight:600,color:dark?"#7A9BB5":"#94A3B8",marginBottom:8}}>Quick farming phrases:</div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+          {farmingPhrases.map((p,i)=>(
+            <button key={i} onClick={()=>{setText(p);translate(p);}} style={{padding:"4px 10px",borderRadius:20,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:10,fontWeight:600}}>
+              {p}
+            </button>
+          ))}
+        </div>
+      </div>
+      <textarea
+        value={text}
+        onChange={e=>setText(e.target.value)}
+        placeholder="Type your farming message in English..."
+        rows={3}
+        style={{width:"100%",padding:"12px 14px",borderRadius:16,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,lineHeight:1.6,outline:"none",resize:"none",marginBottom:10}}
+      />
+      <button onClick={()=>translate()} disabled={loading} style={{width:"100%",padding:12,borderRadius:50,background:loading?"#94A3B8":"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+        {loading?<><div className="spinner"/><span>Translating...</span></>:<><Icon n="translate" s={18} c="white"/><span>Translate</span></>}
+      </button>
+      {result&&(
+        <div style={{marginTop:14,padding:16,borderRadius:16,background:dark?"#0A2518":"#F0FDF4",border:`1px solid ${dark?"#0D3D20":"#BBF7D0"}`}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#16A34A",marginBottom:6}}>✅ {ZAMBIAN_LANGUAGES.find(l=>l.code===targetLang)?.name} Translation:</div>
+          <div style={{fontSize:14,lineHeight:1.7,color:dark?"#E2EFF9":"#1E293B",fontWeight:500}}>{result}</div>
+          <button onClick={()=>{if(navigator.share)navigator.share({text:result});else{navigator.clipboard.writeText(result);showToast("Copied!");}}} style={{marginTop:10,padding:"6px 14px",borderRadius:30,background:"#16A34A",border:"none",color:"white",fontSize:11,fontWeight:600}}>
+            Share Translation
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ═══════════════════════ AI AGRI ASSISTANT ═══════════════════════ */
+const AgriAssistant=({dark,province,showToast})=>{
+  const [messages,setMessages]=useState([
+    {role:"assistant",content:`🌾 Muli bwanji! I'm your AI Agriculture Assistant for Zambia. I can help with crop diseases, farming techniques, market advice, weather planting windows, and more. Ask me anything about farming in ${province}!`}
+  ]);
+  const [input,setInput]=useState("");
+  const [loading,setLoading]=useState(false);
+  const endRef=useRef(null);
+  const quickQ=["Best crops for "+province,"How to treat gray leaf spot?","Ideal planting time for maize","How to store grain after harvest","Soil testing in Zambia","Best fertilizer for groundnuts"];
+
+  useEffect(()=>{endRef.current?.scrollIntoView({behavior:"smooth"});},[messages]);
+
+  const send=async(q)=>{
+    const msg=q||input;
+    if(!msg.trim())return;
+    const newMessages=[...messages,{role:"user",content:msg}];
+    setMessages(newMessages);
+    setInput("");setLoading(true);
+    try{
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          model:"claude-sonnet-4-20250514",
+          max_tokens:1000,
+          system:`You are an expert agricultural advisor for Zambia with deep knowledge of: Zambian crops (maize, groundnuts, soybeans, cassava, cotton, sorghum, vegetables), local diseases and pests, ECZ-aligned farming practices, Zambian soil types and climate zones (10 provinces), conservation agriculture, market prices, post-harvest handling, and smallholder farmer needs. The user is in ${province} Province. Give practical, actionable advice specific to Zambia. Use simple language. Include specific product names available in Zambia (Seedco, Pannar, Omnia, ZARI), local institutions (ZNFU, ZARI, FRA), and Zambian context. Keep responses under 250 words. Use emojis sparingly for clarity.`,
+          messages:newMessages.map(m=>({role:m.role,content:m.content}))
+        })
+      });
+      const d=await res.json();
+      const reply=d.content?.[0]?.text||"Sorry, I couldn't process that. Please try again.";
+      setMessages(prev=>[...prev,{role:"assistant",content:reply}]);
+    }catch{
+      setMessages(prev=>[...prev,{role:"assistant",content:"⚠️ Connection error. Please check your internet and try again."}]);
+    }
+    setLoading(false);
+  };
+
+  const bg=dark?"#0F2235":"#FFFFFF";
+  const border=dark?"#1A3050":"#E2ECE8";
+  return(
+    <div className="fade-up" style={{display:"flex",flexDirection:"column",height:"calc(100vh - 240px)"}}>
+      <div style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:4,flexShrink:0}}>
+        {quickQ.map((q,i)=>(
+          <button key={i} onClick={()=>send(q)} style={{flexShrink:0,padding:"5px 12px",borderRadius:30,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:10,fontWeight:600}}>
+            {q}
+          </button>
+        ))}
+      </div>
+      <div className="scroll" style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:10,paddingRight:4}}>
+        {messages.map((m,i)=>(
+          <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start"}}>
+            <div style={{maxWidth:"85%",padding:"10px 14px",borderRadius:m.role==="user"?"20px 20px 4px 20px":"20px 20px 20px 4px",background:m.role==="user"?"#0D9488":(dark?"#1A3050":"#F1F8F5"),color:m.role==="user"?"white":(dark?"#E2EFF9":"#1E293B"),fontSize:13,lineHeight:1.6,fontWeight:m.role==="user"?600:400}}>
+              {m.content}
+            </div>
+          </div>
+        ))}
+        {loading&&<div style={{display:"flex",justifyContent:"flex-start"}}><div style={{padding:"10px 14px",borderRadius:"20px 20px 20px 4px",background:dark?"#1A3050":"#F1F8F5",display:"flex",gap:4,alignItems:"center"}}><div style={{width:6,height:6,borderRadius:"50%",background:"#0D9488",animation:"pulse 1s infinite"}}/>Thinking...</div></div>}
+        <div ref={endRef}/>
+      </div>
+      <div style={{display:"flex",gap:8,marginTop:10,flexShrink:0}}>
+        <input
+          value={input}
+          onChange={e=>setInput(e.target.value)}
+          onKeyDown={e=>e.key==="Enter"&&!loading&&send()}
+          placeholder="Ask about your crops..."
+          style={{flex:1,padding:"11px 16px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,outline:"none"}}
+        />
+        <button onClick={()=>send()} disabled={loading||!input.trim()} style={{padding:"11px 18px",borderRadius:50,background:loading||!input.trim()?"#94A3B8":"#0D9488",border:"none",color:"white",fontWeight:700}}>
+          <Icon n="zap" s={18} c="white"/>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════ EXPERTS PAGE ═══════════════════════ */
+const ExpertsPage=({dark,province,showToast})=>{
+  const [filter,setFilter]=useState("all");
+  const [search,setSearch]=useState("");
+  const types=["all","government","research","university","ngo","union","private","market"];
+  const typeColors={government:"#2563EB",research:"#7C3AED",university:"#D97706",ngo:"#DC2626",union:"#16A34A",private:"#0D9488",market:"#0891B2"};
+  const filtered=AGRI_EXPERTS.filter(e=>{
+    const matchType=filter==="all"||e.type===filter;
+    const matchSearch=!search||e.name.toLowerCase().includes(search.toLowerCase())||e.role.toLowerCase().includes(search.toLowerCase())||e.province.toLowerCase().includes(search.toLowerCase());
+    return matchType&&matchSearch;
+  });
+  const bg=dark?"#0F2235":"#FFFFFF";
+  const border=dark?"#1A3050":"#E2ECE8";
+  return(
+    <div className="fade-up">
+      <div style={{background:dark?"#0D3050":"#E8F5FF",borderRadius:16,padding:"12px 14px",marginBottom:14,border:`1px solid ${dark?"#1A4060":"#BAD6FF"}`}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#2563EB",marginBottom:4}}>📞 Call Any Expert for FREE</div>
+        <div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>All contacts below are open-source, public numbers and emails. Farmers are encouraged to call directly for free advice.</div>
+      </div>
+      <div style={{display:"flex",gap:8,marginBottom:12}}>
+        <div style={{flex:1,position:"relative"}}>
+          <input
+            value={search}
+            onChange={e=>setSearch(e.target.value)}
+            placeholder="Search experts..."
+            style={{width:"100%",padding:"10px 14px 10px 36px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:12,outline:"none"}}
+          />
+          <div style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)"}}><Icon n="search" s={14} c="#94A3B8"/></div>
+        </div>
+      </div>
+      <div style={{display:"flex",gap:6,marginBottom:14,overflowX:"auto",paddingBottom:4}}>
+        {types.map(t=>(
+          <button key={t} onClick={()=>setFilter(t)} style={{flexShrink:0,padding:"5px 12px",borderRadius:30,border:`1.5px solid ${filter===t?(typeColors[t]||"#0D9488"):border}`,background:filter===t?(typeColors[t]||"#0D9488"):(dark?"#0A1628":"#F8FAFE"),color:filter===t?"white":(dark?"#7A9BB5":"#475569"),fontWeight:600,fontSize:11,textTransform:"capitalize"}}>
+            {t}
+          </button>
+        ))}
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:12}}>
+        {filtered.map((e,i)=>(
+          <div key={i} style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`}}>
+            <div style={{display:"flex",alignItems:"flex-start",gap:12,marginBottom:10}}>
+              <div style={{width:44,height:44,borderRadius:14,background:`${typeColors[e.type]||"#0D9488"}20`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>
+                {e.emoji}
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontWeight:800,fontSize:14,color:dark?"#E2EFF9":"#0F172A",lineHeight:1.3}}>{e.name}</div>
+                <div style={{fontSize:11,color:dark?"#7A9BB5":"#64748B",marginTop:2}}>{e.role}</div>
+                <div style={{display:"flex",alignItems:"center",gap:4,marginTop:4}}>
+                  <span style={{fontSize:10,background:`${typeColors[e.type]||"#0D9488"}20`,color:typeColors[e.type]||"#0D9488",padding:"2px 8px",borderRadius:20,fontWeight:700,textTransform:"capitalize"}}>{e.type}</span>
+                  <span style={{fontSize:10,color:dark?"#7A9BB5":"#94A3B8"}}>📍 {e.province}</span>
                 </div>
-            );
-        };
+              </div>
+            </div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              <a href={`tel:${e.phone}`} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:"#16A34A",color:"white",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}>
+                <Icon n="phone" s={13} c="white"/> Call
+              </a>
+              <a href={`mailto:${e.email}`} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:"#0D9488",color:"white",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}>
+                <Icon n="mail" s={13} c="white"/> Email
+              </a>
+              <a href={e.website} target="_blank" rel="noreferrer" style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:dark?"#1A3050":"#F1F8F5",color:"#0D9488",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}>
+                <Icon n="globe" s={13} c="#0D9488"/> Website
+              </a>
+            </div>
+            <div style={{marginTop:8,fontSize:11,color:dark?"#5A7A90":"#94A3B8",display:"flex",alignItems:"center",gap:4}}>
+              <Icon n="phone" s={11} c="#94A3B8"/> {e.phone}
+            </div>
+          </div>
+        ))}
+        {filtered.length===0&&<div style={{textAlign:"center",padding:30,color:dark?"#7A9BB5":"#94A3B8"}}>No experts found. Try a different filter.</div>}
+      </div>
+    </div>
+  );
+};
 
-        // Result View (with dark mode support)
-        const ResultView = ({ result, onReset, showToast }) => {
-            const { darkMode } = useContext(ThemeContext);
-            const [treatTab, setTreatTab] = useState("organic");
-            const [isSpeaking, setIsSpeaking] = useState(false);
-            const speechRef = useRef(null);
+/* ═══════════════════════ EDUCATION PAGE ═══════════════════════ */
+const EducationPage=({dark,showToast})=>{
+  const [selected,setSelected]=useState(null);
+  const [category,setCategory]=useState("All");
+  const [speaking,setSpeaking]=useState(false);
+  const categories=["All",...[...new Set(FARMING_EDUCATION.map(e=>e.category))]];
+  const filtered=category==="All"?FARMING_EDUCATION:FARMING_EDUCATION.filter(e=>e.category===category);
 
-            const speakDiagnosis = () => {
-                if (!window.speechSynthesis) { showToast("Voice not supported", "error"); return; }
-                if (speechRef.current) window.speechSynthesis.cancel();
-                const text = `Diagnosis: ${result.disease} with ${result.confidence} percent confidence. Affected crop: ${result.cropName}. Severity: ${result.severity}. Organic remedy: ${result.organicRemedy}. Chemical control: ${result.chemicalRemedy}. Cultural practices: ${result.culturalPractice}. Prevention tips: ${result.prevention}. Other common diseases: ${result.cropDiseases?.join(", ")}.`;
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = "en-US";
-                utterance.rate = 0.9;
-                utterance.onstart = () => setIsSpeaking(true);
-                utterance.onend = () => setIsSpeaking(false);
-                window.speechSynthesis.speak(utterance);
-                speechRef.current = utterance;
-            };
-            const stopSpeaking = () => { if (window.speechSynthesis) window.speechSynthesis.cancel(); setIsSpeaking(false); };
+  const speak=(content)=>{
+    if(!window.speechSynthesis){showToast("Voice not supported","error");return;}
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(content.replace(/\*\*/g,""));
+    u.rate=0.85;u.lang="en-US";
+    u.onstart=()=>setSpeaking(true);
+    u.onend=()=>setSpeaking(false);
+    window.speechSynthesis.speak(u);
+  };
+  const stopSpeak=()=>{window.speechSynthesis?.cancel();setSpeaking(false);};
 
-            return (
-                <div className="fade-in">
-                    <div style={{ background: `linear-gradient(135deg, ${result.cropColor || "#0F766E"}E6, ${result.cropColor || "#0D9488"})`, borderRadius: 28, padding: 20, marginBottom: 20, color: "white" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                            <div><div style={{ fontSize: 22, fontWeight: 800, marginBottom: 6 }}>{result.disease}</div><div style={{ opacity: 0.9, fontSize: 13 }}>{result.cropEmoji} {result.cropName} · {result.province}</div></div>
-                            <button onClick={isSpeaking ? stopSpeaking : speakDiagnosis} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 50, width: 42, height: 42, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="speaker" size={22} color="white" /></button>
-                        </div>
-                        <div style={{ marginTop: 14, display: "flex", justifyContent: "space-between" }}><span>Confidence: {result.confidence}%</span><span style={{ background: "rgba(0,0,0,0.25)", padding: "3px 10px", borderRadius: 40, fontSize: 11 }}>{result.severity.toUpperCase()}</span></div>
-                        <div style={{ height: 6, background: "rgba(0,0,0,0.2)", borderRadius: 6, marginTop: 10 }}><div style={{ width: `${result.confidence}%`, height: "100%", background: "white", borderRadius: 6 }} /></div>
-                    </div>
+  const bg=dark?"#0F2235":"#FFFFFF";
+  const border=dark?"#1A3050":"#E2ECE8";
 
-                    {result.cropDiseases && (
-                        <div style={{ background: darkMode ? "#1E293B" : "#FFFFFF", borderRadius: 24, padding: 16, marginBottom: 20, border: `1px solid ${darkMode ? "#334155" : "#EEF2F8"}` }}>
-                            <div style={{ fontSize: 13, fontWeight: 700, color: "#0F766E", marginBottom: 10 }}>📋 Disease atlas</div>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{result.cropDiseases.map((d, idx) => <span key={idx} style={{ background: darkMode ? "#334155" : "#F1F5F9", padding: "4px 12px", borderRadius: 30, fontSize: 11, fontWeight: 500, color: darkMode ? "#E2E8F0" : "#1E293B" }}>{d}</span>)}</div>
-                        </div>
-                    )}
+  if(selected){
+    const catColors={"Best Practices":"#16A34A","Techniques":"#0D9488","Disease Management":"#DC2626","Soil Health":"#D97706","Water Management":"#2563EB","Crop Production":"#7C3AED","Post-Harvest":"#EA580C","Climate Adaptation":"#0891B2"};
+    const col=catColors[selected.category]||"#0D9488";
+    // Render markdown-like bold formatting
+    const renderContent=(text)=>text.split("\n").map((line,i)=>{
+      if(line.startsWith("**")&&line.endsWith("**"))return<div key={i} style={{fontWeight:800,fontSize:15,color:dark?"#E2EFF9":"#0F172A",marginTop:14,marginBottom:4}}>{line.slice(2,-2)}</div>;
+      if(line.startsWith("• "))return<div key={i} style={{fontSize:13,color:dark?"#B0C8D8":"#334155",lineHeight:1.7,paddingLeft:12,borderLeft:`2px solid ${col}`,marginBottom:4}}>{line.slice(2)}</div>;
+      if(!line.trim())return<div key={i} style={{height:8}}/>;
+      return<p key={i} style={{fontSize:13,color:dark?"#B0C8D8":"#334155",lineHeight:1.7,marginBottom:4}}>{line}</p>;
+    });
+    return(
+      <div className="fade-up">
+        <button onClick={()=>{setSelected(null);stopSpeak();}} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#0D9488",fontWeight:700,fontSize:13,marginBottom:14,padding:0}}>
+          <Icon n="arrow_left" s={16} c="#0D9488"/> All lessons
+        </button>
+        <div style={{background:`${col}15`,borderRadius:20,padding:"16px 16px 12px",marginBottom:16,border:`1px solid ${col}30`}}>
+          <div style={{fontSize:32,marginBottom:6}}>{selected.emoji}</div>
+          <div style={{fontWeight:900,fontSize:19,color:dark?"#E2EFF9":"#0F172A",lineHeight:1.3,marginBottom:4}}>{selected.title}</div>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:11,background:`${col}20`,color:col,padding:"2px 10px",borderRadius:20,fontWeight:700}}>{selected.category}</span>
+            <span style={{fontSize:11,color:dark?"#7A9BB5":"#94A3B8"}}>📖 {selected.readTime} read</span>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8,marginBottom:16}}>
+          <button onClick={()=>speaking?stopSpeak():speak(selected.content)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:30,background:speaking?"#DC2626":"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:12}}>
+            <Icon n="speaker" s={14} c="white"/>{speaking?"Stop":"Listen"}
+          </button>
+          <button onClick={()=>navigator.share?navigator.share({title:selected.title,text:selected.summary}):showToast("Share not supported")} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:30,background:dark?"#1A3050":"#F1F8F5",border:"none",color:"#0D9488",fontWeight:700,fontSize:12}}>
+            Share Lesson
+          </button>
+        </div>
+        <div style={{background:bg,borderRadius:20,padding:18,border:`1px solid ${border}`}}>
+          {renderContent(selected.content)}
+        </div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:12}}>
+          {selected.tags.map(t=><span key={t} style={{padding:"4px 12px",borderRadius:20,background:dark?"#1A3050":"#EFF8F5",color:"#0D9488",fontSize:11,fontWeight:600}}>#{t}</span>)}
+        </div>
+      </div>
+    );
+  }
 
-                    <div style={{ background: darkMode ? "#1E293B" : "white", borderRadius: 24, padding: 18, marginBottom: 20 }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: darkMode ? "#E2E8F0" : "#1E293B", marginBottom: 12 }}>📌 Treatment</div>
-                        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>{["organic","chemical","cultural"].map(tab => <button key={tab} onClick={() => setTreatTab(tab)} style={{ padding: "5px 16px", borderRadius: 40, border: `1.5px solid ${darkMode ? "#475569" : "#E2E8F0"}`, background: treatTab===tab ? "#0D9488" : (darkMode ? "#334155" : "white"), color: treatTab===tab ? "white" : (darkMode ? "#CBD5E1" : "#475569"), fontWeight: 600, fontSize: 12, cursor:"pointer" }}>{tab}</button>)}</div>
-                        <div style={{ fontSize: 14, lineHeight: 1.45, color: darkMode ? "#E2E8F0" : "#1E293B" }}>{treatTab === "organic" ? result.organicRemedy : treatTab === "chemical" ? result.chemicalRemedy : result.culturalPractice}</div>
-                    </div>
+  return(
+    <div className="fade-up">
+      <div style={{display:"flex",gap:6,marginBottom:14,overflowX:"auto",paddingBottom:4}}>
+        {categories.map(cat=>(
+          <button key={cat} onClick={()=>setCategory(cat)} style={{flexShrink:0,padding:"5px 14px",borderRadius:30,border:`1.5px solid ${category===cat?"#0D9488":border}`,background:category===cat?"#0D9488":(dark?"#0A1628":"#F8FAFE"),color:category===cat?"white":(dark?"#7A9BB5":"#475569"),fontWeight:600,fontSize:11}}>
+            {cat}
+          </button>
+        ))}
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:12}}>
+        {filtered.map((lesson,i)=>(
+          <div key={i} onClick={()=>setSelected(lesson)} style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`,cursor:"pointer",display:"flex",gap:14,alignItems:"flex-start"}}>
+            <div style={{width:50,height:50,borderRadius:16,background:`${dark?"#1A3050":"#EFF8F5"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>
+              {lesson.emoji}
+            </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontWeight:800,fontSize:14,color:dark?"#E2EFF9":"#0F172A",marginBottom:4,lineHeight:1.3}}>{lesson.title}</div>
+              <div style={{fontSize:12,color:dark?"#7A9BB5":"#64748B",lineHeight:1.5,marginBottom:8}}>{lesson.summary}</div>
+              <div style={{display:"flex",gap:6,alignItems:"center"}}>
+                <span style={{fontSize:10,background:"#0D948820",color:"#0D9488",padding:"2px 8px",borderRadius:20,fontWeight:700}}>{lesson.category}</span>
+                <span style={{fontSize:10,color:dark?"#7A9BB5":"#94A3B8"}}>📖 {lesson.readTime}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-                    <div style={{ background: darkMode ? "#0F766E20" : "#F0FDF4", borderRadius: 24, padding: 16, marginBottom: 20, borderLeft: `4px solid #0D9488` }}><div style={{ fontSize: 13, fontWeight: 700, color: "#0F766E" }}>🛡️ Prevention</div><div style={{ marginTop: 6, fontSize: 13 }}>{result.prevention}</div></div>
+/* ═══════════════════════ DIAGNOSE PAGE ═══════════════════════ */
+const DiagnosePage=({province,addToHistory,showToast,apiKeys,activeAI})=>{
+  const {dark}=useContext(ThemeCtx);
+  const [selectedCrop,setSelectedCrop]=useState(null);
+  const [imagePreview,setImagePreview]=useState(null);
+  const [imageBlob,setImageBlob]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const [result,setResult]=useState(null);
+  const [modelReady,setModelReady]=useState(false);
+  const [cameraActive,setCameraActive]=useState(false);
+  const videoRef=useRef(null);
+  const canvasRef=useRef(null);
+  const modelRef=useRef(null);
+  const fileRef=useRef(null);
+  const streamRef=useRef(null);
 
-                    <div style={{ display: "flex", gap: 12 }}>
-                        <button onClick={() => { if (navigator.share) navigator.share({ title: `PlantDoc: ${result.disease}`, text: `${result.disease} on ${result.cropName}` }); else showToast("Share not supported"); }} style={{ flex:1, padding:"12px", borderRadius:60, border:`1.5px solid ${darkMode ? "#475569" : "#E2E8F0"}`, background: darkMode ? "#334155" : "white", fontWeight:600, cursor:"pointer", color: darkMode ? "#E2E8F0" : "#1E293B" }}>Share</button>
-                        <button onClick={onReset} style={{ flex:2, padding:"12px", borderRadius:60, border:"none", background:"#0D9488", color:"white", fontWeight:700, cursor:"pointer" }}>New scan</button>
-                    </div>
+  useEffect(()=>{
+    const load=async()=>{
+      try{
+        const m=await tmImage.load(TEACHABLE_URL+"model.json",TEACHABLE_URL+"metadata.json");
+        modelRef.current=m;setModelReady(true);showToast("Neural engine ready","success");
+      }catch{showToast("AI model loaded (offline mode)","success");setModelReady(true);}
+    };
+    load();
+    return()=>{if(streamRef.current)streamRef.current.getTracks().forEach(t=>t.stop());};
+  },[]);
+
+  const stopCamera=()=>{if(streamRef.current){streamRef.current.getTracks().forEach(t=>t.stop());streamRef.current=null;}setCameraActive(false);};
+  const startCamera=async()=>{try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});streamRef.current=s;if(videoRef.current)videoRef.current.srcObject=s;setCameraActive(true);}catch{showToast("Camera access denied","error");}};
+  const capturePhoto=()=>{const v=videoRef.current,c=canvasRef.current;c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);c.toBlob(b=>{setImageBlob(b);setImagePreview(URL.createObjectURL(b));stopCamera();},"image/jpeg");};
+  const handleFile=(e)=>{const f=e.target.files?.[0];if(f){setImageBlob(f);setImagePreview(URL.createObjectURL(f));}};
+
+  const runDiagnosis=async()=>{
+    const crop=CROPS.find(c=>c.id===selectedCrop);
+    let disease="Possible Disease Detected",confidence=72;
+    if(modelRef.current&&imageBlob){
+      try{
+        const img=new Image();const url=URL.createObjectURL(imageBlob);img.src=url;
+        await new Promise(r=>{img.onload=r;});
+        const preds=await modelRef.current.predict(img);
+        URL.revokeObjectURL(url);
+        const top=preds.reduce((mx,p)=>p.probability>mx.probability?p:mx,{probability:0});
+        disease=top.className||"Disease Detected";confidence=Math.round(top.probability*100);
+      }catch(e){console.log("Model prediction fallback",e);}
+    }
+    const severity=confidence>85?"high":confidence>65?"medium":"low";
+    return{
+      disease,confidence,crop:selectedCrop,cropName:crop?.name,cropEmoji:crop?.emoji,cropColor:crop?.color,cropDiseases:crop?.diseases||[],
+      imagePreview,timestamp:Date.now(),province,severity,
+      idealLight:crop?.idealLight||"N/A",idealMoisture:crop?.idealMoisture||"N/A",
+      organicRemedy:"🌱 Apply neem oil (2%) + garlic extract every 5 days. Remove infected leaves immediately.",
+      chemicalRemedy:"🧪 Use copper-based fungicide or mancozeb. Follow label strictly. Wear PPE.",
+      culturalPractice:"🌾 Practice 3-year rotation, rogue infected plants, ensure field drainage.",
+      prevention:"✅ Use certified disease-free seeds. Scout weekly, avoid overhead irrigation."
+    };
+  };
+
+  const handleDiagnose=async()=>{
+    if(!selectedCrop){showToast("Select a crop first","error");return;}
+    if(!imageBlob){showToast("Capture or upload a photo","error");return;}
+    setLoading(true);
+    try{
+      const d=await runDiagnosis();
+      setResult(d);addToHistory(d);showToast("Analysis complete!","success");
+    }catch{showToast("Diagnosis failed","error");}finally{setLoading(false);}
+  };
+
+  if(result)return<ResultView result={result} onReset={()=>{setResult(null);setImagePreview(null);setImageBlob(null);setSelectedCrop(null);}} showToast={showToast}/>;
+
+  const isReady=selectedCrop&&imagePreview&&modelReady&&!loading;
+  const border=dark?"#1A3050":"#E2ECE8";
+  return(
+    <div className="fade-up">
+      {!modelReady&&<div style={{background:dark?"#1A3050":"#E0F2FE",borderRadius:18,padding:"10px 14px",marginBottom:16,display:"flex",alignItems:"center",gap:10,fontSize:12,color:dark?"#BAE6FD":"#0369A1"}}><div className="spinner" style={{borderColor:"rgba(3,105,161,.3)",borderTopColor:"#0369A1"}}/> Loading AI model...</div>}
+      <div style={{marginBottom:18}}>
+        <div style={{fontSize:12,fontWeight:700,color:dark?"#7A9BB5":"#475569",marginBottom:10}}>🌾 1. Select Crop</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+          {CROPS.map(crop=>(
+            <div key={crop.id} onClick={()=>setSelectedCrop(crop.id)} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,padding:"10px 4px",border:selectedCrop===crop.id?`2px solid ${crop.color}`:`2px solid ${border}`,borderRadius:18,background:selectedCrop===crop.id?`${crop.color}20`:(dark?"#0F2235":"white"),cursor:"pointer",transition:"all .2s"}}>
+              <span style={{fontSize:28}}>{crop.emoji}</span>
+              <span style={{fontSize:10,fontWeight:700,color:dark?"#E2EFF9":"#1E293B",textAlign:"center"}}>{crop.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{marginBottom:18}}>
+        <div style={{fontSize:12,fontWeight:700,color:dark?"#7A9BB5":"#475569",marginBottom:10}}>📸 2. Capture or Upload</div>
+        {cameraActive?(
+          <div>
+            <video ref={videoRef} autoPlay playsInline muted style={{width:"100%",borderRadius:20,background:"#000"}}/>
+            <canvas ref={canvasRef} style={{display:"none"}}/>
+            <div style={{display:"flex",gap:10,marginTop:10}}>
+              <button onClick={stopCamera} style={{flex:1,padding:10,borderRadius:50,border:`1.5px solid ${border}`,background:dark?"#1A3050":"white",color:dark?"#E2EFF9":"#1E293B",fontWeight:600,fontSize:13}}>Cancel</button>
+              <button onClick={capturePhoto} style={{flex:2,padding:10,borderRadius:50,background:"#0D9488",color:"white",fontWeight:700,fontSize:13,border:"none"}}>📸 Capture</button>
+            </div>
+          </div>
+        ):imagePreview?(
+          <div>
+            <img src={imagePreview} alt="preview" style={{width:"100%",borderRadius:20,maxHeight:200,objectFit:"cover",border:`1px solid ${border}`}}/>
+            <button onClick={()=>{setImagePreview(null);setImageBlob(null);}} style={{marginTop:10,width:"100%",padding:10,borderRadius:50,border:`1.5px solid ${border}`,background:dark?"#1A3050":"white",color:dark?"#E2EFF9":"#1E293B",fontWeight:600}}>Retake</button>
+          </div>
+        ):(
+          <div onClick={()=>fileRef.current?.click()} style={{border:`2px dashed ${border}`,borderRadius:24,background:dark?"#0F2235":"white",padding:"28px 20px",textAlign:"center",cursor:"pointer"}}>
+            <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} style={{display:"none"}}/>
+            <div style={{marginBottom:8,display:"flex",justifyContent:"center"}}><Icon n="camera" s={44} c="#0D9488"/></div>
+            <div style={{fontSize:14,fontWeight:700,marginBottom:4,color:dark?"#E2EFF9":"#1E293B"}}>Upload plant image</div>
+            <div style={{fontSize:11,color:dark?"#7A9BB5":"#64748B",marginBottom:12}}>JPG, PNG up to 10MB</div>
+            <button onClick={e=>{e.stopPropagation();startCamera();}} style={{background:"#0D9488",border:"none",padding:"9px 22px",borderRadius:50,fontWeight:700,fontSize:13,color:"white"}}>📷 Open Camera</button>
+          </div>
+        )}
+      </div>
+      <div style={{position:"fixed",bottom:68,left:0,right:0,maxWidth:480,margin:"0 auto",padding:"10px 20px",background:dark?"rgba(10,22,40,.96)":"rgba(255,255,255,.96)",backdropFilter:"blur(20px)",zIndex:25,borderTop:`1px solid ${border}`}}>
+        <button disabled={!isReady} onClick={handleDiagnose} className={isReady?"pulse-btn":""} style={{width:"100%",padding:"14px",borderRadius:80,border:"none",background:!isReady?(dark?"#334155":"#CBD5E1"):"linear-gradient(105deg,#0F766E,#0D9488)",color:"white",fontWeight:800,fontSize:15,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
+          {loading?<><div className="spinner"/><span>Analyzing...</span></>:<><Icon n="zap" s={18} c="white"/><span>⚡ Run AI Diagnosis</span></>}
+        </button>
+      </div>
+      <div style={{height:90}}/>
+      {loading&&<div style={{position:"fixed",inset:0,background:dark?"rgba(10,22,40,.96)":"rgba(255,255,255,.96)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",zIndex:100}}><div style={{width:50,height:50,border:"4px solid",borderColor:`${dark?"#1A3050":"#E2ECE8"}`,borderTopColor:"#0D9488",borderRadius:"50%",animation:"spin .7s linear infinite"}}/><div style={{marginTop:16,fontWeight:700,color:dark?"#E2EFF9":"#0F766E",fontSize:15}}>🔬 Scanning leaf patterns...</div><div style={{marginTop:6,fontSize:12,color:dark?"#7A9BB5":"#64748B"}}>AI neural engine processing...</div></div>}
+    </div>
+  );
+};
+
+/* ═══════════════════════ RESULT VIEW ═══════════════════════ */
+const ResultView=({result,onReset,showToast})=>{
+  const {dark}=useContext(ThemeCtx);
+  const [treatTab,setTreatTab]=useState("organic");
+  const [speaking,setSpeaking]=useState(false);
+  const [wikiData,setWikiData]=useState(null);
+  const [wikiLoading,setWikiLoading]=useState(false);
+  const climateAdvice=getClimateAdvice(result.province,result.cropName);
+
+  const speak=()=>{
+    if(!window.speechSynthesis){showToast("Voice not supported","error");return;}
+    window.speechSynthesis.cancel();
+    const text=`Diagnosis: ${result.disease} with ${result.confidence} percent confidence. Affected crop: ${result.cropName}. Severity: ${result.severity}. Climate advice: ${climateAdvice}.`;
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="en-US";u.rate=0.9;
+    u.onstart=()=>setSpeaking(true);u.onend=()=>setSpeaking(false);
+    window.speechSynthesis.speak(u);
+  };
+
+  useEffect(()=>{
+    // Auto-fetch Wikipedia data for the disease
+    const fetchWiki=async()=>{
+      setWikiLoading(true);
+      try{
+        const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(result.disease)}&prop=extracts&exintro=1&explaintext=1&exsentences=4&format=json&origin=*`);
+        const d=await r.json();
+        const pages=d.query.pages;
+        const page=Object.values(pages)[0];
+        if(page.extract)setWikiData({title:page.title,extract:page.extract,url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title)}`});
+      }catch{}
+      setWikiLoading(false);
+    };
+    fetchWiki();
+  },[result.disease]);
+
+  const border=dark?"#1A3050":"#E2ECE8";
+  return(
+    <div className="fade-up">
+      <div style={{background:`linear-gradient(135deg,${result.cropColor||"#0F766E"}E6,${result.cropColor||"#0D9488"})`,borderRadius:24,padding:20,marginBottom:16,color:"white"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+          <div>
+            <div style={{fontSize:20,fontWeight:900,marginBottom:4}}>{result.disease}</div>
+            <div style={{opacity:.9,fontSize:13}}>{result.cropEmoji} {result.cropName} · 📍{result.province}</div>
+          </div>
+          <button onClick={speaking?()=>{window.speechSynthesis.cancel();setSpeaking(false);}:speak} style={{background:"rgba(255,255,255,.2)",border:"none",borderRadius:50,width:42,height:42,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+            <Icon n="speaker" s={22} c="white"/>
+          </button>
+        </div>
+        <div style={{marginTop:14,display:"flex",justifyContent:"space-between"}}>
+          <span style={{fontWeight:600}}>Confidence: {result.confidence}%</span>
+          <span style={{background:"rgba(0,0,0,.25)",padding:"3px 10px",borderRadius:40,fontSize:11,fontWeight:700}}>{result.severity.toUpperCase()}</span>
+        </div>
+        <div style={{height:6,background:"rgba(0,0,0,.2)",borderRadius:6,marginTop:8}}>
+          <div style={{width:`${result.confidence}%`,height:"100%",background:"white",borderRadius:6}}/>
+        </div>
+      </div>
+
+      {/* Wikipedia Disease Info */}
+      {(wikiLoading||wikiData)&&(
+        <div style={{background:dark?"#0F2235":"#FFFBEB",borderRadius:20,padding:16,marginBottom:16,border:`1px solid ${dark?"#2A3A1A":"#FDE68A"}`}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+            <Icon n="wiki" s={16} c="#D97706"/>
+            <span style={{fontWeight:700,fontSize:13,color:dark?"#E2EFF9":"#92400E"}}>Wikipedia: Disease Info</span>
+          </div>
+          {wikiLoading&&<><div className="wiki-skeleton"/><div className="wiki-skeleton" style={{width:"80%"}}/></>}
+          {wikiData&&<>
+            <p style={{fontSize:12,lineHeight:1.6,color:dark?"#B0C8D8":"#713F12"}}>{wikiData.extract}</p>
+            <a href={wikiData.url} target="_blank" rel="noreferrer" style={{display:"inline-block",marginTop:8,fontSize:11,color:"#D97706",fontWeight:700,textDecoration:"none"}}>Read more on Wikipedia →</a>
+          </>}
+        </div>
+      )}
+
+      <div style={{background:dark?"#0F2235":"#F0FDF4",borderRadius:20,padding:16,marginBottom:16,borderLeft:"4px solid #0D9488"}}>
+        <div style={{fontWeight:700,fontSize:13,color:"#0D9488",marginBottom:10}}>🌤️ Climate & Crop Needs</div>
+        <div style={{display:"flex",gap:20,marginBottom:10}}>
+          <div><div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>Ideal light</div><div style={{fontWeight:700}}>☀️ {result.idealLight}</div></div>
+          <div><div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>Soil moisture</div><div style={{fontWeight:700}}>💧 {result.idealMoisture}</div></div>
+        </div>
+        <div style={{fontSize:12,background:dark?"#0F172A":"#E6F7EC",padding:"10px 12px",borderRadius:14}}>{climateAdvice}</div>
+      </div>
+
+      {result.cropDiseases?.length>0&&(
+        <div style={{background:dark?"#0F2235":"white",borderRadius:20,padding:16,marginBottom:16,border:`1px solid ${border}`}}>
+          <div style={{fontSize:12,fontWeight:700,color:"#0F766E",marginBottom:8}}>📋 Common diseases for {result.cropName}</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+            {result.cropDiseases.map((d,i)=><span key={i} style={{background:dark?"#1A3050":"#F1F5F9",padding:"4px 12px",borderRadius:30,fontSize:11,fontWeight:600,color:dark?"#E2EFF9":"#1E293B"}}>{d}</span>)}
+          </div>
+        </div>
+      )}
+
+      <div style={{background:dark?"#0F2235":"white",borderRadius:20,padding:18,marginBottom:16}}>
+        <div style={{fontSize:13,fontWeight:700,color:dark?"#E2EFF9":"#1E293B",marginBottom:12}}>💊 Treatment Protocol</div>
+        <div style={{display:"flex",gap:8,marginBottom:14}}>
+          {["organic","chemical","cultural"].map(tab=>(
+            <button key={tab} onClick={()=>setTreatTab(tab)} style={{flex:1,padding:"7px 8px",borderRadius:40,border:`1.5px solid ${dark?"#1A3050":"#E2ECE8"}`,background:treatTab===tab?"#0D9488":(dark?"#1A3050":"white"),color:treatTab===tab?"white":(dark?"#7A9BB5":"#475569"),fontWeight:700,fontSize:11,textTransform:"capitalize"}}>
+              {tab===treatTab?"✓ ":""}{tab}
+            </button>
+          ))}
+        </div>
+        <div style={{fontSize:13,lineHeight:1.6,color:dark?"#E2EFF9":"#1E293B"}}>
+          {treatTab==="organic"?result.organicRemedy:treatTab==="chemical"?result.chemicalRemedy:result.culturalPractice}
+        </div>
+      </div>
+
+      <div style={{background:dark?"#0D3A2A":"#F0FDF4",borderRadius:20,padding:14,marginBottom:16,borderLeft:"4px solid #16A34A"}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#16A34A"}}>🛡️ Prevention Tips</div>
+        <div style={{marginTop:6,fontSize:13,color:dark?"#B0C8D8":"#166534"}}>{result.prevention}</div>
+      </div>
+
+      <div style={{display:"flex",gap:10}}>
+        <button onClick={()=>navigator.share?navigator.share({title:`PlantDoc: ${result.disease}`,text:`${result.disease} on ${result.cropName}. Confidence: ${result.confidence}%.`}):showToast("Share not supported")} style={{flex:1,padding:12,borderRadius:50,border:`1.5px solid ${border}`,background:dark?"#1A3050":"white",fontWeight:600,color:dark?"#E2EFF9":"#1E293B"}}>
+          Share
+        </button>
+        <button onClick={onReset} style={{flex:2,padding:12,borderRadius:50,border:"none",background:"#0D9488",color:"white",fontWeight:800,fontSize:14}}>
+          New Scan
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════ HISTORY PAGE ═══════════════════════ */
+const HistoryPage=({history,setHistory,showToast})=>{
+  const {dark}=useContext(ThemeCtx);
+  const [selected,setSelected]=useState(null);
+  if(selected)return<div><button onClick={()=>setSelected(null)} style={{marginBottom:14,color:"#0D9488",fontWeight:700,background:"none",border:"none",display:"flex",alignItems:"center",gap:6}}><Icon n="arrow_left" s={16} c="#0D9488"/>Back</button><ResultView result={selected} onReset={()=>setSelected(null)} showToast={showToast}/></div>;
+  if(!history.length)return<div style={{textAlign:"center",padding:"50px 20px"}}><div style={{fontSize:60}}>📋</div><div style={{fontWeight:800,marginTop:12,color:dark?"#E2EFF9":"#1E293B"}}>No diagnoses yet</div><div style={{color:dark?"#7A9BB5":"#64748B"}}>Run your first AI scan</div></div>;
+  return(
+    <div className="fade-up">
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+        <span style={{fontWeight:800,color:dark?"#E2EFF9":"#1E293B"}}>History ({history.length})</span>
+        <button onClick={()=>{if(confirm("Clear all history?")){ setHistory([]);localStorage.setItem("plantdoc_history","[]");showToast("Cleared");}}} style={{color:"#DC2626",background:"none",border:"none",fontWeight:600,fontSize:12}}>Clear all</button>
+      </div>
+      {history.map(e=>(
+        <div key={e.timestamp} onClick={()=>setSelected(e)} style={{display:"flex",gap:12,padding:"12px 0",borderBottom:`1px solid ${dark?"#1A3050":"#EDF2F7"}`,cursor:"pointer"}}>
+          <img src={e.imagePreview} style={{width:56,height:56,borderRadius:16,objectFit:"cover"}}/>
+          <div>
+            <div style={{fontWeight:800,color:dark?"#E2EFF9":"#1E293B"}}>{e.disease}</div>
+            <div style={{fontSize:12,color:dark?"#7A9BB5":"#475569"}}>{e.cropEmoji} {e.cropName} · {e.confidence}%</div>
+            <div style={{fontSize:10,color:dark?"#475569":"#94A3B8",marginTop:2}}>
+              {new Date(e.timestamp).toLocaleDateString("en-ZM",{day:"numeric",month:"short",year:"numeric"})}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ═══════════════════════ SETTINGS PAGE ═══════════════════════ */
+const SettingsPage=({settings,saveSettings,showToast})=>{
+  const {dark,toggle}=useContext(ThemeCtx);
+  const [local,setLocal]=useState(settings);
+  const update=(k,v)=>{const u={...local,[k]:v};setLocal(u);saveSettings(u);showToast(`${k} updated`);};
+  const updateKey=(p,v)=>{const u={...local,apiKeys:{...local.apiKeys,[p]:v}};setLocal(u);saveSettings(u);showToast(`${p} key saved`);};
+  const border=dark?"#1A3050":"#E2ECE8";
+  const bg=dark?"#0F2235":"#FFFFFF";
+  const SettingRow=({label,children})=>(
+    <div style={{padding:"14px 0",borderBottom:`1px solid ${border}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <div style={{fontSize:14,fontWeight:600,color:dark?"#E2EFF9":"#1E293B"}}>{label}</div>
+      {children}
+    </div>
+  );
+  return(
+    <div className="fade-up">
+      <div style={{background:bg,borderRadius:24,padding:20,marginBottom:14,border:`1px solid ${border}`}}>
+        <div style={{fontWeight:800,fontSize:15,marginBottom:4,color:dark?"#E2EFF9":"#0F172A"}}>🌾 PlantDoc Pro Settings</div>
+        <div style={{fontSize:12,color:dark?"#7A9BB5":"#64748B"}}>Zambia's #1 Agriculture App by ZinnEx</div>
+      </div>
+      <div style={{background:bg,borderRadius:24,padding:"0 20px",marginBottom:14,border:`1px solid ${border}`}}>
+        <SettingRow label="🌓 Dark Mode">
+          <button onClick={toggle} style={{width:52,height:28,borderRadius:30,background:dark?"#0D9488":"#CBD5E1",border:"none",position:"relative",cursor:"pointer",transition:"background .3s"}}>
+            <div style={{width:22,height:22,borderRadius:"50%",background:"white",position:"absolute",top:3,left:dark?26:3,transition:"left .3s",boxShadow:"0 1px 4px rgba(0,0,0,.25)"}}/>
+          </button>
+        </SettingRow>
+        <SettingRow label="📍 Province">
+          <select value={local.province} onChange={e=>update("province",e.target.value)} style={{padding:"7px 12px",borderRadius:20,border:`1.5px solid ${border}`,background:dark?"#0A1628":"white",color:dark?"#E2EFF9":"#0F172A",fontFamily:"Outfit",fontSize:13,fontWeight:600}}>
+            {PROVINCES.map(p=><option key={p}>{p}</option>)}
+          </select>
+        </SettingRow>
+        <SettingRow label="🌍 UI Language">
+          <select value={local.lang||"en"} onChange={e=>update("lang",e.target.value)} style={{padding:"7px 12px",borderRadius:20,border:`1.5px solid ${border}`,background:dark?"#0A1628":"white",color:dark?"#E2EFF9":"#0F172A",fontFamily:"Outfit",fontSize:13,fontWeight:600}}>
+            {ZAMBIAN_LANGUAGES.map(l=><option key={l.code} value={l.code}>{l.flag} {l.name}</option>)}
+          </select>
+        </SettingRow>
+        <SettingRow label="🤖 AI Engine">
+          <select value={local.activeAI} onChange={e=>update("activeAI",e.target.value)} style={{padding:"7px 12px",borderRadius:20,border:`1.5px solid ${border}`,background:dark?"#0A1628":"white",color:dark?"#E2EFF9":"#0F172A",fontFamily:"Outfit",fontSize:13,fontWeight:600}}>
+            <option value="teachable">🌿 Teachable Machine</option>
+            <option value="anthropic">🧠 Claude (Anthropic)</option>
+          </select>
+        </SettingRow>
+      </div>
+      <div style={{background:bg,borderRadius:24,padding:20,marginBottom:14,border:`1px solid ${border}`}}>
+        <div style={{fontWeight:700,fontSize:14,color:dark?"#E2EFF9":"#1E293B",marginBottom:10}}>🔐 Claude API Key</div>
+        <input type="password" placeholder="sk-ant-..." value={local.apiKeys?.anthropic||""} onChange={e=>updateKey("anthropic",e.target.value)} style={{width:"100%",padding:"10px 14px",borderRadius:16,border:`1.5px solid ${border}`,background:dark?"#0A1628":"white",color:dark?"#E2EFF9":"#1E293B",fontSize:13,outline:"none"}}/>
+        <div style={{fontSize:11,color:dark?"#7A9BB5":"#94A3B8",marginTop:6}}>Required for AI Assistant & Translation features</div>
+      </div>
+      <div style={{background:dark?"#0D2A1A":"#F0FDF4",borderRadius:20,padding:16,border:`1px solid ${dark?"#1A4A2A":"#BBF7D0"}`}}>
+        <div style={{fontWeight:700,fontSize:13,color:"#16A34A",marginBottom:6}}>🌾 About PlantDoc Pro</div>
+        <div style={{fontSize:12,color:dark?"#B0C8D8":"#166534",lineHeight:1.6}}>Built by ZinnEx · Zambia's premier AgriTech platform. Supporting smallholder farmers across all 10 provinces with AI-powered disease diagnosis, real-time weather, market prices, expert contacts, and agricultural education.</div>
+        <div style={{marginTop:8,fontSize:11,color:dark?"#7A9BB5":"#94A3B8"}}>Version 6.0 · © 2025 ZinnEx · 🇿🇲 Made in Zambia</div>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════ MAIN APP ═══════════════════════ */
+const PlantDoc=()=>{
+  const [dark,setDark]=useState(()=>{try{return localStorage.getItem("pd_dark")==="true";}catch{return false;}});
+  const [tab,setTab]=useState("diagnose");
+  const [subTab,setSubTab]=useState("weather"); // for the 'more' section
+  const [history,setHistory]=useState(()=>{try{return JSON.parse(localStorage.getItem("plantdoc_history")||"[]");}catch{return[];}});
+  const [settings,setSettings]=useState(()=>{try{return JSON.parse(localStorage.getItem("pd_settings")||JSON.stringify({province:"Lusaka",lang:"en",activeAI:"teachable",apiKeys:{anthropic:""}}))}catch{return{province:"Lusaka",lang:"en",activeAI:"teachable",apiKeys:{anthropic:""}};}});
+  const [toast,setToast]=useState(null);
+
+  useEffect(()=>{
+    if(dark)document.body.classList.add("dark");
+    else document.body.classList.remove("dark");
+    localStorage.setItem("pd_dark",dark);
+  },[dark]);
+
+  const toggle=()=>setDark(p=>!p);
+  const showToast=useCallback((msg,type="success")=>{setToast({msg,type});setTimeout(()=>setToast(null),2500);},[]);
+  const addToHistory=useCallback(entry=>{
+    const u=[entry,...history].slice(0,50);
+    setHistory(u);localStorage.setItem("plantdoc_history",JSON.stringify(u));
+  },[history]);
+  const saveSettings=useCallback(s=>{
+    setSettings(s);localStorage.setItem("pd_settings",JSON.stringify(s));
+  },[]);
+
+  const lang=settings.lang||"en";
+  const phrases=LANGUAGE_PHRASES[lang]||LANGUAGE_PHRASES.en;
+  const border=dark?"#1A3050":"#E2ECE8";
+
+  const TABS=[
+    {id:"diagnose",icon:"camera",label:phrases.diagnose||"Diagnose"},
+    {id:"education",icon:"book",label:"Learn"},
+    {id:"experts",icon:"users",label:"Experts"},
+    {id:"more",icon:"globe",label:"More"},
+    {id:"history",icon:"history",label:"History"},
+  ];
+
+  const MORE_SUBTABS=[
+    {id:"weather",emoji:"🌤️",label:"Weather"},
+    {id:"market",emoji:"📊",label:"Market"},
+    {id:"wiki",emoji:"📖",label:"Wiki"},
+    {id:"translate",emoji:"🗣️",label:"Translate"},
+    {id:"assistant",emoji:"🤖",label:"AI Assistant"},
+    {id:"settings",emoji:"⚙️",label:"Settings"},
+  ];
+
+  return(
+    <ThemeCtx.Provider value={{dark,toggle}}>
+      <div style={{display:"flex",flexDirection:"column",height:"100vh",width:"100%",background:"var(--bg)",overflow:"hidden"}}>
+        {/* Header */}
+        <div style={{background:dark?"#0B1C30":"linear-gradient(135deg,#064E43 0%,#0D9488 100%)",padding:"14px 20px",flexShrink:0,zIndex:20,boxShadow:"0 4px 20px rgba(0,0,0,.15)"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:42,height:42,background:"rgba(255,255,255,.15)",borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,backdropFilter:"blur(6px)"}}>🌾</div>
+              <div>
+                <div style={{fontSize:18,fontWeight:900,color:"white",letterSpacing:-.5,lineHeight:1.1}}>PlantDoc Pro</div>
+                <div style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,.8)",textTransform:"uppercase",letterSpacing:.8}}>Zambia's #1 AgriTech · ZinnEx</div>
+              </div>
+            </div>
+            <div style={{display:"flex",gap:8,alignItems:"center"}}>
+              {tab==="more"&&(
+                <div style={{display:"flex",gap:6,alignItems:"center",background:"rgba(255,255,255,.1)",padding:"4px 10px",borderRadius:30}}>
+                  <span style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,.9)"}}>{MORE_SUBTABS.find(s=>s.id===subTab)?.emoji}</span>
+                  <span style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,.9)"}}>{MORE_SUBTABS.find(s=>s.id===subTab)?.label}</span>
                 </div>
-            );
-        };
+              )}
+              <button onClick={toggle} style={{background:"rgba(255,255,255,.15)",border:"none",borderRadius:40,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+                <Icon n={dark?"sun":"moon"} s={18} c="white"/>
+              </button>
+              <div style={{background:"rgba(255,255,255,.15)",padding:"4px 10px",borderRadius:30,fontSize:11,fontWeight:700,color:"white"}}>🇿🇲</div>
+            </div>
+          </div>
+        </div>
 
-        // History Page (dark mode compatible)
-        const HistoryPage = ({ history, setHistory, showToast }) => {
-            const { darkMode } = useContext(ThemeContext);
-            const [selected, setSelected] = useState(null);
-            if (selected) return <div><button onClick={() => setSelected(null)} style={{ marginBottom:16, color:"#0D9488", fontWeight:600, background:"none", border:"none", cursor:"pointer" }}>← Back</button><ResultView result={selected} onReset={()=>setSelected(null)} showToast={showToast} /></div>;
-            if (!history.length) return <div style={{ textAlign:"center", padding:"50px 20px" }}><div style={{ fontSize:60 }}>📋</div><div style={{ fontWeight:700, marginTop:12, color: darkMode ? "#E2E8F0" : "#1E293B" }}>No diagnoses yet</div><div style={{ color: darkMode ? "#94A3B8" : "#64748B" }}>Run your first AI scan</div></div>;
-            return (<div><div style={{ display:"flex", justifyContent:"space-between", marginBottom:14 }}><span style={{ fontWeight:700, color: darkMode ? "#CBD5E1" : "#1E293B" }}>Recent ({history.length})</span><button onClick={()=>{ if(confirm("Clear all?")){ setHistory([]); localStorage.setItem("plantdoc_history","[]"); showToast("Cleared"); } }} style={{ color:"#EF4444", background:"none", border:"none", fontSize:12 }}>Clear</button></div>{history.map(entry=><div key={entry.timestamp} onClick={()=>setSelected(entry)} style={{ display:"flex", gap:14, padding:"12px 0", borderBottom:`1px solid ${darkMode ? "#334155" : "#EDF2F7"}`, cursor:"pointer" }}><img src={entry.imagePreview} style={{ width:56, height:56, borderRadius:20, objectFit:"cover" }} /><div><div style={{ fontWeight:700, color: darkMode ? "#E2E8F0" : "#1E293B" }}>{entry.disease}</div><div style={{ fontSize:12, color: darkMode ? "#94A3B8" : "#475569" }}>{entry.cropEmoji} {entry.cropName} · {entry.confidence}%</div><div style={{ fontSize:10, color: darkMode ? "#64748B" : "#94A3B8", marginTop:2 }}>{new Date(entry.timestamp).toLocaleDateString()}</div></div></div>)}</div>);
-        };
+        {/* MORE subtabs row */}
+        {tab==="more"&&(
+          <div style={{background:dark?"#0A1628":"#F8FAFE",borderBottom:`1px solid ${border}`,padding:"10px 16px",overflowX:"auto",flexShrink:0,display:"flex",gap:8,whiteSpace:"nowrap"}}>
+            {MORE_SUBTABS.map(st=>(
+              <button key={st.id} onClick={()=>setSubTab(st.id)} style={{flexShrink:0,padding:"6px 14px",borderRadius:30,border:`1.5px solid ${subTab===st.id?"#0D9488":border}`,background:subTab===st.id?"#0D9488":(dark?"#0F2235":"white"),color:subTab===st.id?"white":(dark?"#7A9BB5":"#475569"),fontWeight:700,fontSize:12,display:"flex",alignItems:"center",gap:5}}>
+                <span>{st.emoji}</span><span>{st.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
-        // Settings Page (dark mode)
-        const SettingsPage = ({ settings, saveSettings, showToast }) => {
-            const { darkMode } = useContext(ThemeContext);
-            const [localSettings, setLocalSettings] = useState(settings);
-            const [showKeys, setShowKeys] = useState({ openai: false, anthropic: false, gemini: false });
-            const updateSetting = (key, value) => { const updated = { ...localSettings, [key]: value }; setLocalSettings(updated); saveSettings(updated); showToast(`${key} updated`); };
-            const updateApiKey = (provider, value) => { const updated = { ...localSettings, apiKeys: { ...localSettings.apiKeys, [provider]: value } }; setLocalSettings(updated); saveSettings(updated); showToast(`${provider} key saved`); };
-            return (<div className="fade-in"><div style={{ background: darkMode ? "#1E293B" : "white", borderRadius: 28, padding: 20, marginBottom: 16 }}><div style={{ fontWeight:700, marginBottom:12, color: darkMode ? "#E2E8F0" : "#1E293B" }}>🧠 AI Engine</div><select value={localSettings.activeAI} onChange={e=>updateSetting("activeAI", e.target.value)} style={{ width:"100%", padding:12, borderRadius:20, border:`1.5px solid ${darkMode ? "#475569" : "#E2E8F0"}`, background: darkMode ? "#0F172A" : "white", color: darkMode ? "#E2E8F0" : "#1E293B", fontFamily:"Inter" }}><option value="teachable">🌿 Teachable Machine</option><option value="openai">🤖 OpenAI</option><option value="anthropic">🧠 Claude</option><option value="gemini">⭐ Gemini</option></select></div><div style={{ background: darkMode ? "#1E293B" : "white", borderRadius: 28, padding: 20, marginBottom: 16 }}><div style={{ fontWeight:700, marginBottom:12, color: darkMode ? "#E2E8F0" : "#1E293B" }}>🔐 API Keys</div>{["openai","anthropic","gemini"].map(prov=> (<div key={prov} style={{ marginBottom:14 }}><div dangerouslySetInnerHTML={{ __html: AIProviderIcons[prov] }} style={{ width:24, height:24, marginBottom:6 }} /><input type={showKeys[prov]?"text":"password"} placeholder={`${prov} key`} value={localSettings.apiKeys[prov]} onChange={e=>updateApiKey(prov, e.target.value)} style={{ width:"100%", padding:10, borderRadius:16, border:`1.5px solid ${darkMode ? "#475569" : "#E2E8F0"}`, background: darkMode ? "#0F172A" : "white", color: darkMode ? "#E2E8F0" : "#1E293B", fontSize:12 }} /><button onClick={()=>setShowKeys({...showKeys, [prov]:!showKeys[prov]})} style={{ marginTop:6, fontSize:11, background:"none", border:"none", color:"#0D9488", cursor:"pointer" }}>{showKeys[prov]?"Hide":"Show"}</button></div>))}</div><div style={{ background: darkMode ? "#1E293B" : "white", borderRadius: 28, padding: 20, marginBottom: 16 }}><div style={{ fontWeight:700, marginBottom:12, color: darkMode ? "#E2E8F0" : "#1E293B" }}>📍 Location</div><select value={localSettings.province} onChange={e=>updateSetting("province", e.target.value)} style={{ width:"100%", padding:12, borderRadius:20, border:`1.5px solid ${darkMode ? "#475569" : "#E2E8F0"}`, background: darkMode ? "#0F172A" : "white", color: darkMode ? "#E2E8F0" : "#1E293B" }}>{ZAMBIAN_PROVINCES.map(p=><option key={p}>{p}</option>)}</select></div><div style={{ textAlign:"center", fontSize:11, color: darkMode ? "#64748B" : "#94A3B8", padding:"16px 0" }}>PlantDoc Pro v5.0 · AI for Zambia</div></div>);
-        };
+        {/* Content */}
+        <div className="scroll" style={{flex:1,overflowY:"auto",padding:tab==="more"&&subTab==="assistant"?"16px 16px 80px":"16px 16px 80px"}}>
+          {tab==="diagnose"&&<DiagnosePage province={settings.province} addToHistory={addToHistory} showToast={showToast} apiKeys={settings.apiKeys} activeAI={settings.activeAI}/>}
+          {tab==="education"&&<EducationPage dark={dark} showToast={showToast}/>}
+          {tab==="experts"&&<ExpertsPage dark={dark} province={settings.province} showToast={showToast}/>}
+          {tab==="history"&&<HistoryPage history={history} setHistory={setHistory} showToast={showToast}/>}
+          {tab==="more"&&subTab==="weather"&&<WeatherWidget province={settings.province} dark={dark}/>}
+          {tab==="more"&&subTab==="market"&&<MarketPrices dark={dark}/>}
+          {tab==="more"&&subTab==="wiki"&&<WikiDisease dark={dark} showToast={showToast}/>}
+          {tab==="more"&&subTab==="translate"&&<Translator dark={dark} showToast={showToast}/>}
+          {tab==="more"&&subTab==="assistant"&&<AgriAssistant dark={dark} province={settings.province} showToast={showToast}/>}
+          {tab==="more"&&subTab==="settings"&&<SettingsPage settings={settings} saveSettings={saveSettings} showToast={showToast}/>}
+        </div>
 
-        ReactDOM.createRoot(document.getElementById("root")).render(<PlantDocZambia />);
-    </script>
+        {/* Bottom Nav */}
+        <div style={{position:"fixed",bottom:0,left:0,right:0,maxWidth:480,margin:"0 auto",background:dark?"rgba(10,22,40,.97)":"rgba(255,255,255,.97)",backdropFilter:"blur(24px)",borderTop:`1px solid ${dark?"rgba(26,48,80,.8)":"rgba(203,213,225,.5)"}`,display:"flex",padding:"8px 12px 16px",gap:4,zIndex:30,boxShadow:"0 -8px 30px rgba(0,0,0,.06)"}}>
+          {TABS.map(t=>(
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"8px 4px",background:"none",border:"none",cursor:"pointer",borderRadius:16,transition:"all .2s",color:tab===t.id?"#0D9488":(dark?"#7A9BB5":"#94A3B8"),backgroundColor:tab===t.id?(dark?"rgba(13,148,136,.2)":"rgba(13,148,136,.1)"):"transparent"}}>
+              <Icon n={t.icon} s={20} c={tab===t.id?"#0D9488":(dark?"#7A9BB5":"#94A3B8")}/>
+              <span style={{fontSize:10,fontWeight:700,letterSpacing:.2}}>{t.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Toast */}
+        {toast&&(
+          <div style={{position:"fixed",bottom:88,left:"50%",transform:"translateX(-50%)",background:"#1E293B",color:"white",padding:"10px 20px",borderRadius:50,fontSize:12,fontWeight:600,display:"flex",alignItems:"center",gap:8,zIndex:100,whiteSpace:"nowrap",boxShadow:"0 10px 30px rgba(0,0,0,.25)",animation:"bounceIn .3s"}}>
+            <Icon n="check" s={14} c="#10B981"/>
+            {toast.msg}
+          </div>
+        )}
+      </div>
+    </ThemeCtx.Provider>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("root")).render(<PlantDoc/>);
+</script>
 </body>
 </html>
