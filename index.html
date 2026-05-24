@@ -1,95 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>PlantDoc Pro | #1 AgriTech App in Zambia</title>
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        :root{
-            --teal:#0D9488;--teal-dark:#0B7A70;--teal-light:#14B8A6;
-            --green:#16A34A;--amber:#D97706;--red:#DC2626;--blue:#2563EB;
-            --bg:#F0F7F4;--card:#FFFFFF;--text:#0F172A;--sub:#475569;--border:#E2ECE8;
-            --nav-bg:rgba(255,255,255,0.96);
-        }
-        body.dark{
-            --bg:#0A1628;--card:#0F2235;--text:#E2EFF9;--sub:#7A9BB5;--border:#1A3050;
-            --nav-bg:rgba(10,22,40,0.96);
-        }
-        body{font-family:'Outfit',sans-serif;background:var(--bg);overflow-x:hidden;overflow-y:auto;width:100%;min-height:100vh;transition:background .3s}
-        #root{width:100%;min-height:100vh}
-        .scroll::-webkit-scrollbar{width:3px}
-        .scroll::-webkit-scrollbar-track{background:transparent}
-        .scroll::-webkit-scrollbar-thumb{background:var(--teal);border-radius:4px}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(13,148,136,.5)}70%{box-shadow:0 0 0 14px rgba(13,148,136,0)}100%{box-shadow:0 0 0 0 rgba(13,148,136,0)}}
-        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-        @keyframes bounceIn{0%{transform:scale(0.8);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
-        .fade-up{animation:fadeUp .35s cubic-bezier(.2,.9,.4,1.1) both}
-        .pulse-btn{animation:pulse 2s infinite}
-        .spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
-        .wiki-skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;height:14px;margin-bottom:8px}
-        input,select,textarea{font-family:'Outfit',sans-serif}
-        button{font-family:'Outfit',sans-serif;cursor:pointer}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>PlantDoc Pro | #1 AgriTech App in Zambia</title>
+<script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --teal:#0D9488;--teal-dark:#0B7A70;--teal-light:#14B8A6;
+  --green:#16A34A;--amber:#D97706;--red:#DC2626;--blue:#2563EB;
+  --bg:#F0F7F4;--card:#FFFFFF;--text:#0F172A;--sub:#475569;--border:#E2ECE8;
+  --nav-bg:rgba(255,255,255,0.96);
+}
+body.dark{
+  --bg:#0A1628;--card:#0F2235;--text:#E2EFF9;--sub:#7A9BB5;--border:#1A3050;
+  --nav-bg:rgba(10,22,40,0.96);
+}
+body{font-family:'Outfit',sans-serif;background:var(--bg);overflow-x:hidden;overflow-y:auto;width:100%;min-height:100vh;transition:background .3s}
+#root{width:100%;min-height:100vh}
+.scroll::-webkit-scrollbar{width:3px}
+.scroll::-webkit-scrollbar-track{background:transparent}
+.scroll::-webkit-scrollbar-thumb{background:var(--teal);border-radius:4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(13,148,136,.5)}70%{box-shadow:0 0 0 14px rgba(13,148,136,0)}100%{box-shadow:0 0 0 0 rgba(13,148,136,0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes bounceIn{0%{transform:scale(0.8);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+.fade-up{animation:fadeUp .35s cubic-bezier(.2,.9,.4,1.1) both}
+.pulse-btn{animation:pulse 2s infinite}
+.spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+.wiki-skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;height:14px;margin-bottom:8px}
+input,select,textarea{font-family:'Outfit',sans-serif}
+button{font-family:'Outfit',sans-serif;cursor:pointer}
+</style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const {useState,useRef,useEffect,useCallback,createContext,useContext,useMemo}=React;
+const {useState,useRef,useEffect,useCallback,createContext,useContext}=React;
 const ThemeCtx=createContext({dark:false,toggle:()=>{}});
 
-const AI_PROVIDERS=[
-  {id:"offline",name:"Offline AI",desc:"Works without API keys"},
-  {id:"openrouter",name:"OpenRouter AI",desc:"Supports GPT, Claude, Gemini"},
-  {id:"gemini",name:"Google Gemini",desc:"Gemini API"},
-  {id:"huggingface",name:"HuggingFace",desc:"Open-source AI models"},
-  {id:"anthropic",name:"Anthropic Claude",desc:"Claude models"}
-];
+/* ═══ GROQ AI ENGINE ═══ */
+const GROQ_MODEL="llama-3.3-70b-versatile";
 
-async function smartAIResponse(prompt,provider="offline"){
+async function groqCall(prompt, systemPrompt="You are an expert agricultural assistant for Zambia."){
+  const key=localStorage.getItem("plantdoc_groq_key")||"";
+  if(!key) return "⚠️ Please add your Groq API key in Settings → AI Config to use AI features.";
   try{
-    if(provider==="offline"){
-      return "🌱 AI Assistant: " + prompt + "\n\nRecommendation: Monitor crop moisture, check for leaf discoloration, rotate crops regularly, and consult local agricultural experts if symptoms worsen.";
+    const res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+      body:JSON.stringify({
+        model:GROQ_MODEL,
+        messages:[
+          {role:"system",content:systemPrompt},
+          {role:"user",content:prompt}
+        ],
+        max_tokens:1200,
+        temperature:0.4
+      })
+    });
+    if(!res.ok){
+      const e=await res.json().catch(()=>({}));
+      return "❌ Groq error: "+(e?.error?.message||res.status)+". Check your API key in Settings.";
     }
-
-    if(provider==="openrouter"){
-      const key=localStorage.getItem("openrouter_api_key");
-      if(!key) return "⚠️ Add your OpenRouter API key in settings.";
-      const res=await fetch("https://openrouter.ai/api/v1/chat/completions",{
-        method:"POST",
-        headers:{
-          "Authorization":"Bearer "+key,
-          "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
-          model:"openai/gpt-4o-mini",
-          messages:[{role:"user",content:prompt}]
-        })
-      });
-      const data=await res.json();
-      return data.choices?.[0]?.message?.content || "No response received.";
-    }
-
-    return "⚠️ Provider selected but API integration still needs your API key.";
+    const data=await res.json();
+    return data.choices?.[0]?.message?.content||"No response.";
   }catch(e){
-    return "❌ AI request failed. Check internet/API key.";
+    return "❌ Network error. Check your internet connection.";
   }
 }
 
+async function groqDiagnose(cropName, diseaseName, province){
+  const sys=`You are Dr. Agri, a plant pathologist specializing in Zambian crops. Give concise, practical advice for smallholder farmers. Always respond in plain text with no markdown asterisks.`;
+  const prompt=`A farmer in ${province}, Zambia has detected "${diseaseName}" on their ${cropName} crop.
+Give a structured response with exactly these 4 sections separated by | character:
+ORGANIC_REMEDY | CHEMICAL_REMEDY | CULTURAL_PRACTICE | PREVENTION
+Keep each section to 1-2 sentences. Be practical for a Zambian farmer.`;
+  const raw=await groqCall(prompt,sys);
+  if(raw.includes("⚠️")||raw.includes("❌")) return null;
+  const parts=raw.split("|");
+  if(parts.length>=4) return {
+    organicRemedy:"🌱 "+parts[0].trim(),
+    chemicalRemedy:"🧪 "+parts[1].trim(),
+    culturalPractice:"🌾 "+parts[2].trim(),
+    prevention:"✅ "+parts[3].trim()
+  };
+  return null;
+}
 
-/* ═══════════════════════ DATA ═══════════════════════ */
+async function groqTranslate(text, targetLangName, targetLangCode){
+  const sys=`You are a professional translator specializing in Zambian languages and agricultural terminology.`;
+  const prompt=`Translate the following farming text into ${targetLangName}. 
+If translating into Bemba, Nyanja, Tonga, Lozi, Kaonde, or Luvale, use authentic local vocabulary that farmers would understand.
+Return ONLY the translated text, nothing else.
+
+Text to translate: "${text}"`;
+  return await groqCall(prompt,sys);
+}
+
+async function groqAssistant(messages, province){
+  const key=localStorage.getItem("plantdoc_groq_key")||"";
+  if(!key) return "⚠️ Please add your Groq API key in Settings → AI Config to use AI features.";
+  const sys=`You are an expert agricultural assistant for Zambia, specifically knowledgeable about:
+- Crops grown in Zambia: maize, groundnuts, soybeans, cassava, cotton, sorghum, wheat, vegetables, tomatoes, beans
+- Local conditions in ${province} Province
+- ECZ extension services, ZNFU, ZARI, FRA programs
+- Local market prices (ZMW), fertilizer recommendations, planting seasons
+- Zambian climate zones and rainfall patterns
+Respond in 2-4 sentences. Be practical, specific, and helpful for smallholder farmers.`;
+  try{
+    const res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+      body:JSON.stringify({
+        model:GROQ_MODEL,
+        messages:[{role:"system",content:sys},...messages],
+        max_tokens:500,temperature:0.5
+      })
+    });
+    if(!res.ok){
+      const e=await res.json().catch(()=>({}));
+      return "❌ Groq error: "+(e?.error?.message||res.status);
+    }
+    const data=await res.json();
+    return data.choices?.[0]?.message?.content||"No response.";
+  }catch(e){
+    return "❌ Network error. Check your internet connection.";
+  }
+}
+
+/* ═══ DATA ═══ */
 const CROPS=[
   {id:"avocado",name:"Avocado",emoji:"🥑",color:"#22C55E",diseases:["Root Rot","Anthracnose","Scab","Sunblotch","Black Streak","Powdery Mildew"],idealLight:"65-90%",idealMoisture:"60-85%"},
   {id:"lemon",name:"Lemon",emoji:"🍋",color:"#EAB308",diseases:["Citrus Canker","Greening Disease","Root Rot","Black Spot","Scab","Melanose"],idealLight:"70-100%",idealMoisture:"55-75%"},
-
   {id:"maize",name:"Maize",emoji:"🌽",color:"#F59E0B",diseases:["Gray Leaf Spot","Maize Streak Virus","Northern Corn Leaf Blight","Rust","Stalk Rot","Ear Rot"],idealLight:"70-100%",idealMoisture:"60-80%"},
   {id:"groundnuts",name:"Groundnuts",emoji:"🥜",color:"#B45309",diseases:["Rosette Disease","Early Leaf Spot","Late Leaf Spot","Groundnut Rust","Aflatoxin","Bacterial Wilt"],idealLight:"80-100%",idealMoisture:"50-70%"},
   {id:"soybean",name:"Soybean",emoji:"🫘",color:"#65A30D",diseases:["Soybean Mosaic Virus","Sudden Death Syndrome","Phytophthora Root Rot","Asian Rust","Frogeye Leaf Spot","White Mold"],idealLight:"70-95%",idealMoisture:"55-75%"},
@@ -128,95 +178,50 @@ const AGRI_EXPERTS=[
   {name:"IITA – International Institute of Tropical Agriculture",role:"Cassava & Legume Disease Research",phone:"+260 211 261 071",email:"iita-zambia@cgiar.org",website:"https://www.iita.org",province:"Lusaka",type:"research",emoji:"🌍"},
   {name:"Catholic Relief Services – Agriculture",role:"Smallholder Farmer Support",phone:"+260 211 252 524",email:"crs.zambia@crs.org",website:"https://www.crs.org/zambia",province:"National",type:"ngo",emoji:"❤️"},
   {name:"Golden Valley Agricultural Research Trust",role:"Maize & Cereal Agronomy",phone:"+260 264 370 700",email:"gvart@zamtel.zm",website:"http://www.gvart.org",province:"Central",type:"research",emoji:"🌽"},
-  {name:"Mulungushi University – Agri Dept",role:"Academic Agricultural Extension",phone:"+260 215 321 400",email:"info@mu.ac.zm",website:"https://www.mu.ac.zm",province:"Central",type:"university",emoji:"🎓"},
   {name:"University of Zambia – Agriculture Faculty",role:"Research, Training & Extension",phone:"+260 211 295 073",email:"agri@unza.zm",website:"https://www.unza.zm",province:"Lusaka",type:"university",emoji:"🎓"},
   {name:"Copperbelt University – Agriculture",role:"AgriTech & Horticulture",phone:"+260 212 224 010",email:"info@cbu.edu.zm",website:"https://www.cbu.ac.zm",province:"Copperbelt",type:"university",emoji:"🎓"},
   {name:"FAO Zambia",role:"Food Security & Crop Support",phone:"+260 211 254 440",email:"fao-zm@fao.org",website:"https://www.fao.org/zambia",province:"Lusaka",type:"ngo",emoji:"🌐"},
-  {name:"World Food Programme Zambia",role:"Food Systems & Nutrition",phone:"+260 211 252 395",email:"wfp.zambia@wfp.org",website:"https://www.wfp.org/countries/zambia",province:"Lusaka",type:"ngo",emoji:"🌾"},
   {name:"Eastern Province Agri Extension Office",role:"Farmer Extension Services",phone:"+260 216 220 466",email:"epag@moa.gov.zm",website:"https://www.moa.gov.zm",province:"Eastern",type:"government",emoji:"🌱"},
   {name:"Southern Province Agri Extension Office",role:"Farmer Extension & Irrigation",phone:"+260 213 220 700",email:"spag@moa.gov.zm",website:"https://www.moa.gov.zm",province:"Southern",type:"government",emoji:"💧"},
   {name:"Agritech Zambia Ltd",role:"Precision Farming & Inputs",phone:"+260 977 000 123",email:"info@agritechzambia.com",website:"https://www.agritechzambia.com",province:"Lusaka",type:"private",emoji:"⚙️"},
 ];
 
 const FARMING_EDUCATION=[
-  {
-    id:"crop_rotation",category:"Best Practices",title:"Crop Rotation in Zambia",emoji:"🔄",
-    summary:"Rotating crops prevents disease buildup, improves soil fertility and breaks pest cycles.",
-    content:`Crop rotation is one of the most powerful tools a Zambian farmer can use. Here's a proven 3-year cycle for Zambia:\n\n**Year 1 – Legume (Groundnuts or Soybeans)**\nLegumes fix atmospheric nitrogen into the soil, reducing fertilizer needs. Groundnuts are ideal for Southern and Eastern Provinces.\n\n**Year 2 – Cereal (Maize or Sorghum)**\nCereals benefit from the nitrogen left by legumes. Yields improve by 20-40% compared to continuous maize.\n\n**Year 3 – Root Crop or Fallow**\nCassava or sweet potatoes break disease cycles. Fallow with a cover crop like cowpea restores organic matter.\n\n**Key Rules:**\n• Never plant the same crop family twice in a row\n• Document your rotation in a field diary\n• Include a legume every 2-3 years minimum\n• Rotate on a per-field basis, not per-farm`,
-    tags:["soil health","yields","pests"],readTime:"4 min"
-  },
-  {
-    id:"conservation_farming",category:"Techniques",title:"Conservation Farming (CA)",emoji:"🌱",
-    summary:"Minimum tillage and crop residue management can double yields while reducing labor.",
-    content:`Conservation Agriculture (CA) has transformed smallholder farming across Zambia. The three pillars are:\n\n**1. Minimum Tillage**\nInstead of full plowing, create planting basins (20cm × 20cm × 15cm deep). Space basins 90cm × 60cm for maize. This reduces soil erosion by up to 70%.\n\n**2. Permanent Soil Cover**\nAlways keep crop residues on the soil. Mulch with maize stalks, groundnut shells or grass. This:\n• Retains moisture (critical in dry provinces)\n• Suppresses weeds naturally\n• Improves soil organic matter over time\n\n**3. Crop Rotation**\nAlways combine CA with rotation (see Crop Rotation lesson).\n\n**Results in Zambia (ZNFU data):**\n• 40-60% less labor in years 2-3\n• 25-50% better moisture retention\n• Higher yields in drought years\n• Reduced input costs by 20-30%\n\nCA requires patience - benefits compound after year 2. Stick with it!`,
-    tags:["water","soil","labor"],readTime:"5 min"
-  },
-  {
-    id:"ipm",category:"Disease Management",title:"Integrated Pest Management (IPM)",emoji:"🐛",
-    summary:"Combine biological, cultural and chemical controls to manage pests sustainably.",
-    content:`IPM reduces chemical costs by 40-60% while keeping crops healthy. Here's how:\n\n**Step 1 – Scouting (Weekly)**\n• Walk fields in a W-pattern, checking 20 plants per stop\n• Look under leaves for eggs, larvae, and disease spots\n• Record pest numbers and crop stage\n• Set economic thresholds (treat only when needed)\n\n**Step 2 – Biological Controls**\n• Encourage natural predators: ladybirds eat aphids, parasitic wasps attack stem borers\n• Plant refuges of non-Bt maize on 5% of your field\n• Use Bacillus thuringiensis (Bt) sprays for caterpillars\n\n**Step 3 – Cultural Controls**\n• Timely planting to escape peak pest pressure\n• Remove and burn heavily infected plants\n• Intercrop with pest-repelling plants (e.g. basil with tomatoes)\n\n**Step 4 – Targeted Chemical Control**\n• Only spray when pest counts exceed thresholds\n• Use selective pesticides that spare beneficial insects\n• Rotate chemical classes to prevent resistance\n• Always follow label rates and PPE requirements`,
-    tags:["pests","chemicals","biological"],readTime:"6 min"
-  },
-  {
-    id:"soil_testing",category:"Soil Health",title:"Soil Testing & Fertilizer Use",emoji:"🧪",
-    summary:"Soil testing tells you exactly what your field needs, saving money and improving yields.",
-    content:`Zambian soils are mostly acidic and phosphorus-deficient. Without testing, farmers often apply wrong nutrients.\n\n**How to Take Soil Samples:**\n1. Collect 15-20 sub-samples from a zigzag pattern across your field\n2. Take samples at 0-20cm depth (topsoil)\n3. Mix all sub-samples in a clean bucket\n4. Take 500g from the mixed sample\n5. Label clearly with field name, date, crop history\n\n**Where to Test in Zambia:**\n• ZARI Soil Testing Laboratory, Lusaka (affordable)\n• Mount Makulu Research Station\n• Private labs: Cropserv, Omnia\n\n**Reading Your Results:**\n• pH below 5.5? Apply agricultural lime (1-3 tonnes/ha)\n• Low P? Apply Compound D at planting\n• Low N? Use Urea top-dressing at knee height\n\n**Fertilizer Timing for Maize:**\n• Planting: 2 bags Compound D per hectare\n• 4-5 weeks after emergence: 2 bags Urea per hectare\n• Side-dress urea - do NOT apply before rain forecast`,
-    tags:["soil","fertilizer","pH"],readTime:"5 min"
-  },
-  {
-    id:"water_irrigation",category:"Water Management",title:"Irrigation & Water Conservation",emoji:"💧",
-    summary:"Efficient water use can extend your growing season and protect crops during dry spells.",
-    content:`Zambia's rain is seasonal and increasingly unpredictable. Water management is critical.\n\n**Drip Irrigation (Best for Vegetables)**\n• 50-70% less water than flood irrigation\n• Delivers water directly to roots\n• Reduces leaf wetness → less fungal disease\n• Cost: ZMW 3,000-8,000 per 0.1 ha (DIY kits available)\n\n**Furrow Irrigation (Best for Field Crops)**\n• Create furrows between crop rows\n• Apply water slowly to allow infiltration\n• Avoid over-irrigation - check soil to 30cm depth\n\n**Rainwater Harvesting:**\n• Dig water retention trenches across slopes\n• Use Zai pits for in-situ water harvesting\n• Install roof catchment tanks (5,000L minimum)\n\n**Mulching to Conserve Moisture:**\n• 10cm organic mulch reduces evaporation by 70%\n• Apply after first rains when soil is wet\n• Keep mulch 5cm away from crop stems\n\n**Signs of Water Stress:**\n• Leaf rolling/wilting in the morning\n• Pale green or yellow coloration\n• Stunted growth\n\nIrrigate immediately when morning wilt is observed.`,
-    tags:["irrigation","drought","mulching"],readTime:"6 min"
-  },
-  {
-    id:"seed_selection",category:"Crop Production",title:"Seed Selection & Storage",emoji:"🌱",
-    summary:"Quality certified seeds can increase yields by 30-50% and resist local diseases.",
-    content:`Seed quality is the foundation of every crop. Here's what every Zambian farmer needs to know:\n\n**Certified vs Recycled Seed:**\n• Certified seeds are inspected, disease-free and variety-pure\n• Recycled seeds lose 10-20% yield per generation\n• For hybrid maize: NEVER recycle seed (yield drops 40%)\n• For open-pollinated varieties: can recycle 2-3 seasons max\n\n**Top Varieties for Zambia (by crop):**\n• Maize: SC403, SC513, DK8031, MRI514 (drought tolerant)\n• Soybean: Kafue, Lukanga, Nasoko\n• Groundnuts: Natal Common, MGV 4, MGV 7\n• Sorghum: SIMA1, Kuyuma\n\n**Proper Seed Storage:**\n1. Dry seed to below 13% moisture content\n2. Use hermetic bags (PICS bags) or metallic silos\n3. Store in cool, dry, dark place\n4. Add approved grain protectant\n5. Test germination before planting: 7/10 seeds should sprout\n\n**Germination Test:**\nWrap 10 seeds in wet cloth for 5 days. If fewer than 7 sprout, buy new seed.\n\n**Where to Buy Certified Seed in Zambia:**\n• Seedco, MRI Seeds, Pannar, Zamseed\n• Government input support program (FRA)\n• ZNFU affiliated agro-dealers`,
-    tags:["seeds","varieties","storage"],readTime:"5 min"
-  },
-  {
-    id:"post_harvest",category:"Post-Harvest",title:"Post-Harvest Handling & Storage",emoji:"🏪",
-    summary:"Up to 40% of Zambia's harvest is lost post-harvest. Proper storage prevents this.",
-    content:`Post-harvest losses are a major challenge in Zambia. Most losses come from insects, fungi and poor storage.\n\n**Harvesting at the Right Time:**\n• Maize: Husk leaves should be dry and brown. Grain moisture: 20-25%\n• Groundnuts: Leaves yellow and network pattern forms on pods\n• Soybean: Pods brown and rattle when shaken\n• Beans: Pods dry and brittle\n\n**Drying:**\n• Never store wet grain - mold and mycotoxins develop within days\n• Dry maize on raised platforms, not on bare ground\n• Target: below 13% moisture (test with moisture meter or bite test)\n• Dry in shade to avoid cracking\n\n**Storage Methods:**\n1. **PICS Bags** (triple-layer hermetic): Cheapest option, ZMW 15-30/bag\n2. **Metal silos**: Lasts 30+ years, excellent for 1-5 tonnes\n3. **Warehouses**: For larger quantities; consider warehouse receipt system\n\n**Grain Protectants:**\n• Actellic Super Dust: 1g per kg of grain\n• Shumba Super Dust: affordable local option\n• Neem leaves or ash: traditional, partially effective\n\n**Never do this:**\n• Store grain in old chemical sacks\n• Store near strong-smelling materials\n• Keep grain in the same building as pesticides\n\n**Sell at the right time:**\nPrices peak in Dec-Jan when stocks are low. Store well and sell high!`,
-    tags:["storage","losses","aflatoxin"],readTime:"6 min"
-  },
-  {
-    id:"climate_smart",category:"Climate Adaptation",title:"Climate-Smart Farming for Zambia",emoji:"🌤️",
-    summary:"Adapt your farming to Zambia's changing rainfall patterns and temperatures.",
-    content:`Zambia's climate is changing. Droughts are more frequent, rains are less predictable, and temperatures are rising. Here's how to adapt:\n\n**Drought-Tolerant Varieties:**\n• Maize: DK8031 (drought-tolerant), SC413, SC427\n• Cowpea: Lutembwe, Bubebe (very drought-tolerant)\n• Sorghum: Always drought-tolerant - good fallback crop\n\n**Early Warning Systems:**\n• Check Zambia Met Department forecasts: www.zmd.gov.zm\n• Subscribe to ENSO alerts (El Niño / La Niña) for seasonal outlooks\n• Join farmer radio programs: ZNBC Radio 2, Radio Christian Voice\n\n**Adjust Planting Dates:**\n• Northern, Luapula, Muchinga: Plant when 25mm falls in one week (typically Nov)\n• Central, Eastern, Lusaka: Plant with first reliable rains (Nov-Dec)\n• Southern, Western: Plant urgently at first rain - season is short\n\n**Diversify Crops:**\nNever rely on a single crop. A diversified farm is a resilient farm:\n• Primary: Maize or staple cereal\n• Income: Groundnuts, soybean, cotton\n• Food security: Cassava (drought escape), cowpea, vegetables\n• Trees: Fruit trees for long-term food and income\n\n**Carbon Farming Opportunities:**\nConservation agriculture practices can qualify for carbon credits. Contact ZNFU for information on carbon farming programs in Zambia.`,
-    tags:["drought","climate","resilience"],readTime:"5 min"
-  },
+  {id:"crop_rotation",category:"Best Practices",title:"Crop Rotation in Zambia",emoji:"🔄",summary:"Rotating crops prevents disease buildup, improves soil fertility and breaks pest cycles.",content:`Crop rotation is one of the most powerful tools a Zambian farmer can use. Here is a proven 3-year cycle for Zambia:\n\n**Year 1 – Legume (Groundnuts or Soybeans)**\nLegumes fix atmospheric nitrogen into the soil, reducing fertilizer needs.\n\n**Year 2 – Cereal (Maize or Sorghum)**\nCereals benefit from the nitrogen left by legumes. Yields improve by 20-40%.\n\n**Year 3 – Root Crop or Fallow**\nCassava or sweet potatoes break disease cycles.\n\n**Key Rules:**\n• Never plant the same crop family twice in a row\n• Document your rotation in a field diary\n• Include a legume every 2-3 years minimum`,tags:["soil health","yields","pests"],readTime:"4 min"},
+  {id:"conservation_farming",category:"Techniques",title:"Conservation Farming (CA)",emoji:"🌱",summary:"Minimum tillage and crop residue management can double yields while reducing labor.",content:`Conservation Agriculture (CA) has transformed smallholder farming across Zambia.\n\n**1. Minimum Tillage**\nCreate planting basins 20cm x 20cm x 15cm deep. Space basins 90cm x 60cm for maize.\n\n**2. Permanent Soil Cover**\nAlways keep crop residues on the soil. Mulch with maize stalks or groundnut shells.\n• Retains moisture\n• Suppresses weeds\n• Improves soil organic matter\n\n**3. Crop Rotation**\nAlways combine CA with rotation.\n\n**Results in Zambia:**\n• 40-60% less labor in years 2-3\n• 25-50% better moisture retention\n• Reduced input costs by 20-30%`,tags:["water","soil","labor"],readTime:"5 min"},
+  {id:"ipm",category:"Disease Management",title:"Integrated Pest Management (IPM)",emoji:"🐛",summary:"Combine biological, cultural and chemical controls to manage pests sustainably.",content:`IPM reduces chemical costs by 40-60% while keeping crops healthy.\n\n**Step 1 – Scouting (Weekly)**\n• Walk fields in a W-pattern, checking 20 plants per stop\n• Look under leaves for eggs, larvae, and disease spots\n\n**Step 2 – Biological Controls**\n• Encourage natural predators: ladybirds eat aphids\n• Use Bacillus thuringiensis sprays for caterpillars\n\n**Step 3 – Cultural Controls**\n• Timely planting to escape peak pest pressure\n• Remove and burn heavily infected plants\n\n**Step 4 – Targeted Chemical Control**\n• Only spray when pest counts exceed thresholds\n• Rotate chemical classes to prevent resistance`,tags:["pests","chemicals","biological"],readTime:"6 min"},
+  {id:"soil_testing",category:"Soil Health",title:"Soil Testing & Fertilizer Use",emoji:"🧪",summary:"Soil testing tells you exactly what your field needs, saving money and improving yields.",content:`Zambian soils are mostly acidic and phosphorus-deficient.\n\n**How to Take Soil Samples:**\n1. Collect 15-20 sub-samples from a zigzag pattern\n2. Take samples at 0-20cm depth\n3. Mix all sub-samples in a clean bucket\n4. Take 500g and label clearly\n\n**Where to Test in Zambia:**\n• ZARI Soil Testing Laboratory, Lusaka\n• Mount Makulu Research Station\n\n**Fertilizer Timing for Maize:**\n• Planting: 2 bags Compound D per hectare\n• 4-5 weeks after emergence: 2 bags Urea per hectare`,tags:["soil","fertilizer","pH"],readTime:"5 min"},
+  {id:"water_irrigation",category:"Water Management",title:"Irrigation & Water Conservation",emoji:"💧",summary:"Efficient water use can extend your growing season and protect crops during dry spells.",content:`Zambia's rain is seasonal and increasingly unpredictable.\n\n**Drip Irrigation (Best for Vegetables)**\n• 50-70% less water than flood irrigation\n• Reduces leaf wetness, less fungal disease\n\n**Furrow Irrigation (Best for Field Crops)**\n• Create furrows between crop rows\n• Avoid over-irrigation\n\n**Rainwater Harvesting:**\n• Dig water retention trenches across slopes\n• Install roof catchment tanks (5,000L minimum)\n\n**Mulching to Conserve Moisture:**\n• 10cm organic mulch reduces evaporation by 70%\n• Keep mulch 5cm away from crop stems`,tags:["irrigation","drought","mulching"],readTime:"6 min"},
+  {id:"post_harvest",category:"Post-Harvest",title:"Post-Harvest Handling & Storage",emoji:"🏪",summary:"Up to 40% of Zambia's harvest is lost post-harvest. Proper storage prevents this.",content:`Post-harvest losses are a major challenge in Zambia.\n\n**Drying:**\n• Never store wet grain\n• Dry maize on raised platforms, not on bare ground\n• Target: below 13% moisture\n\n**Storage Methods:**\n1. PICS Bags (triple-layer hermetic): ZMW 15-30 per bag\n2. Metal silos: Lasts 30+ years, excellent for 1-5 tonnes\n3. Warehouses for larger quantities\n\n**Grain Protectants:**\n• Actellic Super Dust: 1g per kg of grain\n• Shumba Super Dust: affordable local option\n\n**Sell at the right time:**\nPrices peak in Dec-Jan when stocks are low.`,tags:["storage","losses","aflatoxin"],readTime:"6 min"},
 ];
 
 const TEACHABLE_URL="https://teachablemachine.withgoogle.com/models/drdcQS-r_/";
 
 const LANGUAGE_PHRASES={
-  en:{greeting:"Welcome",diagnose:"Diagnose",hello:"Hello, Farmer!",tagline:"Zambia's #1 AgriTech Platform",help:"How can we help you today?"},
-  bem:{greeting:"Mwaiseni",diagnose:"Fwaileni",hello:"Eya, Mulimi!",tagline:"Insala ya kulanda FilingaMbi",help:"Twafwileni pano?"},
-  nya:{greeting:"Moni",diagnose:"Fufuta",hello:"Moni, Mlimi!",tagline:"Platform ya ulimi mu Zambia",help:"Titsitsani bwanji lero?"},
-  ton:{greeting:"Mwapona",diagnose:"Kolonga",hello:"Mwapona, Mulimi!",tagline:"Nseli wa Ulimi wa Zambia",help:"Tweendezye buti lelo?"},
-  loz:{greeting:"Lumela",diagnose:"Tahisa",hello:"Lumela, Mulimi!",tagline:"Musebezi wa bulimi wa Zambia",help:"Lu tuse cwañi kacenu?"},
-  sw:{greeting:"Karibu",diagnose:"Chunguza",hello:"Habari, Mkulima!",tagline:"Jukwaa Bora la Kilimo Zambia",help:"Tunaweza kusaidia vipi?"},
-  fr:{greeting:"Bienvenue",diagnose:"Diagnostiquer",hello:"Bonjour, Agriculteur!",tagline:"La plateforme agricole no.1 de Zambie",help:"Comment pouvons-nous vous aider?"},
-  pt:{greeting:"Bem-vindo",diagnose:"Diagnosticar",hello:"Olá, Agricultor!",tagline:"A plataforma agrícola nº1 da Zâmbia",help:"Como podemos ajudá-lo hoje?"},
-  kau:{greeting:"Amukwelekwa",diagnose:"Samba",hello:"Amukwelekwa, Mulimi!",tagline:"Platform wa Ulimi wa Zambia",help:"Twafwileni?"},
-  lun:{greeting:"Muoyo",diagnose:"Songola",hello:"Muoyo, Mulimi!",tagline:"Platform ya Ulimi wa Zambia",help:"Nawa kulifwisha?"},
-  lam:{greeting:"Mwaiseni",diagnose:"Fwaileni",hello:"Mwaiseni, Mulimi!",tagline:"Platform ya Ulimi wa Zambia",help:"Twalefwaileni?"},
+  en:{greeting:"Welcome",diagnose:"Diagnose",hello:"Hello, Farmer!",tagline:"Zambia's #1 AgriTech Platform"},
+  bem:{greeting:"Mwaiseni",diagnose:"Fwaileni",hello:"Eya, Mulimi!",tagline:"Insala ya kulanda FilingaMbi"},
+  nya:{greeting:"Moni",diagnose:"Fufuta",hello:"Moni, Mlimi!",tagline:"Platform ya ulimi mu Zambia"},
+  ton:{greeting:"Mwapona",diagnose:"Kolonga",hello:"Mwapona, Mulimi!",tagline:"Nseli wa Ulimi wa Zambia"},
+  loz:{greeting:"Lumela",diagnose:"Tahisa",hello:"Lumela, Mulimi!",tagline:"Musebezi wa bulimi wa Zambia"},
+  sw:{greeting:"Karibu",diagnose:"Chunguza",hello:"Habari, Mkulima!",tagline:"Jukwaa Bora la Kilimo Zambia"},
+  fr:{greeting:"Bienvenue",diagnose:"Diagnostiquer",hello:"Bonjour, Agriculteur!",tagline:"La plateforme agricole no.1"},
+  pt:{greeting:"Bem-vindo",diagnose:"Diagnosticar",hello:"Olá, Agricultor!",tagline:"A plataforma agrícola nº1"},
+  kau:{greeting:"Amukwelekwa",diagnose:"Samba",hello:"Amukwelekwa, Mulimi!",tagline:"Platform wa Ulimi wa Zambia"},
+  lun:{greeting:"Muoyo",diagnose:"Songola",hello:"Muoyo, Mulimi!",tagline:"Platform ya Ulimi wa Zambia"},
+  lam:{greeting:"Mwaiseni",diagnose:"Fwaileni",hello:"Mwaiseni, Mulimi!",tagline:"Platform ya Ulimi wa Zambia"},
 };
 
 const getClimateAdvice=(province,crop)=>{
   const wet=["Northern","Luapula","Copperbelt","Muchinga","North-Western"];
-  if(wet.includes(province)) return `⚠️ ${province} receives high rainfall. Ensure drainage. Monitor fungal diseases.`;
+  if(wet.includes(province)) return `⚠️ ${province} receives high rainfall. Ensure drainage. Monitor fungal diseases on ${crop}.`;
   return `☀️ ${province} has dry spells. Mulch and irrigate ${crop} to maintain soil moisture.`;
 };
 
-/* ═══════════════════════ ICON COMPONENT ═══════════════════════ */
+/* ═══ ICONS ═══ */
 const Icon=({n,s=22,c="currentColor"})=>{
   const icons={
     camera:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
     history:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-    settings:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
     book:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
     users:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
     globe:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
@@ -230,53 +235,32 @@ const Icon=({n,s=22,c="currentColor"})=>{
     translate:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>,
     arrow_left:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>,
     search:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-    wiki:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 0 .5-2.69"/></svg>,
-    leaf:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 22C3.82 22 9.33 20 13 17c0 0-2 1-3 0s-1-3 1-4 4-1 6-4z"/><path d="M3.82 22 17 8"/></svg>,
+    wiki:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
+    leaf:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 22C3.82 22 9.33 20 13 17c0 0-2 1-3 0s-1-3 1-4 4-1 6-4z"/></svg>,
     market:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
     weather:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>,
-    close:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+    key:<svg width={s} height={s} fill="none" stroke={c} strokeWidth="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>,
     star:<svg width={s} height={s} fill={c} viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
   };
   return icons[n]||<span style={{fontSize:s/2}}>?</span>;
 };
 
-/* ═══════════════════════ WEATHER WIDGET ═══════════════════════ */
+/* ═══ WEATHER WIDGET ═══ */
 const WeatherWidget=({province,dark})=>{
   const [wx,setWx]=useState(null);
   const [loading,setLoading]=useState(true);
-  // Deterministic province-based weather data (Open-Meteo or fallback)
   useEffect(()=>{
-    const coords={
-      Lusaka:{lat:-15.4167,lon:28.2833},Copperbelt:{lat:-12.8,lon:28.2},
-      Central:{lat:-14.5,lon:28.5},Eastern:{lat:-13.5,lon:32.0},
-      Southern:{lat:-16.5,lon:27.0},Northern:{lat:-10.5,lon:31.0},
-      Luapula:{lat:-11.0,lon:29.5},Western:{lat:-15.0,lon:23.0},
-      "North-Western":{lat:-12.5,lon:24.5},Muchinga:{lat:-11.5,lon:31.5}
-    };
+    const coords={Lusaka:{lat:-15.4167,lon:28.2833},Copperbelt:{lat:-12.8,lon:28.2},Central:{lat:-14.5,lon:28.5},Eastern:{lat:-13.5,lon:32.0},Southern:{lat:-16.5,lon:27.0},Northern:{lat:-10.5,lon:31.0},Luapula:{lat:-11.0,lon:29.5},Western:{lat:-15.0,lon:23.0},"North-Western":{lat:-12.5,lon:24.5},Muchinga:{lat:-11.5,lon:31.5}};
     const c=coords[province]||coords.Lusaka;
-    const url=`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=4&timezone=Africa%2FLusaka`;
-    fetch(url)
-      .then(r=>r.json())
-      .then(d=>{
-        setWx(d);setLoading(false);
-      })
-      .catch(()=>{setLoading(false);});
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=4&timezone=Africa%2FLusaka`)
+      .then(r=>r.json()).then(d=>{setWx(d);setLoading(false);}).catch(()=>setLoading(false));
   },[province]);
-  const wmoIcon=code=>{
-    if(code===0)return"☀️";
-    if(code<=3)return"⛅";
-    if(code<=49)return"🌫️";
-    if(code<=69)return"🌧️";
-    if(code<=79)return"🌨️";
-    if(code<=99)return"⛈️";
-    return"🌤️";
-  };
+  const wmoIcon=code=>{if(code===0)return"☀️";if(code<=3)return"⛅";if(code<=49)return"🌫️";if(code<=69)return"🌧️";if(code<=79)return"🌨️";return"⛈️";};
   const bg=dark?"#0F2235":"#EFF8F5";
   const border=dark?"#1A3050":"#C7E8DF";
   if(loading)return<div style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`,marginBottom:16}}><div className="wiki-skeleton" style={{width:"60%"}}/><div className="wiki-skeleton" style={{width:"40%"}}/></div>;
   if(!wx)return null;
-  const cur=wx.current;
-  const days=wx.daily;
+  const cur=wx.current;const days=wx.daily;
   const dayNames=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   return(
     <div style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`,marginBottom:16}}>
@@ -284,184 +268,148 @@ const WeatherWidget=({province,dark})=>{
         <div>
           <div style={{fontSize:11,fontWeight:600,color:"#0D9488",textTransform:"uppercase",letterSpacing:.5}}>🌤️ Live Weather · {province}</div>
           <div style={{fontSize:36,fontWeight:800,color:dark?"#E2EFF9":"#0F172A",marginTop:4}}>{Math.round(cur.temperature_2m)}°C</div>
-          <div style={{fontSize:12,color:dark?"#7A9BB5":"#475569",marginTop:2}}>
-            💧{cur.relative_humidity_2m}% · 🌬️{Math.round(cur.wind_speed_10m)}km/h · 🌧️{cur.precipitation}mm
-          </div>
+          <div style={{fontSize:12,color:dark?"#7A9BB5":"#475569",marginTop:2}}>💧{cur.relative_humidity_2m}% · 🌬️{Math.round(cur.wind_speed_10m)}km/h · 🌧️{cur.precipitation}mm</div>
         </div>
         <div style={{fontSize:48}}>{wmoIcon(cur.weathercode)}</div>
       </div>
       <div style={{display:"flex",gap:8,overflowX:"auto"}}>
         {days.time.slice(1,4).map((date,i)=>{
           const d=new Date(date);
-          return(
-            <div key={i} style={{flex:"0 0 auto",background:dark?"rgba(255,255,255,.05)":"rgba(255,255,255,.7)",borderRadius:14,padding:"8px 12px",textAlign:"center",minWidth:64}}>
-              <div style={{fontSize:11,fontWeight:600,color:dark?"#7A9BB5":"#64748B"}}>{dayNames[d.getDay()]}</div>
-              <div style={{fontSize:20,margin:"4px 0"}}>🌤️</div>
-              <div style={{fontSize:11,fontWeight:700,color:dark?"#E2EFF9":"#0F172A"}}>{Math.round(days.temperature_2m_max[i+1])}°</div>
-              <div style={{fontSize:10,color:dark?"#7A9BB5":"#94A3B8"}}>{Math.round(days.temperature_2m_min[i+1])}°</div>
-              <div style={{fontSize:10,color:"#0D9488"}}>{days.precipitation_sum[i+1]}mm</div>
-            </div>
-          );
+          return(<div key={i} style={{flex:"0 0 auto",background:dark?"rgba(255,255,255,.05)":"rgba(255,255,255,.7)",borderRadius:14,padding:"8px 12px",textAlign:"center",minWidth:64}}>
+            <div style={{fontSize:11,fontWeight:600,color:dark?"#7A9BB5":"#64748B"}}>{dayNames[d.getDay()]}</div>
+            <div style={{fontSize:20,margin:"4px 0"}}>🌤️</div>
+            <div style={{fontSize:11,fontWeight:700,color:dark?"#E2EFF9":"#0F172A"}}>{Math.round(days.temperature_2m_max[i+1])}°</div>
+            <div style={{fontSize:10,color:dark?"#7A9BB5":"#94A3B8"}}>{Math.round(days.temperature_2m_min[i+1])}°</div>
+            <div style={{fontSize:10,color:"#0D9488"}}>{days.precipitation_sum[i+1]}mm</div>
+          </div>);
         })}
       </div>
     </div>
   );
 };
 
-/* ═══════════════════════ MARKET PRICES ═══════════════════════ */
+/* ═══ MARKET PRICES ═══ */
 const MarketPrices=({dark})=>{
-  // Real crop prices from FRA / ZAMACE reference points (ZMW per 50kg bag, updated regularly)
   const prices=[
-    {crop:"Maize",emoji:"🌽",price:280,unit:"per 50kg bag",change:+5,province:"National FRA"},
-    {crop:"Soybeans",emoji:"🫘",price:450,unit:"per 50kg bag",change:-10,province:"ZAMACE"},
-    {crop:"Groundnuts",emoji:"🥜",price:680,unit:"per 50kg bag",change:+15,province:"Eastern"},
-    {crop:"Wheat",emoji:"🌾",price:520,unit:"per 50kg bag",change:0,province:"FAMAZ"},
-    {crop:"Cotton",emoji:"🌾",price:8.50,unit:"per kg seed cotton",change:+0.5,province:"Cotton Board"},
-    {crop:"Sunflower",emoji:"🌻",price:380,unit:"per 50kg bag",change:-5,province:"ZAMACE"},
-    {crop:"Sorghum",emoji:"🌾",price:260,unit:"per 50kg bag",change:+8,province:"Eastern"},
-    {crop:"Beans",emoji:"🫘",price:520,unit:"per 50kg bag",change:+20,province:"Lusaka"},
+    {crop:"Maize",emoji:"🌽",price:280,unit:"per 50kg bag",change:+5,source:"National FRA"},
+    {crop:"Soybeans",emoji:"🫘",price:450,unit:"per 50kg bag",change:-10,source:"ZAMACE"},
+    {crop:"Groundnuts",emoji:"🥜",price:680,unit:"per 50kg bag",change:+15,source:"Eastern"},
+    {crop:"Wheat",emoji:"🌾",price:520,unit:"per 50kg bag",change:0,source:"FAMAZ"},
+    {crop:"Cotton",emoji:"🌾",price:8.50,unit:"per kg seed cotton",change:+0.5,source:"Cotton Board"},
+    {crop:"Sunflower",emoji:"🌻",price:380,unit:"per 50kg bag",change:-5,source:"ZAMACE"},
+    {crop:"Sorghum",emoji:"🌾",price:260,unit:"per 50kg bag",change:+8,source:"Eastern"},
+    {crop:"Beans",emoji:"🫘",price:520,unit:"per 50kg bag",change:+20,source:"Lusaka"},
   ];
   return(
     <div>
       <div style={{fontSize:13,fontWeight:700,color:dark?"#7A9BB5":"#475569",marginBottom:12,display:"flex",alignItems:"center",gap:6}}>
-        <Icon n="market" s={14} c="#0D9488"/>
-        <span>Commodity Prices (ZMW)</span>
-        <span style={{fontSize:10,background:"#0D9488",color:"white",padding:"2px 8px",borderRadius:20,marginLeft:"auto"}}>Live Reference</span>
+        <Icon n="market" s={14} c="#0D9488"/><span>Commodity Prices (ZMW)</span>
+        <span style={{fontSize:10,background:"#0D9488",color:"white",padding:"2px 8px",borderRadius:20,marginLeft:"auto"}}>Reference</span>
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:8}}>
         {prices.map((p,i)=>(
           <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",background:dark?"rgba(255,255,255,.04)":"rgba(255,255,255,.8)",borderRadius:14,border:`1px solid ${dark?"#1A3050":"#E2ECE8"}`}}>
             <span style={{fontSize:22}}>{p.emoji}</span>
-            <div style={{flex:1}}>
-              <div style={{fontWeight:700,fontSize:13,color:dark?"#E2EFF9":"#0F172A"}}>{p.crop}</div>
-              <div style={{fontSize:10,color:dark?"#7A9BB5":"#64748B"}}>{p.province} · {p.unit}</div>
-            </div>
+            <div style={{flex:1}}><div style={{fontWeight:700,fontSize:13,color:dark?"#E2EFF9":"#0F172A"}}>{p.crop}</div><div style={{fontSize:10,color:dark?"#7A9BB5":"#64748B"}}>{p.source} · {p.unit}</div></div>
             <div style={{textAlign:"right"}}>
               <div style={{fontWeight:800,fontSize:15,color:dark?"#E2EFF9":"#0F172A"}}>ZMW {p.price}</div>
-              <div style={{fontSize:11,fontWeight:600,color:p.change>0?"#16A34A":p.change<0?"#DC2626":"#94A3B8"}}>
-                {p.change>0?`↑ +${p.change}`:p.change<0?`↓ ${p.change}`:"→ Stable"}
-              </div>
+              <div style={{fontSize:11,fontWeight:600,color:p.change>0?"#16A34A":p.change<0?"#DC2626":"#94A3B8"}}>{p.change>0?`↑ +${p.change}`:p.change<0?`↓ ${p.change}`:"→ Stable"}</div>
             </div>
           </div>
         ))}
       </div>
-      <div style={{fontSize:10,color:dark?"#475569":"#94A3B8",marginTop:8,textAlign:"center"}}>Reference prices · ZAMACE/FRA · Updated daily</div>
     </div>
   );
 };
 
-/* ═══════════════════════ WIKIPEDIA DISEASE SEARCH ═══════════════════════ */
+/* ═══ WIKI DISEASE SEARCH ═══ */
 const WikiDisease=({dark,showToast})=>{
   const [query,setQuery]=useState("");
   const [results,setResults]=useState(null);
   const [article,setArticle]=useState(null);
   const [loading,setLoading]=useState(false);
   const [searching,setSearching]=useState(false);
-
   const search=async()=>{
     if(!query.trim())return;
     setSearching(true);setResults(null);setArticle(null);
     try{
       const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query+" crop disease plant")}&srlimit=6&format=json&origin=*`);
-      const d=await r.json();
-      setResults(d.query.search);
+      const d=await r.json();setResults(d.query.search);
     }catch{showToast("Search failed","error");}
     setSearching(false);
   };
-
   const fetchArticle=async(title)=>{
     setLoading(true);setArticle(null);
     try{
       const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=extracts&exintro=1&explaintext=1&format=json&origin=*`);
       const d=await r.json();
-      const pages=d.query.pages;
-      const page=Object.values(pages)[0];
-      setArticle({title:page.title,extract:page.extract?.slice(0,1200)+"..."||"No content available.",url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title)}`});
+      const page=Object.values(d.query.pages)[0];
+      setArticle({title:page.title,extract:page.extract?.slice(0,1200)+"...",url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title)}`});
     }catch{showToast("Failed to load article","error");}
     setLoading(false);
   };
-
-  const bg=dark?"#0F2235":"#FFFFFF";
-  const border=dark?"#1A3050":"#E2ECE8";
+  const bg=dark?"#0F2235":"#FFFFFF";const border=dark?"#1A3050":"#E2ECE8";
+  if(article)return(
+    <div style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`}}>
+      <button onClick={()=>setArticle(null)} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#0D9488",fontWeight:700,fontSize:13,marginBottom:12,padding:0}}><Icon n="arrow_left" s={16} c="#0D9488"/> Back</button>
+      <div style={{fontWeight:800,fontSize:16,color:dark?"#E2EFF9":"#0F172A",marginBottom:12}}>📖 {article.title}</div>
+      <p style={{fontSize:13,lineHeight:1.7,color:dark?"#B0C8D8":"#334155",marginBottom:12}}>{article.extract}</p>
+      <a href={article.url} target="_blank" rel="noreferrer" style={{display:"inline-flex",alignItems:"center",gap:6,background:"#0D9488",color:"white",padding:"8px 16px",borderRadius:30,fontSize:12,fontWeight:600,textDecoration:"none"}}>Read full article →</a>
+    </div>
+  );
   return(
     <div className="fade-up">
-      {article?(
-        <div style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`}}>
-          <button onClick={()=>setArticle(null)} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#0D9488",fontWeight:700,fontSize:13,marginBottom:12,padding:0}}>
-            <Icon n="arrow_left" s={16} c="#0D9488"/> Back to results
-          </button>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-            <span style={{fontSize:20}}>📖</span>
-            <span style={{fontWeight:800,fontSize:16,color:dark?"#E2EFF9":"#0F172A"}}>{article.title}</span>
-          </div>
-          <p style={{fontSize:13,lineHeight:1.7,color:dark?"#B0C8D8":"#334155",marginBottom:12}}>{article.extract}</p>
-          <a href={article.url} target="_blank" rel="noreferrer" style={{display:"inline-flex",alignItems:"center",gap:6,background:"#0D9488",color:"white",padding:"8px 16px",borderRadius:30,fontSize:12,fontWeight:600,textDecoration:"none"}}>
-            <Icon n="globe" s={14} c="white"/> Read full article on Wikipedia
-          </a>
+      <div style={{display:"flex",gap:10,marginBottom:16}}>
+        <input value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>e.key==="Enter"&&search()} placeholder="Search disease e.g. Maize Streak Virus..." style={{flex:1,padding:"11px 16px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,outline:"none"}}/>
+        <button onClick={search} style={{padding:"11px 18px",borderRadius:50,background:"#0D9488",border:"none",color:"white",fontWeight:700}}>{searching?<div className="spinner"/>:<Icon n="search" s={16} c="white"/>}</button>
+      </div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}}>
+        {["Gray Leaf Spot","Cassava Mosaic","Maize Streak","Groundnut Rosette","Late Blight"].map(s=>(
+          <button key={s} onClick={()=>setQuery(s)} style={{padding:"5px 12px",borderRadius:30,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:11,fontWeight:600}}>{s}</button>
+        ))}
+      </div>
+      {loading&&<div style={{display:"flex",flexDirection:"column",gap:8}}>{[1,2,3].map(i=><div key={i} className="wiki-skeleton"/>)}</div>}
+      {results&&results.length===0&&<div style={{textAlign:"center",padding:20,color:dark?"#7A9BB5":"#94A3B8"}}>No results found.</div>}
+      {results&&results.map((r,i)=>(
+        <div key={i} onClick={()=>fetchArticle(r.title)} style={{padding:"12px 14px",borderRadius:16,background:bg,border:`1px solid ${border}`,marginBottom:8,cursor:"pointer"}}>
+          <div style={{fontWeight:700,fontSize:14,color:dark?"#E2EFF9":"#0F172A",marginBottom:4}}>📄 {r.title}</div>
+          <div style={{fontSize:12,color:dark?"#7A9BB5":"#64748B",lineHeight:1.5}}>{r.snippet.replace(/<[^>]+>/g,"").slice(0,120)}...</div>
         </div>
-      ):(
-        <>
-          <div style={{display:"flex",gap:10,marginBottom:16}}>
-            <input
-              value={query}
-              onChange={e=>setQuery(e.target.value)}
-              onKeyDown={e=>e.key==="Enter"&&search()}
-              placeholder="Search disease e.g. Maize Streak Virus..."
-              style={{flex:1,padding:"11px 16px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,outline:"none"}}
-            />
-            <button onClick={search} style={{padding:"11px 18px",borderRadius:50,background:"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:13,display:"flex",alignItems:"center",gap:6}}>
-              {searching?<div className="spinner"/>:<Icon n="search" s={16} c="white"/>}
-            </button>
-          </div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}}>
-            {["Gray Leaf Spot","Cassava Mosaic","Maize Streak","Groundnut Rosette","Late Blight"].map(s=>(
-              <button key={s} onClick={()=>{setQuery(s);}} style={{padding:"5px 12px",borderRadius:30,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:11,fontWeight:600}}>
-                {s}
-              </button>
-            ))}
-          </div>
-          {loading&&<div style={{display:"flex",flexDirection:"column",gap:8}}>{[1,2,3].map(i=><div key={i} className="wiki-skeleton"/>)}</div>}
-          {results&&results.length===0&&<div style={{textAlign:"center",padding:20,color:dark?"#7A9BB5":"#94A3B8"}}>No results found. Try a different search.</div>}
-          {results&&results.map((r,i)=>(
-            <div key={i} onClick={()=>fetchArticle(r.title)} style={{padding:"12px 14px",borderRadius:16,background:bg,border:`1px solid ${border}`,marginBottom:8,cursor:"pointer",transition:"all .2s"}}>
-              <div style={{fontWeight:700,fontSize:14,color:dark?"#E2EFF9":"#0F172A",marginBottom:4}}>📄 {r.title}</div>
-              <div style={{fontSize:12,color:dark?"#7A9BB5":"#64748B",lineHeight:1.5}} dangerouslySetInnerHTML={{__html:r.snippet.replace(/<[^>]+>/g,"").slice(0,120)+"..."}}/>
-            </div>
-          ))}
-        </>
-      )}
+      ))}
     </div>
   );
 };
 
-/* ═══════════════════════ LANGUAGE TRANSLATOR ═══════════════════════ */
+/* ═══ TRANSLATOR ═══ */
 const Translator=({dark,showToast})=>{
   const [text,setText]=useState("");
   const [targetLang,setTargetLang]=useState("bem");
   const [result,setResult]=useState("");
   const [loading,setLoading]=useState(false);
-  const [activePhrase,setActivePhrase]=useState(null);
-
-  const farmingPhrases=[
-    "My maize has yellow leaves","The crop is infected with a disease","I need fertilizer for my farm",
-    "When should I plant this season?","My soil needs testing","I want to sell my harvest",
-    "The pests are destroying my crop","How do I treat gray leaf spot?","My cassava has brown streaks",
-  ];
+  const farmingPhrases=["My maize has yellow leaves","The crop is infected with a disease","I need fertilizer for my farm","When should I plant this season?","My soil needs testing","I want to sell my harvest","The pests are destroying my crop","How do I treat gray leaf spot?"];
+  const hasKey=!!localStorage.getItem("plantdoc_groq_key");
 
   const translate=async(inputText)=>{
     const t=inputText||text;
     if(!t.trim()){showToast("Enter text to translate","error");return;}
+    if(!hasKey){showToast("Add Groq API key in Settings","error");return;}
     setLoading(true);setResult("");
+    const langObj=ZAMBIAN_LANGUAGES.find(l=>l.code===targetLang);
     try{
-      const translated=await smartAIResponse("Translate this farming text to "+targetLang+": "+t, localStorage.getItem("ai_provider") || "offline"); setResult(translated);
+      const translated=await groqTranslate(t,langObj?.name||targetLang,targetLang);
+      setResult(translated);
     }catch{showToast("Translation failed","error");}
     setLoading(false);
   };
 
-  const bg=dark?"#0F2235":"#FFFFFF";
-  const border=dark?"#1A3050":"#E2ECE8";
+  const bg=dark?"#0F2235":"#FFFFFF";const border=dark?"#1A3050":"#E2ECE8";
   return(
     <div className="fade-up">
+      {!hasKey&&(
+        <div style={{background:dark?"#1A1A3A":"#FEF3C7",borderRadius:16,padding:"10px 14px",marginBottom:14,border:`1px solid ${dark?"#3A3A5A":"#FCD34D"}`,fontSize:12,color:dark?"#FCD34D":"#92400E",fontWeight:600}}>
+          ⚠️ Add your Groq API key in Settings → AI Config to enable translation.
+        </div>
+      )}
       <div style={{marginBottom:14}}>
         <div style={{fontSize:12,fontWeight:700,color:dark?"#7A9BB5":"#475569",marginBottom:8}}>Translate to:</div>
         <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
@@ -473,46 +421,37 @@ const Translator=({dark,showToast})=>{
         </div>
       </div>
       <div style={{marginBottom:12}}>
-        <div style={{fontSize:11,fontWeight:600,color:dark?"#7A9BB5":"#94A3B8",marginBottom:8}}>Quick farming phrases:</div>
+        <div style={{fontSize:11,fontWeight:600,color:dark?"#7A9BB5":"#94A3B8",marginBottom:8}}>Quick phrases:</div>
         <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
           {farmingPhrases.map((p,i)=>(
-            <button key={i} onClick={()=>{setText(p);translate(p);}} style={{padding:"4px 10px",borderRadius:20,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:10,fontWeight:600}}>
-              {p}
-            </button>
+            <button key={i} onClick={()=>{setText(p);translate(p);}} style={{padding:"4px 10px",borderRadius:20,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:10,fontWeight:600}}>{p}</button>
           ))}
         </div>
       </div>
-      <textarea
-        value={text}
-        onChange={e=>setText(e.target.value)}
-        placeholder="Type your farming message in English..."
-        rows={3}
-        style={{width:"100%",padding:"12px 14px",borderRadius:16,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,lineHeight:1.6,outline:"none",resize:"none",marginBottom:10}}
-      />
-      <button onClick={()=>translate()} disabled={loading} style={{width:"100%",padding:12,borderRadius:50,background:loading?"#94A3B8":"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-        {loading?<><div className="spinner"/><span>Translating...</span></>:<><Icon n="translate" s={18} c="white"/><span>Translate</span></>}
+      <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="Type your farming message in English..." rows={3} style={{width:"100%",padding:"12px 14px",borderRadius:16,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,lineHeight:1.6,outline:"none",resize:"none",marginBottom:10}}/>
+      <button onClick={()=>translate()} disabled={loading||!hasKey} style={{width:"100%",padding:12,borderRadius:50,background:loading||!hasKey?"#94A3B8":"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+        {loading?<><div className="spinner"/><span>Translating with Groq AI...</span></>:<><Icon n="translate" s={18} c="white"/><span>Translate (Powered by Groq AI)</span></>}
       </button>
       {result&&(
         <div style={{marginTop:14,padding:16,borderRadius:16,background:dark?"#0A2518":"#F0FDF4",border:`1px solid ${dark?"#0D3D20":"#BBF7D0"}`}}>
           <div style={{fontSize:11,fontWeight:700,color:"#16A34A",marginBottom:6}}>✅ {ZAMBIAN_LANGUAGES.find(l=>l.code===targetLang)?.name} Translation:</div>
           <div style={{fontSize:14,lineHeight:1.7,color:dark?"#E2EFF9":"#1E293B",fontWeight:500}}>{result}</div>
-          <button onClick={()=>{if(navigator.share)navigator.share({text:result});else{navigator.clipboard.writeText(result);showToast("Copied!");}}} style={{marginTop:10,padding:"6px 14px",borderRadius:30,background:"#16A34A",border:"none",color:"white",fontSize:11,fontWeight:600}}>
-            Share Translation
-          </button>
+          <button onClick={()=>{if(navigator.share)navigator.share({text:result});else{navigator.clipboard.writeText(result);showToast("Copied!");}}} style={{marginTop:10,padding:"6px 14px",borderRadius:30,background:"#16A34A",border:"none",color:"white",fontSize:11,fontWeight:600}}>Share Translation</button>
         </div>
       )}
     </div>
   );
 };
 
-/* ═══════════════════════ AI AGRI ASSISTANT ═══════════════════════ */
+/* ═══ AI AGRI ASSISTANT ═══ */
 const AgriAssistant=({dark,province,showToast})=>{
   const [messages,setMessages]=useState([
-    {role:"assistant",content:`🌾 Muli bwanji! I'm your AI Agriculture Assistant for Zambia. I can help with crop diseases, farming techniques, market advice, weather planting windows, and more. Ask me anything about farming in ${province}!`}
+    {role:"assistant",content:`🌾 Muli bwanji! I am your AI Agriculture Assistant for Zambia, powered by Groq AI. I can help with crop diseases, farming techniques, market advice, weather planting windows, and more. Ask me anything about farming in ${province}!`}
   ]);
   const [input,setInput]=useState("");
   const [loading,setLoading]=useState(false);
   const endRef=useRef(null);
+  const hasKey=!!localStorage.getItem("plantdoc_groq_key");
   const quickQ=["Best crops for "+province,"How to treat gray leaf spot?","Ideal planting time for maize","How to store grain after harvest","Soil testing in Zambia","Best fertilizer for groundnuts"];
 
   useEffect(()=>{endRef.current?.scrollIntoView({behavior:"smooth"});},[messages]);
@@ -520,58 +459,48 @@ const AgriAssistant=({dark,province,showToast})=>{
   const send=async(q)=>{
     const msg=q||input;
     if(!msg.trim())return;
-    const newMessages=[...messages,{role:"user",content:msg}];
-    setMessages(newMessages);
-    setInput("");setLoading(true);
+    if(!hasKey){showToast("Add Groq API key in Settings","error");return;}
+    const newMsgs=[...messages,{role:"user",content:msg}];
+    setMessages(newMsgs);setInput("");setLoading(true);
     try{
-      const reply=await smartAIResponse(msg, localStorage.getItem("ai_provider") || "offline");
+      const apiMsgs=newMsgs.map(m=>({role:m.role,content:m.content}));
+      const reply=await groqAssistant(apiMsgs,province);
       setMessages(prev=>[...prev,{role:"assistant",content:reply}]);
     }catch{
-      setMessages(prev=>[...prev,{role:"assistant",content:"⚠️ Connection error. Please check your internet and try again."}]);
+      setMessages(prev=>[...prev,{role:"assistant",content:"⚠️ Connection error. Check your internet and try again."}]);
     }
     setLoading(false);
   };
 
-  const bg=dark?"#0F2235":"#FFFFFF";
-  const border=dark?"#1A3050":"#E2ECE8";
+  const bg=dark?"#0F2235":"#FFFFFF";const border=dark?"#1A3050":"#E2ECE8";
   return(
     <div className="fade-up" style={{display:"flex",flexDirection:"column",height:"calc(100vh - 240px)"}}>
-<div style={{marginBottom:12}}>
-  <select 
-    onChange={(e)=>localStorage.setItem("ai_provider",e.target.value)}
-    style={{width:"100%",padding:"10px",borderRadius:"12px",border:"1px solid #0D9488",background:dark?"#0F2235":"#FFFFFF",color:dark?"#E2EFF9":"#0F172A"}}
-  >
-    {AI_PROVIDERS.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}
-  </select>
-</div>
-
+      {!hasKey&&(
+        <div style={{background:dark?"#1A1A3A":"#FEF3C7",borderRadius:16,padding:"10px 14px",marginBottom:12,border:`1px solid ${dark?"#3A3A5A":"#FCD34D"}`,fontSize:12,color:dark?"#FCD34D":"#92400E",fontWeight:600}}>
+          ⚠️ Add your Groq API key in Settings → AI Config to chat with the AI assistant.
+        </div>
+      )}
+      <div style={{background:dark?"#0A2518":"#F0FDF4",borderRadius:12,padding:"8px 14px",marginBottom:10,fontSize:11,color:dark?"#86EFAC":"#166534",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
+        <span style={{width:6,height:6,borderRadius:"50%",background:hasKey?"#16A34A":"#94A3B8",display:"inline-block"}}/>
+        {hasKey?"🤖 Groq AI · LLaMA 3.3 70B · Ready":"Groq AI · Not connected — add key in Settings"}
+      </div>
       <div style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:4,flexShrink:0}}>
         {quickQ.map((q,i)=>(
-          <button key={i} onClick={()=>send(q)} style={{flexShrink:0,padding:"5px 12px",borderRadius:30,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:10,fontWeight:600}}>
-            {q}
-          </button>
+          <button key={i} onClick={()=>send(q)} style={{flexShrink:0,padding:"5px 12px",borderRadius:30,background:dark?"#1A3050":"#EFF8F5",border:`1px solid ${dark?"#2A4060":"#C7E8DF"}`,color:"#0D9488",fontSize:10,fontWeight:600}}>{q}</button>
         ))}
       </div>
       <div className="scroll" style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:10,paddingRight:4}}>
         {messages.map((m,i)=>(
           <div key={i} style={{display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start"}}>
-            <div style={{maxWidth:"85%",padding:"10px 14px",borderRadius:m.role==="user"?"20px 20px 4px 20px":"20px 20px 20px 4px",background:m.role==="user"?"#0D9488":(dark?"#1A3050":"#F1F8F5"),color:m.role==="user"?"white":(dark?"#E2EFF9":"#1E293B"),fontSize:13,lineHeight:1.6,fontWeight:m.role==="user"?600:400}}>
-              {m.content}
-            </div>
+            <div style={{maxWidth:"85%",padding:"10px 14px",borderRadius:m.role==="user"?"20px 20px 4px 20px":"20px 20px 20px 4px",background:m.role==="user"?"#0D9488":(dark?"#1A3050":"#F1F8F5"),color:m.role==="user"?"white":(dark?"#E2EFF9":"#1E293B"),fontSize:13,lineHeight:1.6,fontWeight:m.role==="user"?600:400}}>{m.content}</div>
           </div>
         ))}
-        {loading&&<div style={{display:"flex",justifyContent:"flex-start"}}><div style={{padding:"10px 14px",borderRadius:"20px 20px 20px 4px",background:dark?"#1A3050":"#F1F8F5",display:"flex",gap:4,alignItems:"center"}}><div style={{width:6,height:6,borderRadius:"50%",background:"#0D9488",animation:"pulse 1s infinite"}}/>Thinking...</div></div>}
+        {loading&&<div style={{display:"flex",justifyContent:"flex-start"}}><div style={{padding:"10px 14px",borderRadius:"20px 20px 20px 4px",background:dark?"#1A3050":"#F1F8F5",display:"flex",gap:4,alignItems:"center",color:dark?"#7A9BB5":"#64748B",fontSize:13}}><div style={{width:6,height:6,borderRadius:"50%",background:"#0D9488",animation:"pulse 1s infinite"}}/>Groq AI is thinking...</div></div>}
         <div ref={endRef}/>
       </div>
       <div style={{display:"flex",gap:8,marginTop:10,flexShrink:0}}>
-        <input
-          value={input}
-          onChange={e=>setInput(e.target.value)}
-          onKeyDown={e=>e.key==="Enter"&&!loading&&send()}
-          placeholder="Ask about your crops..."
-          style={{flex:1,padding:"11px 16px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,outline:"none"}}
-        />
-        <button onClick={()=>send()} disabled={loading||!input.trim()} style={{padding:"11px 18px",borderRadius:50,background:loading||!input.trim()?"#94A3B8":"#0D9488",border:"none",color:"white",fontWeight:700}}>
+        <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!loading&&send()} placeholder="Ask about your crops..." style={{flex:1,padding:"11px 16px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:13,outline:"none"}}/>
+        <button onClick={()=>send()} disabled={loading||!input.trim()||!hasKey} style={{padding:"11px 18px",borderRadius:50,background:loading||!input.trim()||!hasKey?"#94A3B8":"#0D9488",border:"none",color:"white",fontWeight:700}}>
           <Icon n="zap" s={18} c="white"/>
         </button>
       </div>
@@ -579,7 +508,7 @@ const AgriAssistant=({dark,province,showToast})=>{
   );
 };
 
-/* ═══════════════════════ EXPERTS PAGE ═══════════════════════ */
+/* ═══ EXPERTS PAGE ═══ */
 const ExpertsPage=({dark,province,showToast})=>{
   const [filter,setFilter]=useState("all");
   const [search,setSearch]=useState("");
@@ -590,39 +519,29 @@ const ExpertsPage=({dark,province,showToast})=>{
     const matchSearch=!search||e.name.toLowerCase().includes(search.toLowerCase())||e.role.toLowerCase().includes(search.toLowerCase())||e.province.toLowerCase().includes(search.toLowerCase());
     return matchType&&matchSearch;
   });
-  const bg=dark?"#0F2235":"#FFFFFF";
-  const border=dark?"#1A3050":"#E2ECE8";
+  const bg=dark?"#0F2235":"#FFFFFF";const border=dark?"#1A3050":"#E2ECE8";
   return(
     <div className="fade-up">
       <div style={{background:dark?"#0D3050":"#E8F5FF",borderRadius:16,padding:"12px 14px",marginBottom:14,border:`1px solid ${dark?"#1A4060":"#BAD6FF"}`}}>
         <div style={{fontSize:12,fontWeight:700,color:"#2563EB",marginBottom:4}}>📞 Call Any Expert for FREE</div>
-        <div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>All contacts below are open-source, public numbers and emails. Farmers are encouraged to call directly for free advice.</div>
+        <div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>All contacts below are public numbers and emails. Farmers are encouraged to call directly for free advice.</div>
       </div>
       <div style={{display:"flex",gap:8,marginBottom:12}}>
         <div style={{flex:1,position:"relative"}}>
-          <input
-            value={search}
-            onChange={e=>setSearch(e.target.value)}
-            placeholder="Search experts..."
-            style={{width:"100%",padding:"10px 14px 10px 36px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:12,outline:"none"}}
-          />
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search experts..." style={{width:"100%",padding:"10px 14px 10px 36px",borderRadius:50,border:`1.5px solid ${border}`,background:bg,color:dark?"#E2EFF9":"#0F172A",fontSize:12,outline:"none"}}/>
           <div style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)"}}><Icon n="search" s={14} c="#94A3B8"/></div>
         </div>
       </div>
       <div style={{display:"flex",gap:6,marginBottom:14,overflowX:"auto",paddingBottom:4}}>
         {types.map(t=>(
-          <button key={t} onClick={()=>setFilter(t)} style={{flexShrink:0,padding:"5px 12px",borderRadius:30,border:`1.5px solid ${filter===t?(typeColors[t]||"#0D9488"):border}`,background:filter===t?(typeColors[t]||"#0D9488"):(dark?"#0A1628":"#F8FAFE"),color:filter===t?"white":(dark?"#7A9BB5":"#475569"),fontWeight:600,fontSize:11,textTransform:"capitalize"}}>
-            {t}
-          </button>
+          <button key={t} onClick={()=>setFilter(t)} style={{flexShrink:0,padding:"5px 12px",borderRadius:30,border:`1.5px solid ${filter===t?(typeColors[t]||"#0D9488"):border}`,background:filter===t?(typeColors[t]||"#0D9488"):(dark?"#0A1628":"#F8FAFE"),color:filter===t?"white":(dark?"#7A9BB5":"#475569"),fontWeight:600,fontSize:11,textTransform:"capitalize"}}>{t}</button>
         ))}
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
         {filtered.map((e,i)=>(
           <div key={i} style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:12,marginBottom:10}}>
-              <div style={{width:44,height:44,borderRadius:14,background:`${typeColors[e.type]||"#0D9488"}20`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>
-                {e.emoji}
-              </div>
+              <div style={{width:44,height:44,borderRadius:14,background:`${typeColors[e.type]||"#0D9488"}20`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{e.emoji}</div>
               <div style={{flex:1,minWidth:0}}>
                 <div style={{fontWeight:800,fontSize:14,color:dark?"#E2EFF9":"#0F172A",lineHeight:1.3}}>{e.name}</div>
                 <div style={{fontSize:11,color:dark?"#7A9BB5":"#64748B",marginTop:2}}>{e.role}</div>
@@ -633,53 +552,38 @@ const ExpertsPage=({dark,province,showToast})=>{
               </div>
             </div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-              <a href={`tel:${e.phone}`} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:"#16A34A",color:"white",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}>
-                <Icon n="phone" s={13} c="white"/> Call
-              </a>
-              <a href={`mailto:${e.email}`} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:"#0D9488",color:"white",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}>
-                <Icon n="mail" s={13} c="white"/> Email
-              </a>
-              <a href={e.website} target="_blank" rel="noreferrer" style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:dark?"#1A3050":"#F1F8F5",color:"#0D9488",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}>
-                <Icon n="globe" s={13} c="#0D9488"/> Website
-              </a>
-            </div>
-            <div style={{marginTop:8,fontSize:11,color:dark?"#5A7A90":"#94A3B8",display:"flex",alignItems:"center",gap:4}}>
-              <Icon n="phone" s={11} c="#94A3B8"/> {e.phone}
+              <a href={`tel:${e.phone}`} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:"#16A34A",color:"white",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}><Icon n="phone" s={13} c="white"/> Call</a>
+              <a href={`mailto:${e.email}`} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:"#0D9488",color:"white",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}><Icon n="mail" s={13} c="white"/> Email</a>
+              <a href={e.website} target="_blank" rel="noreferrer" style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:30,background:dark?"#1A3050":"#F1F8F5",color:"#0D9488",fontSize:11,fontWeight:700,textDecoration:"none",flexShrink:0}}><Icon n="globe" s={13} c="#0D9488"/> Website</a>
             </div>
           </div>
         ))}
-        {filtered.length===0&&<div style={{textAlign:"center",padding:30,color:dark?"#7A9BB5":"#94A3B8"}}>No experts found. Try a different filter.</div>}
+        {filtered.length===0&&<div style={{textAlign:"center",padding:30,color:dark?"#7A9BB5":"#94A3B8"}}>No experts found.</div>}
       </div>
     </div>
   );
 };
 
-/* ═══════════════════════ EDUCATION PAGE ═══════════════════════ */
+/* ═══ EDUCATION PAGE ═══ */
 const EducationPage=({dark,showToast})=>{
   const [selected,setSelected]=useState(null);
   const [category,setCategory]=useState("All");
   const [speaking,setSpeaking]=useState(false);
   const categories=["All",...[...new Set(FARMING_EDUCATION.map(e=>e.category))]];
   const filtered=category==="All"?FARMING_EDUCATION:FARMING_EDUCATION.filter(e=>e.category===category);
-
   const speak=(content)=>{
     if(!window.speechSynthesis){showToast("Voice not supported","error");return;}
     window.speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(content.replace(/\*\*/g,""));
     u.rate=0.85;u.lang="en-US";
-    u.onstart=()=>setSpeaking(true);
-    u.onend=()=>setSpeaking(false);
+    u.onstart=()=>setSpeaking(true);u.onend=()=>setSpeaking(false);
     window.speechSynthesis.speak(u);
   };
   const stopSpeak=()=>{window.speechSynthesis?.cancel();setSpeaking(false);};
-
-  const bg=dark?"#0F2235":"#FFFFFF";
-  const border=dark?"#1A3050":"#E2ECE8";
-
+  const bg=dark?"#0F2235":"#FFFFFF";const border=dark?"#1A3050":"#E2ECE8";
   if(selected){
     const catColors={"Best Practices":"#16A34A","Techniques":"#0D9488","Disease Management":"#DC2626","Soil Health":"#D97706","Water Management":"#2563EB","Crop Production":"#7C3AED","Post-Harvest":"#EA580C","Climate Adaptation":"#0891B2"};
     const col=catColors[selected.category]||"#0D9488";
-    // Render markdown-like bold formatting
     const renderContent=(text)=>text.split("\n").map((line,i)=>{
       if(line.startsWith("**")&&line.endsWith("**"))return<div key={i} style={{fontWeight:800,fontSize:15,color:dark?"#E2EFF9":"#0F172A",marginTop:14,marginBottom:4}}>{line.slice(2,-2)}</div>;
       if(line.startsWith("• "))return<div key={i} style={{fontSize:13,color:dark?"#B0C8D8":"#334155",lineHeight:1.7,paddingLeft:12,borderLeft:`2px solid ${col}`,marginBottom:4}}>{line.slice(2)}</div>;
@@ -688,9 +592,7 @@ const EducationPage=({dark,showToast})=>{
     });
     return(
       <div className="fade-up">
-        <button onClick={()=>{setSelected(null);stopSpeak();}} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#0D9488",fontWeight:700,fontSize:13,marginBottom:14,padding:0}}>
-          <Icon n="arrow_left" s={16} c="#0D9488"/> All lessons
-        </button>
+        <button onClick={()=>{setSelected(null);stopSpeak();}} style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",color:"#0D9488",fontWeight:700,fontSize:13,marginBottom:14,padding:0}}><Icon n="arrow_left" s={16} c="#0D9488"/> All lessons</button>
         <div style={{background:`${col}15`,borderRadius:20,padding:"16px 16px 12px",marginBottom:16,border:`1px solid ${col}30`}}>
           <div style={{fontSize:32,marginBottom:6}}>{selected.emoji}</div>
           <div style={{fontWeight:900,fontSize:19,color:dark?"#E2EFF9":"#0F172A",lineHeight:1.3,marginBottom:4}}>{selected.title}</div>
@@ -700,38 +602,25 @@ const EducationPage=({dark,showToast})=>{
           </div>
         </div>
         <div style={{display:"flex",gap:8,marginBottom:16}}>
-          <button onClick={()=>speaking?stopSpeak():speak(selected.content)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:30,background:speaking?"#DC2626":"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:12}}>
-            <Icon n="speaker" s={14} c="white"/>{speaking?"Stop":"Listen"}
-          </button>
-          <button onClick={()=>navigator.share?navigator.share({title:selected.title,text:selected.summary}):showToast("Share not supported")} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:30,background:dark?"#1A3050":"#F1F8F5",border:"none",color:"#0D9488",fontWeight:700,fontSize:12}}>
-            Share Lesson
-          </button>
+          <button onClick={()=>speaking?stopSpeak():speak(selected.content)} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:30,background:speaking?"#DC2626":"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:12}}><Icon n="speaker" s={14} c="white"/>{speaking?"Stop":"Listen"}</button>
+          <button onClick={()=>navigator.share?navigator.share({title:selected.title,text:selected.summary}):showToast("Share not supported")} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:30,background:dark?"#1A3050":"#F1F8F5",border:"none",color:"#0D9488",fontWeight:700,fontSize:12}}>Share Lesson</button>
         </div>
-        <div style={{background:bg,borderRadius:20,padding:18,border:`1px solid ${border}`}}>
-          {renderContent(selected.content)}
-        </div>
-        <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:12}}>
-          {selected.tags.map(t=><span key={t} style={{padding:"4px 12px",borderRadius:20,background:dark?"#1A3050":"#EFF8F5",color:"#0D9488",fontSize:11,fontWeight:600}}>#{t}</span>)}
-        </div>
+        <div style={{background:bg,borderRadius:20,padding:18,border:`1px solid ${border}`}}>{renderContent(selected.content)}</div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:12}}>{selected.tags.map(t=><span key={t} style={{padding:"4px 12px",borderRadius:20,background:dark?"#1A3050":"#EFF8F5",color:"#0D9488",fontSize:11,fontWeight:600}}>#{t}</span>)}</div>
       </div>
     );
   }
-
   return(
     <div className="fade-up">
       <div style={{display:"flex",gap:6,marginBottom:14,overflowX:"auto",paddingBottom:4}}>
         {categories.map(cat=>(
-          <button key={cat} onClick={()=>setCategory(cat)} style={{flexShrink:0,padding:"5px 14px",borderRadius:30,border:`1.5px solid ${category===cat?"#0D9488":border}`,background:category===cat?"#0D9488":(dark?"#0A1628":"#F8FAFE"),color:category===cat?"white":(dark?"#7A9BB5":"#475569"),fontWeight:600,fontSize:11}}>
-            {cat}
-          </button>
+          <button key={cat} onClick={()=>setCategory(cat)} style={{flexShrink:0,padding:"5px 14px",borderRadius:30,border:`1.5px solid ${category===cat?"#0D9488":border}`,background:category===cat?"#0D9488":(dark?"#0A1628":"#F8FAFE"),color:category===cat?"white":(dark?"#7A9BB5":"#475569"),fontWeight:600,fontSize:11}}>{cat}</button>
         ))}
       </div>
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
         {filtered.map((lesson,i)=>(
           <div key={i} onClick={()=>setSelected(lesson)} style={{background:bg,borderRadius:20,padding:16,border:`1px solid ${border}`,cursor:"pointer",display:"flex",gap:14,alignItems:"flex-start"}}>
-            <div style={{width:50,height:50,borderRadius:16,background:`${dark?"#1A3050":"#EFF8F5"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>
-              {lesson.emoji}
-            </div>
+            <div style={{width:50,height:50,borderRadius:16,background:dark?"#1A3050":"#EFF8F5",display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>{lesson.emoji}</div>
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontWeight:800,fontSize:14,color:dark?"#E2EFF9":"#0F172A",marginBottom:4,lineHeight:1.3}}>{lesson.title}</div>
               <div style={{fontSize:12,color:dark?"#7A9BB5":"#64748B",lineHeight:1.5,marginBottom:8}}>{lesson.summary}</div>
@@ -747,8 +636,113 @@ const EducationPage=({dark,showToast})=>{
   );
 };
 
-/* ═══════════════════════ DIAGNOSE PAGE ═══════════════════════ */
-const DiagnosePage=({province,addToHistory,showToast,apiKeys,activeAI})=>{
+/* ═══ RESULT VIEW ═══ */
+const ResultView=({result,onReset,showToast})=>{
+  const {dark}=useContext(ThemeCtx);
+  const [treatTab,setTreatTab]=useState("organic");
+  const [speaking,setSpeaking]=useState(false);
+  const [wikiData,setWikiData]=useState(null);
+  const [wikiLoading,setWikiLoading]=useState(false);
+  const climateAdvice=getClimateAdvice(result.province,result.cropName);
+  const border=dark?"#1A3050":"#E2ECE8";
+
+  const speak=()=>{
+    if(!window.speechSynthesis){showToast("Voice not supported","error");return;}
+    window.speechSynthesis.cancel();
+    const text=`Diagnosis: ${result.disease} with ${result.confidence} percent confidence. Affected crop: ${result.cropName}. Severity: ${result.severity}.`;
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="en-US";u.rate=0.9;
+    u.onstart=()=>setSpeaking(true);u.onend=()=>setSpeaking(false);
+    window.speechSynthesis.speak(u);
+  };
+
+  useEffect(()=>{
+    const fetchWiki=async()=>{
+      setWikiLoading(true);
+      try{
+        const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(result.disease)}&prop=extracts&exintro=1&explaintext=1&exsentences=4&format=json&origin=*`);
+        const d=await r.json();
+        const page=Object.values(d.query.pages)[0];
+        if(page.extract)setWikiData({title:page.title,extract:page.extract,url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title)}`});
+      }catch{}
+      setWikiLoading(false);
+    };
+    fetchWiki();
+  },[result.disease]);
+
+  const getTreatment=(tab)=>{
+    if(tab==="organic") return result.organicRemedy||"🌱 Apply neem oil (2%) + garlic extract every 5 days. Remove infected leaves immediately.";
+    if(tab==="chemical") return result.chemicalRemedy||"🧪 Use copper-based fungicide or mancozeb. Follow label strictly. Wear PPE.";
+    return result.culturalPractice||"🌾 Practice 3-year rotation, rogue infected plants, ensure field drainage.";
+  };
+
+  return(
+    <div className="fade-up">
+      <div style={{background:`linear-gradient(135deg,${result.cropColor||"#0F766E"}E6,${result.cropColor||"#0D9488"})`,borderRadius:24,padding:20,marginBottom:16,color:"white"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+          <div>
+            <div style={{fontSize:20,fontWeight:900,marginBottom:4}}>{result.disease}</div>
+            <div style={{opacity:.9,fontSize:13}}>{result.cropEmoji} {result.cropName} · 📍{result.province}</div>
+          </div>
+          <button onClick={speaking?()=>{window.speechSynthesis.cancel();setSpeaking(false);}:speak} style={{background:"rgba(255,255,255,.2)",border:"none",borderRadius:50,width:42,height:42,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
+            <Icon n="speaker" s={22} c="white"/>
+          </button>
+        </div>
+        <div style={{marginTop:14,display:"flex",justifyContent:"space-between"}}>
+          <span style={{fontWeight:600}}>Confidence: {result.confidence}%</span>
+          <span style={{background:"rgba(0,0,0,.25)",padding:"3px 10px",borderRadius:40,fontSize:11,fontWeight:700}}>{result.severity?.toUpperCase()}</span>
+        </div>
+        <div style={{height:6,background:"rgba(0,0,0,.2)",borderRadius:6,marginTop:8}}>
+          <div style={{width:`${result.confidence}%`,height:"100%",background:"white",borderRadius:6}}/>
+        </div>
+      </div>
+      {result.aiPowered&&<div style={{background:dark?"#0A2518":"#F0FDF4",borderRadius:12,padding:"8px 14px",marginBottom:14,fontSize:11,color:dark?"#86EFAC":"#166534",fontWeight:600,display:"flex",alignItems:"center",gap:6}}><span>🤖</span><span>Treatment advice powered by Groq AI · LLaMA 3.3 70B</span></div>}
+      {(wikiLoading||wikiData)&&(
+        <div style={{background:dark?"#0F2235":"#FFFBEB",borderRadius:20,padding:16,marginBottom:16,border:`1px solid ${dark?"#2A3A1A":"#FDE68A"}`}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}><Icon n="wiki" s={16} c="#D97706"/><span style={{fontWeight:700,fontSize:13,color:dark?"#E2EFF9":"#92400E"}}>Wikipedia: Disease Info</span></div>
+          {wikiLoading&&<><div className="wiki-skeleton"/><div className="wiki-skeleton" style={{width:"80%"}}/></>}
+          {wikiData&&<><p style={{fontSize:12,lineHeight:1.6,color:dark?"#B0C8D8":"#713F12"}}>{wikiData.extract}</p><a href={wikiData.url} target="_blank" rel="noreferrer" style={{display:"inline-block",marginTop:8,fontSize:11,color:"#D97706",fontWeight:700,textDecoration:"none"}}>Read more on Wikipedia →</a></>}
+        </div>
+      )}
+      <div style={{background:dark?"#0F2235":"#F0FDF4",borderRadius:20,padding:16,marginBottom:16,borderLeft:"4px solid #0D9488"}}>
+        <div style={{fontWeight:700,fontSize:13,color:"#0D9488",marginBottom:10}}>🌤️ Climate & Crop Needs</div>
+        <div style={{display:"flex",gap:20,marginBottom:10}}>
+          <div><div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>Ideal light</div><div style={{fontWeight:700}}>☀️ {result.idealLight}</div></div>
+          <div><div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>Soil moisture</div><div style={{fontWeight:700}}>💧 {result.idealMoisture}</div></div>
+        </div>
+        <div style={{fontSize:12,background:dark?"#0F172A":"#E6F7EC",padding:"10px 12px",borderRadius:14}}>{climateAdvice}</div>
+      </div>
+      {result.cropDiseases?.length>0&&(
+        <div style={{background:dark?"#0F2235":"white",borderRadius:20,padding:16,marginBottom:16,border:`1px solid ${border}`}}>
+          <div style={{fontSize:12,fontWeight:700,color:"#0F766E",marginBottom:8}}>📋 Common diseases for {result.cropName}</div>
+          <div style={{display:"flex",flexWrap:"wrap",gap:6}}>{result.cropDiseases.map((d,i)=><span key={i} style={{background:dark?"#1A3050":"#F1F5F9",padding:"4px 12px",borderRadius:30,fontSize:11,fontWeight:600,color:dark?"#E2EFF9":"#1E293B"}}>{d}</span>)}</div>
+        </div>
+      )}
+      <div style={{background:dark?"#0F2235":"white",borderRadius:20,padding:18,marginBottom:16}}>
+        <div style={{fontSize:13,fontWeight:700,color:dark?"#E2EFF9":"#1E293B",marginBottom:12}}>💊 Treatment Protocol</div>
+        <div style={{display:"flex",gap:8,marginBottom:14}}>
+          {["organic","chemical","cultural"].map(tab=>(
+            <button key={tab} onClick={()=>setTreatTab(tab)} style={{flex:1,padding:"7px 8px",borderRadius:40,border:`1.5px solid ${border}`,background:treatTab===tab?"#0D9488":(dark?"#1A3050":"white"),color:treatTab===tab?"white":(dark?"#7A9BB5":"#475569"),fontWeight:700,fontSize:11,textTransform:"capitalize"}}>
+              {tab===treatTab?"✓ ":""}{tab}
+            </button>
+          ))}
+        </div>
+        <div style={{fontSize:13,lineHeight:1.6,color:dark?"#E2EFF9":"#1E293B"}}>{getTreatment(treatTab)}</div>
+      </div>
+      <div style={{background:dark?"#0D3A2A":"#F0FDF4",borderRadius:20,padding:14,marginBottom:16,borderLeft:"4px solid #16A34A"}}>
+        <div style={{fontSize:12,fontWeight:700,color:"#16A34A"}}>🛡️ Prevention Tips</div>
+        <div style={{marginTop:6,fontSize:13,color:dark?"#B0C8D8":"#166534"}}>{result.prevention||"✅ Use certified disease-free seeds. Scout weekly, avoid overhead irrigation."}</div>
+      </div>
+      <div style={{display:"flex",gap:10}}>
+        <button onClick={()=>navigator.share?navigator.share({title:`PlantDoc: ${result.disease}`,text:`${result.disease} on ${result.cropName}. Confidence: ${result.confidence}%.`}):showToast("Share not supported")} style={{flex:1,padding:12,borderRadius:50,border:`1.5px solid ${border}`,background:dark?"#1A3050":"white",fontWeight:600,color:dark?"#E2EFF9":"#1E293B"}}>Share</button>
+        <button onClick={onReset} style={{flex:2,padding:12,borderRadius:50,border:"none",background:"#0D9488",color:"white",fontWeight:800,fontSize:14}}>New Scan</button>
+      </div>
+    </div>
+  );
+};
+
+/* ═══ DIAGNOSE PAGE ═══ */
+const DiagnosePage=({province,addToHistory,showToast})=>{
   const {dark}=useContext(ThemeCtx);
   const [selectedCrop,setSelectedCrop]=useState(null);
   const [imagePreview,setImagePreview]=useState(null);
@@ -779,37 +773,40 @@ const DiagnosePage=({province,addToHistory,showToast,apiKeys,activeAI})=>{
   const capturePhoto=()=>{const v=videoRef.current,c=canvasRef.current;c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);c.toBlob(b=>{setImageBlob(b);setImagePreview(URL.createObjectURL(b));stopCamera();},"image/jpeg");};
   const handleFile=(e)=>{const f=e.target.files?.[0];if(f){setImageBlob(f);setImagePreview(URL.createObjectURL(f));}};
 
-  const runDiagnosis=async()=>{
-    const crop=CROPS.find(c=>c.id===selectedCrop);
-    let disease="Possible Disease Detected",confidence=72;
-    if(modelRef.current&&imageBlob){
-      try{
-        const img=new Image();const url=URL.createObjectURL(imageBlob);img.src=url;
-        await new Promise(r=>{img.onload=r;});
-        const preds=await modelRef.current.predict(img);
-        URL.revokeObjectURL(url);
-        const top=preds.reduce((mx,p)=>p.probability>mx.probability?p:mx,{probability:0});
-        disease=top.className||"Disease Detected";confidence=Math.round(top.probability*100);
-      }catch(e){console.log("Model prediction fallback",e);}
-    }
-    const severity=confidence>85?"high":confidence>65?"medium":"low";
-    return{
-      disease,confidence,crop:selectedCrop,cropName:crop?.name,cropEmoji:crop?.emoji,cropColor:crop?.color,cropDiseases:crop?.diseases||[],
-      imagePreview,timestamp:Date.now(),province,severity,
-      idealLight:crop?.idealLight||"N/A",idealMoisture:crop?.idealMoisture||"N/A",
-      organicRemedy:"🌱 Apply neem oil (2%) + garlic extract every 5 days. Remove infected leaves immediately.",
-      chemicalRemedy:"🧪 Use copper-based fungicide or mancozeb. Follow label strictly. Wear PPE.",
-      culturalPractice:"🌾 Practice 3-year rotation, rogue infected plants, ensure field drainage.",
-      prevention:"✅ Use certified disease-free seeds. Scout weekly, avoid overhead irrigation."
-    };
-  };
-
   const handleDiagnose=async()=>{
     if(!selectedCrop){showToast("Select a crop first","error");return;}
     if(!imageBlob){showToast("Capture or upload a photo","error");return;}
     setLoading(true);
     try{
-      const d=await runDiagnosis();
+      const crop=CROPS.find(c=>c.id===selectedCrop);
+      let disease="Possible Disease Detected",confidence=72;
+      if(modelRef.current&&imageBlob){
+        try{
+          const img=new Image();const url=URL.createObjectURL(imageBlob);img.src=url;
+          await new Promise(r=>{img.onload=r;});
+          const preds=await modelRef.current.predict(img);
+          URL.revokeObjectURL(url);
+          const top=preds.reduce((mx,p)=>p.probability>mx.probability?p:mx,{probability:0});
+          disease=top.className||"Disease Detected";confidence=Math.round(top.probability*100);
+        }catch(e){console.log("Model fallback",e);}
+      }
+      const severity=confidence>85?"high":confidence>65?"medium":"low";
+      const hasGroq=!!localStorage.getItem("plantdoc_groq_key");
+      let treatmentData=null;
+      if(hasGroq){
+        showToast("Getting AI treatment advice...","success");
+        treatmentData=await groqDiagnose(crop?.name||selectedCrop,disease,province);
+      }
+      const d={
+        disease,confidence,crop:selectedCrop,cropName:crop?.name,cropEmoji:crop?.emoji,cropColor:crop?.color,cropDiseases:crop?.diseases||[],
+        imagePreview,timestamp:Date.now(),province,severity,
+        idealLight:crop?.idealLight||"N/A",idealMoisture:crop?.idealMoisture||"N/A",
+        aiPowered:!!treatmentData,
+        organicRemedy:treatmentData?.organicRemedy||"🌱 Apply neem oil (2%) + garlic extract every 5 days. Remove infected leaves immediately.",
+        chemicalRemedy:treatmentData?.chemicalRemedy||"🧪 Use copper-based fungicide or mancozeb. Follow label strictly. Wear PPE.",
+        culturalPractice:treatmentData?.culturalPractice||"🌾 Practice 3-year rotation, rogue infected plants, ensure field drainage.",
+        prevention:treatmentData?.prevention||"✅ Use certified disease-free seeds. Scout weekly, avoid overhead irrigation."
+      };
       setResult(d);addToHistory(d);showToast("Analysis complete!","success");
     }catch{showToast("Diagnosis failed","error");}finally{setLoading(false);}
   };
@@ -860,137 +857,16 @@ const DiagnosePage=({province,addToHistory,showToast,apiKeys,activeAI})=>{
       </div>
       <div style={{position:"fixed",bottom:68,left:0,right:0,maxWidth:480,margin:"0 auto",padding:"10px 20px",background:dark?"rgba(10,22,40,.96)":"rgba(255,255,255,.96)",backdropFilter:"blur(20px)",zIndex:25,borderTop:`1px solid ${border}`}}>
         <button disabled={!isReady} onClick={handleDiagnose} className={isReady?"pulse-btn":""} style={{width:"100%",padding:"14px",borderRadius:80,border:"none",background:!isReady?(dark?"#334155":"#CBD5E1"):"linear-gradient(105deg,#0F766E,#0D9488)",color:"white",fontWeight:800,fontSize:15,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
-          {loading?<><div className="spinner"/><span>Analyzing...</span></>:<><Icon n="zap" s={18} c="white"/><span>⚡ Run AI Diagnosis</span></>}
+          {loading?<><div className="spinner"/><span>Analyzing with Groq AI...</span></>:<><Icon n="zap" s={18} c="white"/><span>⚡ Run AI Diagnosis</span></>}
         </button>
       </div>
       <div style={{height:90}}/>
-      {loading&&<div style={{position:"fixed",inset:0,background:dark?"rgba(10,22,40,.96)":"rgba(255,255,255,.96)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",zIndex:100}}><div style={{width:50,height:50,border:"4px solid",borderColor:`${dark?"#1A3050":"#E2ECE8"}`,borderTopColor:"#0D9488",borderRadius:"50%",animation:"spin .7s linear infinite"}}/><div style={{marginTop:16,fontWeight:700,color:dark?"#E2EFF9":"#0F766E",fontSize:15}}>🔬 Scanning leaf patterns...</div><div style={{marginTop:6,fontSize:12,color:dark?"#7A9BB5":"#64748B"}}>AI neural engine processing...</div></div>}
+      {loading&&<div style={{position:"fixed",inset:0,background:dark?"rgba(10,22,40,.96)":"rgba(255,255,255,.96)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",zIndex:100}}><div style={{width:50,height:50,border:"4px solid",borderColor:dark?"#1A3050":"#E2ECE8",borderTopColor:"#0D9488",borderRadius:"50%",animation:"spin .7s linear infinite"}}/><div style={{marginTop:16,fontWeight:700,color:dark?"#E2EFF9":"#0F766E",fontSize:15}}>🔬 Scanning with AI...</div><div style={{marginTop:6,fontSize:12,color:dark?"#7A9BB5":"#64748B"}}>Groq AI analyzing disease patterns...</div></div>}
     </div>
   );
 };
 
-/* ═══════════════════════ RESULT VIEW ═══════════════════════ */
-const ResultView=({result,onReset,showToast})=>{
-  const {dark}=useContext(ThemeCtx);
-  const [treatTab,setTreatTab]=useState("organic");
-  const [speaking,setSpeaking]=useState(false);
-  const [wikiData,setWikiData]=useState(null);
-  const [wikiLoading,setWikiLoading]=useState(false);
-  const climateAdvice=getClimateAdvice(result.province,result.cropName);
-
-  const speak=()=>{
-    if(!window.speechSynthesis){showToast("Voice not supported","error");return;}
-    window.speechSynthesis.cancel();
-    const text=`Diagnosis: ${result.disease} with ${result.confidence} percent confidence. Affected crop: ${result.cropName}. Severity: ${result.severity}. Climate advice: ${climateAdvice}.`;
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang="en-US";u.rate=0.9;
-    u.onstart=()=>setSpeaking(true);u.onend=()=>setSpeaking(false);
-    window.speechSynthesis.speak(u);
-  };
-
-  useEffect(()=>{
-    // Auto-fetch Wikipedia data for the disease
-    const fetchWiki=async()=>{
-      setWikiLoading(true);
-      try{
-        const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(result.disease)}&prop=extracts&exintro=1&explaintext=1&exsentences=4&format=json&origin=*`);
-        const d=await r.json();
-        const pages=d.query.pages;
-        const page=Object.values(pages)[0];
-        if(page.extract)setWikiData({title:page.title,extract:page.extract,url:`https://en.wikipedia.org/wiki/${encodeURIComponent(page.title)}`});
-      }catch{}
-      setWikiLoading(false);
-    };
-    fetchWiki();
-  },[result.disease]);
-
-  const border=dark?"#1A3050":"#E2ECE8";
-  return(
-    <div className="fade-up">
-      <div style={{background:`linear-gradient(135deg,${result.cropColor||"#0F766E"}E6,${result.cropColor||"#0D9488"})`,borderRadius:24,padding:20,marginBottom:16,color:"white"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-          <div>
-            <div style={{fontSize:20,fontWeight:900,marginBottom:4}}>{result.disease}</div>
-            <div style={{opacity:.9,fontSize:13}}>{result.cropEmoji} {result.cropName} · 📍{result.province}</div>
-          </div>
-          <button onClick={speaking?()=>{window.speechSynthesis.cancel();setSpeaking(false);}:speak} style={{background:"rgba(255,255,255,.2)",border:"none",borderRadius:50,width:42,height:42,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
-            <Icon n="speaker" s={22} c="white"/>
-          </button>
-        </div>
-        <div style={{marginTop:14,display:"flex",justifyContent:"space-between"}}>
-          <span style={{fontWeight:600}}>Confidence: {result.confidence}%</span>
-          <span style={{background:"rgba(0,0,0,.25)",padding:"3px 10px",borderRadius:40,fontSize:11,fontWeight:700}}>{result.severity.toUpperCase()}</span>
-        </div>
-        <div style={{height:6,background:"rgba(0,0,0,.2)",borderRadius:6,marginTop:8}}>
-          <div style={{width:`${result.confidence}%`,height:"100%",background:"white",borderRadius:6}}/>
-        </div>
-      </div>
-
-      {/* Wikipedia Disease Info */}
-      {(wikiLoading||wikiData)&&(
-        <div style={{background:dark?"#0F2235":"#FFFBEB",borderRadius:20,padding:16,marginBottom:16,border:`1px solid ${dark?"#2A3A1A":"#FDE68A"}`}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-            <Icon n="wiki" s={16} c="#D97706"/>
-            <span style={{fontWeight:700,fontSize:13,color:dark?"#E2EFF9":"#92400E"}}>Wikipedia: Disease Info</span>
-          </div>
-          {wikiLoading&&<><div className="wiki-skeleton"/><div className="wiki-skeleton" style={{width:"80%"}}/></>}
-          {wikiData&&<>
-            <p style={{fontSize:12,lineHeight:1.6,color:dark?"#B0C8D8":"#713F12"}}>{wikiData.extract}</p>
-            <a href={wikiData.url} target="_blank" rel="noreferrer" style={{display:"inline-block",marginTop:8,fontSize:11,color:"#D97706",fontWeight:700,textDecoration:"none"}}>Read more on Wikipedia →</a>
-          </>}
-        </div>
-      )}
-
-      <div style={{background:dark?"#0F2235":"#F0FDF4",borderRadius:20,padding:16,marginBottom:16,borderLeft:"4px solid #0D9488"}}>
-        <div style={{fontWeight:700,fontSize:13,color:"#0D9488",marginBottom:10}}>🌤️ Climate & Crop Needs</div>
-        <div style={{display:"flex",gap:20,marginBottom:10}}>
-          <div><div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>Ideal light</div><div style={{fontWeight:700}}>☀️ {result.idealLight}</div></div>
-          <div><div style={{fontSize:11,color:dark?"#7A9BB5":"#475569"}}>Soil moisture</div><div style={{fontWeight:700}}>💧 {result.idealMoisture}</div></div>
-        </div>
-        <div style={{fontSize:12,background:dark?"#0F172A":"#E6F7EC",padding:"10px 12px",borderRadius:14}}>{climateAdvice}</div>
-      </div>
-
-      {result.cropDiseases?.length>0&&(
-        <div style={{background:dark?"#0F2235":"white",borderRadius:20,padding:16,marginBottom:16,border:`1px solid ${border}`}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#0F766E",marginBottom:8}}>📋 Common diseases for {result.cropName}</div>
-          <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-            {result.cropDiseases.map((d,i)=><span key={i} style={{background:dark?"#1A3050":"#F1F5F9",padding:"4px 12px",borderRadius:30,fontSize:11,fontWeight:600,color:dark?"#E2EFF9":"#1E293B"}}>{d}</span>)}
-          </div>
-        </div>
-      )}
-
-      <div style={{background:dark?"#0F2235":"white",borderRadius:20,padding:18,marginBottom:16}}>
-        <div style={{fontSize:13,fontWeight:700,color:dark?"#E2EFF9":"#1E293B",marginBottom:12}}>💊 Treatment Protocol</div>
-        <div style={{display:"flex",gap:8,marginBottom:14}}>
-          {["organic","chemical","cultural"].map(tab=>(
-            <button key={tab} onClick={()=>setTreatTab(tab)} style={{flex:1,padding:"7px 8px",borderRadius:40,border:`1.5px solid ${dark?"#1A3050":"#E2ECE8"}`,background:treatTab===tab?"#0D9488":(dark?"#1A3050":"white"),color:treatTab===tab?"white":(dark?"#7A9BB5":"#475569"),fontWeight:700,fontSize:11,textTransform:"capitalize"}}>
-              {tab===treatTab?"✓ ":""}{tab}
-            </button>
-          ))}
-        </div>
-        <div style={{fontSize:13,lineHeight:1.6,color:dark?"#E2EFF9":"#1E293B"}}>
-          {treatTab==="organic"?result.organicRemedy:treatTab==="chemical"?result.chemicalRemedy:result.culturalPractice}
-        </div>
-      </div>
-
-      <div style={{background:dark?"#0D3A2A":"#F0FDF4",borderRadius:20,padding:14,marginBottom:16,borderLeft:"4px solid #16A34A"}}>
-        <div style={{fontSize:12,fontWeight:700,color:"#16A34A"}}>🛡️ Prevention Tips</div>
-        <div style={{marginTop:6,fontSize:13,color:dark?"#B0C8D8":"#166534"}}>{result.prevention}</div>
-      </div>
-
-      <div style={{display:"flex",gap:10}}>
-        <button onClick={()=>navigator.share?navigator.share({title:`PlantDoc: ${result.disease}`,text:`${result.disease} on ${result.cropName}. Confidence: ${result.confidence}%.`}):showToast("Share not supported")} style={{flex:1,padding:12,borderRadius:50,border:`1.5px solid ${border}`,background:dark?"#1A3050":"white",fontWeight:600,color:dark?"#E2EFF9":"#1E293B"}}>
-          Share
-        </button>
-        <button onClick={onReset} style={{flex:2,padding:12,borderRadius:50,border:"none",background:"#0D9488",color:"white",fontWeight:800,fontSize:14}}>
-          New Scan
-        </button>
-      </div>
-    </div>
-  );
-};
-
-/* ═══════════════════════ HISTORY PAGE ═══════════════════════ */
+/* ═══ HISTORY PAGE ═══ */
 const HistoryPage=({history,setHistory,showToast})=>{
   const {dark}=useContext(ThemeCtx);
   const [selected,setSelected]=useState(null);
@@ -1000,7 +876,7 @@ const HistoryPage=({history,setHistory,showToast})=>{
     <div className="fade-up">
       <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
         <span style={{fontWeight:800,color:dark?"#E2EFF9":"#1E293B"}}>History ({history.length})</span>
-        <button onClick={()=>{if(confirm("Clear all history?")){ setHistory([]);localStorage.setItem("plantdoc_history","[]");showToast("Cleared");}}} style={{color:"#DC2626",background:"none",border:"none",fontWeight:600,fontSize:12}}>Clear all</button>
+        <button onClick={()=>{if(window.confirm("Clear all history?")){setHistory([]);localStorage.setItem("plantdoc_history","[]");showToast("Cleared");}}} style={{color:"#DC2626",background:"none",border:"none",fontWeight:600,fontSize:12}}>Clear all</button>
       </div>
       {history.map(e=>(
         <div key={e.timestamp} onClick={()=>setSelected(e)} style={{display:"flex",gap:12,padding:"12px 0",borderBottom:`1px solid ${dark?"#1A3050":"#EDF2F7"}`,cursor:"pointer"}}>
@@ -1008,9 +884,7 @@ const HistoryPage=({history,setHistory,showToast})=>{
           <div>
             <div style={{fontWeight:800,color:dark?"#E2EFF9":"#1E293B"}}>{e.disease}</div>
             <div style={{fontSize:12,color:dark?"#7A9BB5":"#475569"}}>{e.cropEmoji} {e.cropName} · {e.confidence}%</div>
-            <div style={{fontSize:10,color:dark?"#475569":"#94A3B8",marginTop:2}}>
-              {new Date(e.timestamp).toLocaleDateString("en-ZM",{day:"numeric",month:"short",year:"numeric"})}
-            </div>
+            <div style={{fontSize:10,color:dark?"#475569":"#94A3B8",marginTop:2}}>{new Date(e.timestamp).toLocaleDateString("en-ZM",{day:"numeric",month:"short",year:"numeric"})}</div>
           </div>
         </div>
       ))}
@@ -1018,14 +892,24 @@ const HistoryPage=({history,setHistory,showToast})=>{
   );
 };
 
-/* ═══════════════════════ SETTINGS PAGE ═══════════════════════ */
+/* ═══ SETTINGS PAGE ═══ */
 const SettingsPage=({settings,saveSettings,showToast})=>{
   const {dark,toggle}=useContext(ThemeCtx);
   const [local,setLocal]=useState(settings);
+  const [groqKey,setGroqKey]=useState(()=>localStorage.getItem("plantdoc_groq_key")||"");
+  const [showKey,setShowKey]=useState(false);
+  const [keyStatus,setKeyStatus]=useState(()=>!!localStorage.getItem("plantdoc_groq_key"));
   const update=(k,v)=>{const u={...local,[k]:v};setLocal(u);saveSettings(u);showToast(`${k} updated`);};
-  const updateKey=(p,v)=>{const u={...local,apiKeys:{...local.apiKeys,[p]:v}};setLocal(u);saveSettings(u);showToast(`${p} key saved`);};
-  const border=dark?"#1A3050":"#E2ECE8";
-  const bg=dark?"#0F2235":"#FFFFFF";
+  const border=dark?"#1A3050":"#E2ECE8";const bg=dark?"#0F2235":"#FFFFFF";
+
+  const saveGroqKey=()=>{
+    const v=groqKey.trim();
+    if(!v.startsWith("gsk_")){showToast("Invalid key — must start with gsk_","error");return;}
+    localStorage.setItem("plantdoc_groq_key",v);
+    setKeyStatus(true);showToast("Groq API key saved! AI features enabled.");
+  };
+  const clearGroqKey=()=>{localStorage.removeItem("plantdoc_groq_key");setGroqKey("");setKeyStatus(false);showToast("Key cleared");};
+
   const SettingRow=({label,children})=>(
     <div style={{padding:"14px 0",borderBottom:`1px solid ${border}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
       <div style={{fontSize:14,fontWeight:600,color:dark?"#E2EFF9":"#1E293B"}}>{label}</div>
@@ -1038,6 +922,46 @@ const SettingsPage=({settings,saveSettings,showToast})=>{
         <div style={{fontWeight:800,fontSize:15,marginBottom:4,color:dark?"#E2EFF9":"#0F172A"}}>🌾 PlantDoc Pro Settings</div>
         <div style={{fontSize:12,color:dark?"#7A9BB5":"#64748B"}}>Zambia's #1 Agriculture App by ZinnEx</div>
       </div>
+
+      {/* GROQ API KEY SECTION */}
+      <div style={{background:bg,borderRadius:24,padding:20,marginBottom:14,border:`1px solid ${dark?"#1A4060":"#BAD6FF"}`}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+          <Icon n="key" s={16} c="#2563EB"/>
+          <div style={{fontWeight:800,fontSize:15,color:dark?"#E2EFF9":"#0F172A"}}>Groq AI Configuration</div>
+          <span style={{marginLeft:"auto",fontSize:10,background:keyStatus?"#16A34A":"#DC2626",color:"white",padding:"2px 8px",borderRadius:20,fontWeight:700}}>{keyStatus?"CONNECTED":"NOT SET"}</span>
+        </div>
+        <div style={{fontSize:12,color:dark?"#7A9BB5":"#64748B",marginBottom:14}}>Powers AI Assistant, Translation, and Smart Diagnosis. Free at console.groq.com</div>
+
+        {/* HOW TO */}
+        <div style={{background:dark?"#0A1628":"#EFF8FF",borderRadius:14,padding:"12px 14px",marginBottom:14,border:`1px solid ${dark?"#1A3050":"#BFDBFE"}`}}>
+          <div style={{fontSize:11,fontWeight:700,color:"#2563EB",marginBottom:8}}>📋 How to get your FREE Groq key:</div>
+          <div style={{fontSize:11,color:dark?"#7A9BB5":"#374151",lineHeight:2}}>
+            1. Go to <span style={{color:"#2563EB",fontWeight:700}}>console.groq.com</span> → Create free account<br/>
+            2. Click <strong>API Keys</strong> in sidebar → <strong>Create API Key</strong><br/>
+            3. Copy key (starts with <strong>gsk_...</strong>)<br/>
+            4. Paste below and tap <strong>SAVE KEY</strong>
+          </div>
+        </div>
+
+        <div style={{display:"flex",gap:8,marginBottom:8}}>
+          <div style={{flex:1,position:"relative"}}>
+            <input
+              type={showKey?"text":"password"}
+              value={groqKey}
+              onChange={e=>setGroqKey(e.target.value)}
+              placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
+              style={{width:"100%",padding:"11px 40px 11px 14px",borderRadius:16,border:`1.5px solid ${keyStatus?"#16A34A":border}`,background:dark?"#0A1628":"white",color:dark?"#E2EFF9":"#1E293B",fontSize:13,outline:"none"}}
+            />
+            <button onClick={()=>setShowKey(p=>!p)} style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",background:"none",border:"none",cursor:"pointer",fontSize:16}}>{showKey?"🙈":"👁"}</button>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          <button onClick={saveGroqKey} style={{flex:2,padding:"10px",borderRadius:50,background:"#0D9488",border:"none",color:"white",fontWeight:700,fontSize:13}}>💾 SAVE KEY</button>
+          <button onClick={clearGroqKey} style={{flex:1,padding:"10px",borderRadius:50,background:"transparent",border:`1.5px solid ${border}`,color:dark?"#7A9BB5":"#475569",fontWeight:600,fontSize:13}}>Clear</button>
+        </div>
+        {keyStatus&&<div style={{marginTop:10,fontSize:11,color:"#16A34A",fontWeight:600,textAlign:"center"}}>✅ Groq AI connected · LLaMA 3.3 70B ready</div>}
+      </div>
+
       <div style={{background:bg,borderRadius:24,padding:"0 20px",marginBottom:14,border:`1px solid ${border}`}}>
         <SettingRow label="🌓 Dark Mode">
           <button onClick={toggle} style={{width:52,height:28,borderRadius:30,background:dark?"#0D9488":"#CBD5E1",border:"none",position:"relative",cursor:"pointer",transition:"background .3s"}}>
@@ -1054,34 +978,24 @@ const SettingsPage=({settings,saveSettings,showToast})=>{
             {ZAMBIAN_LANGUAGES.map(l=><option key={l.code} value={l.code}>{l.flag} {l.name}</option>)}
           </select>
         </SettingRow>
-        <SettingRow label="🤖 AI Engine">
-          <select value={local.activeAI} onChange={e=>update("activeAI",e.target.value)} style={{padding:"7px 12px",borderRadius:20,border:`1.5px solid ${border}`,background:dark?"#0A1628":"white",color:dark?"#E2EFF9":"#0F172A",fontFamily:"Outfit",fontSize:13,fontWeight:600}}>
-            <option value="teachable">🌿 Teachable Machine</option>
-            <option value="anthropic">🧠 Claude (Anthropic)</option>
-          </select>
-        </SettingRow>
       </div>
-      <div style={{background:bg,borderRadius:24,padding:20,marginBottom:14,border:`1px solid ${border}`}}>
-        <div style={{fontWeight:700,fontSize:14,color:dark?"#E2EFF9":"#1E293B",marginBottom:10}}>🔐 Claude API Key</div>
-        <input type="password" placeholder="sk-ant-..." value={local.apiKeys?.anthropic||""} onChange={e=>updateKey("anthropic",e.target.value)} style={{width:"100%",padding:"10px 14px",borderRadius:16,border:`1.5px solid ${border}`,background:dark?"#0A1628":"white",color:dark?"#E2EFF9":"#1E293B",fontSize:13,outline:"none"}}/>
-        <div style={{fontSize:11,color:dark?"#7A9BB5":"#94A3B8",marginTop:6}}>Required for AI Assistant & Translation features</div>
-      </div>
+
       <div style={{background:dark?"#0D2A1A":"#F0FDF4",borderRadius:20,padding:16,border:`1px solid ${dark?"#1A4A2A":"#BBF7D0"}`}}>
         <div style={{fontWeight:700,fontSize:13,color:"#16A34A",marginBottom:6}}>🌾 About PlantDoc Pro</div>
-        <div style={{fontSize:12,color:dark?"#B0C8D8":"#166534",lineHeight:1.6}}>Built by ZinnEx · Zambia's premier AgriTech platform. Supporting smallholder farmers across all 10 provinces with AI-powered disease diagnosis, real-time weather, market prices, expert contacts, and agricultural education.</div>
-        <div style={{marginTop:8,fontSize:11,color:dark?"#7A9BB5":"#94A3B8"}}>Version 6.0 · © 2026 ZinnEx · 🇿🇲 Made in Zambia</div>
+        <div style={{fontSize:12,color:dark?"#B0C8D8":"#166534",lineHeight:1.6}}>Built by ZinnEx · Zambia's premier AgriTech platform. Supporting smallholder farmers across all 10 provinces with AI-powered disease diagnosis, real-time weather, market prices, expert contacts, and agricultural education. Now powered by Groq AI for instant translations and smart advice.</div>
+        <div style={{marginTop:8,fontSize:11,color:dark?"#7A9BB5":"#94A3B8"}}>Version 7.0 Groq Edition · © 2026 ZinnEx · 🇿🇲 Made in Zambia</div>
       </div>
     </div>
   );
 };
 
-/* ═══════════════════════ MAIN APP ═══════════════════════ */
+/* ═══ MAIN APP ═══ */
 const PlantDoc=()=>{
   const [dark,setDark]=useState(()=>{try{return localStorage.getItem("pd_dark")==="true";}catch{return false;}});
   const [tab,setTab]=useState("diagnose");
-  const [subTab,setSubTab]=useState("weather"); // for the 'more' section
+  const [subTab,setSubTab]=useState("weather");
   const [history,setHistory]=useState(()=>{try{return JSON.parse(localStorage.getItem("plantdoc_history")||"[]");}catch{return[];}});
-  const [settings,setSettings]=useState(()=>{try{return JSON.parse(localStorage.getItem("pd_settings")||JSON.stringify({province:"Lusaka",lang:"en",activeAI:"teachable",apiKeys:{anthropic:""}}))}catch{return{province:"Lusaka",lang:"en",activeAI:"teachable",apiKeys:{anthropic:""}};}});
+  const [settings,setSettings]=useState(()=>{try{return JSON.parse(localStorage.getItem("pd_settings")||JSON.stringify({province:"Lusaka",lang:"en"}));}catch{return{province:"Lusaka",lang:"en"};}});
   const [toast,setToast]=useState(null);
 
   useEffect(()=>{
@@ -1092,20 +1006,14 @@ const PlantDoc=()=>{
 
   const toggle=()=>setDark(p=>!p);
   const showToast=useCallback((msg,type="success")=>{setToast({msg,type});setTimeout(()=>setToast(null),2500);},[]);
-  const addToHistory=useCallback(entry=>{
-    const u=[entry,...history].slice(0,50);
-    setHistory(u);localStorage.setItem("plantdoc_history",JSON.stringify(u));
-  },[history]);
-  const saveSettings=useCallback(s=>{
-    setSettings(s);localStorage.setItem("pd_settings",JSON.stringify(s));
-  },[]);
+  const addToHistory=useCallback(entry=>{const u=[entry,...history].slice(0,50);setHistory(u);localStorage.setItem("plantdoc_history",JSON.stringify(u));},[history]);
+  const saveSettings=useCallback(s=>{setSettings(s);localStorage.setItem("pd_settings",JSON.stringify(s));},[]);
 
-  const lang=settings.lang||"en";
-  const phrases=LANGUAGE_PHRASES[lang]||LANGUAGE_PHRASES.en;
   const border=dark?"#1A3050":"#E2ECE8";
+  const hasGroqKey=!!localStorage.getItem("plantdoc_groq_key");
 
   const TABS=[
-    {id:"diagnose",icon:"camera",label:phrases.diagnose||"Diagnose"},
+    {id:"diagnose",icon:"camera",label:"Diagnose"},
     {id:"education",icon:"book",label:"Learn"},
     {id:"experts",icon:"users",label:"Experts"},
     {id:"more",icon:"globe",label:"More"},
@@ -1117,7 +1025,7 @@ const PlantDoc=()=>{
     {id:"market",emoji:"📊",label:"Market"},
     {id:"wiki",emoji:"📖",label:"Wiki"},
     {id:"translate",emoji:"🗣️",label:"Translate"},
-    {id:"assistant",emoji:"🤖",label:"AI Assistant"},
+    {id:"assistant",emoji:"🤖",label:"AI Chat"},
     {id:"settings",emoji:"⚙️",label:"Settings"},
   ];
 
@@ -1141,6 +1049,9 @@ const PlantDoc=()=>{
                   <span style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,.9)"}}>{MORE_SUBTABS.find(s=>s.id===subTab)?.label}</span>
                 </div>
               )}
+              {!hasGroqKey&&(
+                <button onClick={()=>{setTab("more");setSubTab("settings");}} style={{background:"rgba(255,193,7,.25)",border:"1px solid rgba(255,193,7,.5)",borderRadius:20,padding:"4px 10px",fontSize:10,fontWeight:700,color:"#FCD34D",cursor:"pointer"}}>Set AI Key</button>
+              )}
               <button onClick={toggle} style={{background:"rgba(255,255,255,.15)",border:"none",borderRadius:40,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer"}}>
                 <Icon n={dark?"sun":"moon"} s={18} c="white"/>
               </button>
@@ -1149,7 +1060,7 @@ const PlantDoc=()=>{
           </div>
         </div>
 
-        {/* MORE subtabs row */}
+        {/* More subtabs */}
         {tab==="more"&&(
           <div style={{background:dark?"#0A1628":"#F8FAFE",borderBottom:`1px solid ${border}`,padding:"10px 16px",overflowX:"auto",flexShrink:0,display:"flex",gap:8,whiteSpace:"nowrap"}}>
             {MORE_SUBTABS.map(st=>(
@@ -1161,8 +1072,8 @@ const PlantDoc=()=>{
         )}
 
         {/* Content */}
-        <div className="scroll" style={{flex:1,overflowY:"auto",padding:tab==="more"&&subTab==="assistant"?"16px 16px 80px":"16px 16px 80px"}}>
-          {tab==="diagnose"&&<DiagnosePage province={settings.province} addToHistory={addToHistory} showToast={showToast} apiKeys={settings.apiKeys} activeAI={settings.activeAI}/>}
+        <div className="scroll" style={{flex:1,overflowY:"auto",padding:"16px 16px 80px"}}>
+          {tab==="diagnose"&&<DiagnosePage province={settings.province} addToHistory={addToHistory} showToast={showToast}/>}
           {tab==="education"&&<EducationPage dark={dark} showToast={showToast}/>}
           {tab==="experts"&&<ExpertsPage dark={dark} province={settings.province} showToast={showToast}/>}
           {tab==="history"&&<HistoryPage history={history} setHistory={setHistory} showToast={showToast}/>}
@@ -1186,8 +1097,8 @@ const PlantDoc=()=>{
 
         {/* Toast */}
         {toast&&(
-          <div style={{position:"fixed",bottom:88,left:"50%",transform:"translateX(-50%)",background:"#1E293B",color:"white",padding:"10px 20px",borderRadius:50,fontSize:12,fontWeight:600,display:"flex",alignItems:"center",gap:8,zIndex:100,whiteSpace:"nowrap",boxShadow:"0 10px 30px rgba(0,0,0,.25)",animation:"bounceIn .3s"}}>
-            <Icon n="check" s={14} c="#10B981"/>
+          <div style={{position:"fixed",bottom:88,left:"50%",transform:"translateX(-50%)",background:toast.type==="error"?"#DC2626":"#1E293B",color:"white",padding:"10px 20px",borderRadius:50,fontSize:12,fontWeight:600,display:"flex",alignItems:"center",gap:8,zIndex:100,whiteSpace:"nowrap",boxShadow:"0 10px 30px rgba(0,0,0,.25)",animation:"bounceIn .3s"}}>
+            <Icon n={toast.type==="error"?"zap":"check"} s={14} c="white"/>
             {toast.msg}
           </div>
         )}
